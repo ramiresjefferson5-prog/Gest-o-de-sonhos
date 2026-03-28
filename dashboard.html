@@ -358,6 +358,46 @@
                 <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-0.5">Adapta o teu fluxo aos imprevistos.</p>
             </div>
+
+            <!-- NOVO: CONFIGURAÇÕES BASE (Ponto de Partida) -->
+            <div class="bg-app-card rounded-[24px] border border-app-border p-5 mb-8 shadow-float w-full">
+                <h3 class="text-[12px] font-bold text-app-sub uppercase tracking-widest mb-4 flex items-center gap-2"><i class="ph-bold ph-sliders text-app-blue text-lg"></i> Base Financeira (Ponto de Partida)</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-app-border pb-3">
+                        <div>
+                            <p class="text-[14px] font-bold text-app-text">Saldo Inicial</p>
+                            <p class="text-[11px] text-app-sub">Caixa atual de arranque.</p>
+                        </div>
+                        <div class="flex items-center bg-[#151515] rounded-xl border border-[#2C2C2E] px-3 py-2 w-32 focus-within:border-app-blue transition-colors">
+                            <span class="text-app-blue font-bold text-[14px] mr-1">R$</span>
+                            <input type="number" id="config-saldo" value="0" step="0.01" class="w-full bg-transparent text-right font-bold text-app-blue text-[15px] outline-none" onchange="guardarConfigGlobal()">
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2 border-b border-app-border pb-3">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[14px] font-bold text-app-text">Entradas Base</p>
+                            <div class="flex items-center bg-[#151515] rounded-xl border border-[#2C2C2E] px-3 py-2 w-32 focus-within:border-app-green transition-colors">
+                                <span class="text-app-green font-bold text-[14px] mr-1">R$</span>
+                                <input type="number" id="config-renda" value="0" step="0.01" class="w-full bg-transparent text-right font-bold text-app-green text-[15px] outline-none" onchange="guardarConfigGlobal()">
+                            </div>
+                        </div>
+                        <input type="text" id="config-renda-motivo" placeholder="Motivos/Origem (Ex: Salário, Rendimentos...)" class="w-full bg-[#151515] rounded-lg px-3 py-2.5 text-[13px] text-app-text border border-[#2C2C2E] outline-none font-medium placeholder-app-sub/50 focus:border-app-green transition-colors" onchange="guardarConfigGlobal()">
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[14px] font-bold text-app-text">Gastos Fixos</p>
+                            <div class="flex items-center bg-[#151515] rounded-xl border border-[#2C2C2E] px-3 py-2 w-32 focus-within:border-app-red transition-colors">
+                                <span class="text-app-red font-bold text-[14px] mr-1">R$</span>
+                                <input type="number" id="config-fixo" value="0" step="0.01" class="w-full bg-transparent text-right font-bold text-app-red text-[15px] outline-none" onchange="guardarConfigGlobal()">
+                            </div>
+                        </div>
+                        <input type="text" id="config-fixo-motivo" placeholder="Motivos/Origem (Ex: Água, Luz, Net, Renda...)" class="w-full bg-[#151515] rounded-lg px-3 py-2.5 text-[13px] text-app-text border border-[#2C2C2E] outline-none font-medium placeholder-app-sub/50 focus:border-app-red transition-colors" onchange="guardarConfigGlobal()">
+                    </div>
+                </div>
+            </div>
             
             <div id="resumo-timeline-container" class="mb-8 w-full"></div>
             <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
@@ -475,6 +515,7 @@
         let idUtilizadorAtual = null;
         let sonhosGlobais = []; 
         let dadosTimeline = []; 
+        let configGlobal = { saldo: 0, renda: 0, rendaMotivo: '', fixo: 0, fixoMotivo: '' };
         
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
@@ -1038,10 +1079,36 @@
             
             const { data } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
             
+            // Configurar a Base Dinâmica
+            const configBD = data?.find(d => d.mes_id === 'CONFIG_GLOBAL');
+            if(configBD) {
+                configGlobal.saldo = configBD.entradas || 0;
+                configGlobal.renda = configBD.fixos || 0;
+                configGlobal.fixo = configBD.parcela || 0;
+                try {
+                    const obs = JSON.parse(configBD.observacoes || '{}');
+                    configGlobal.rendaMotivo = obs.rendaMotivo || '';
+                    configGlobal.fixoMotivo = obs.fixoMotivo || '';
+                } catch(e) {}
+            } else {
+                configGlobal.saldo = 0;
+                configGlobal.renda = templateMeses[0].entradas;
+                configGlobal.fixo = templateMeses[0].fixos;
+            }
+
+            // Atualizar UI da Configuração Base
+            document.getElementById('config-saldo').value = configGlobal.saldo;
+            document.getElementById('config-renda').value = configGlobal.renda;
+            document.getElementById('config-fixo').value = configGlobal.fixo;
+            document.getElementById('config-renda-motivo').value = configGlobal.rendaMotivo;
+            document.getElementById('config-fixo-motivo').value = configGlobal.fixoMotivo;
+
             dadosTimeline = templateMeses.map(temp => {
                 const mesBD = data?.find(d => d.mes_id === temp.id);
                 if(mesBD) return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: mesBD.observacoes, extras: mesBD.extras || [] };
-                return { ...temp, extras: [] };
+                
+                // Os meses não ajustados manualmente herdam da "Base Padrão"
+                return { ...temp, entradas: configGlobal.renda, fixos: configGlobal.fixo, extras: [] };
             });
 
             // Preenche o Select do Registo Rápido
@@ -1054,9 +1121,31 @@
             renderizarTimelineUI();
         }
 
+        async function guardarConfigGlobal() {
+            configGlobal.saldo = parseFloat(document.getElementById('config-saldo').value) || 0;
+            configGlobal.renda = parseFloat(document.getElementById('config-renda').value) || 0;
+            configGlobal.fixo = parseFloat(document.getElementById('config-fixo').value) || 0;
+            configGlobal.rendaMotivo = document.getElementById('config-renda-motivo').value;
+            configGlobal.fixoMotivo = document.getElementById('config-fixo-motivo').value;
+            
+            const payload = {
+                user_id: idUtilizadorAtual,
+                mes_id: 'CONFIG_GLOBAL',
+                entradas: configGlobal.saldo,
+                fixos: configGlobal.renda,
+                parcela: configGlobal.fixo,
+                observacoes: JSON.stringify({ rendaMotivo: configGlobal.rendaMotivo, fixoMotivo: configGlobal.fixoMotivo }),
+                extras: []
+            };
+            
+            await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+            inicializarTimeline(); // Recarrega para aplicar o efeito cascata automaticamente
+        }
+
         function renderizarTimelineUI() {
-            let totalAcumuladoGeral = 0;
+            let totalAcumuladoGeral = configGlobal.saldo || 0;
             let totalEntradasGerais = 0;
+            let sobraAcumuladaNoAno = 0;
 
             dadosTimeline.forEach(prev => {
                 let somaExtrasLocal = 0;
@@ -1067,13 +1156,16 @@
                         else somaExtrasLocal -= val;
                     });
                 }
-                totalAcumuladoGeral += (prev.entradas - prev.fixos - prev.parcela + somaExtrasLocal);
+                const sobraMes = prev.entradas - prev.fixos - prev.parcela + somaExtrasLocal;
+                sobraAcumuladaNoAno += sobraMes;
                 
                 let receitasExtras = prev.extras?.filter(e=>e.tipo==='receita').reduce((acc,curr)=>acc+(parseFloat(curr.valor)||0),0) || 0;
                 totalEntradasGerais += (prev.entradas + receitasExtras);
             });
 
-            let taxaPoupanca = totalEntradasGerais > 0 ? Math.round((totalAcumuladoGeral / totalEntradasGerais) * 100) : 0;
+            totalAcumuladoGeral += sobraAcumuladaNoAno;
+
+            let taxaPoupanca = totalEntradasGerais > 0 ? Math.round((sobraAcumuladaNoAno / totalEntradasGerais) * 100) : 0;
             let corSaude = taxaPoupanca >= 20 ? 'text-app-green' : (taxaPoupanca >= 10 ? 'text-app-orange' : 'text-app-red');
             let bgSaude = taxaPoupanca >= 20 ? 'bg-app-green/20' : (taxaPoupanca >= 10 ? 'bg-app-orange/20' : 'bg-app-red/20');
             let txtSaude = taxaPoupanca >= 20 ? 'Excelente' : (taxaPoupanca >= 10 ? 'Boa' : 'Atenção');
@@ -1094,7 +1186,7 @@
                     <div class="flex gap-3 relative z-10 border-t border-white/5 pt-4">
                         <div class="flex-1 bg-[#1A1A1C] rounded-xl p-3 border border-white/5">
                             <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">Média Livre / Mês</p>
-                            <p class="font-bold text-[16px] text-white">${formatarMoeda(totalAcumuladoGeral / Math.max(1, dadosTimeline.length))}</p>
+                            <p class="font-bold text-[16px] text-white">${formatarMoeda(sobraAcumuladaNoAno / Math.max(1, dadosTimeline.length))}</p>
                         </div>
                     </div>
                 </div>
@@ -1103,7 +1195,7 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            let saldoCorrente = 0; // Total acumulado progressivo
+            let saldoCorrente = configGlobal.saldo || 0; // Total acumulado progressivo que arranca com a base global
             
             dadosTimeline.forEach((prev, index) => {
                 let somaExtras = 0; let htmlExtras = '';
@@ -1117,8 +1209,9 @@
                 const sobraMes = prev.entradas - prev.fixos - prev.parcela + somaExtras;
                 
                 let htmlSaldoAnterior = ''; 
-                if (index > 0) {
-                    htmlSaldoAnterior = `<div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Vem do Mês Anterior</span> <span class="font-bold ${saldoCorrente >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoCorrente >= 0 ? '+' : ''}${formatarMoeda(saldoCorrente)}</span></div>`;
+                if (index > 0 || configGlobal.saldo !== 0) {
+                    let textoOrigem = index === 0 ? 'Saldo Inicial em Caixa' : 'Vem do Mês Anterior';
+                    htmlSaldoAnterior = `<div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">${textoOrigem}</span> <span class="font-bold ${saldoCorrente >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoCorrente >= 0 ? '+' : ''}${formatarMoeda(saldoCorrente)}</span></div>`;
                 }
                 
                 saldoCorrente += sobraMes; 
