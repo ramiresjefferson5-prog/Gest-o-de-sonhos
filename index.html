@@ -86,7 +86,8 @@
             });
 
             if (error) {
-                mostrarMensagem(error.message, "red");
+                // Melhoria: Mostra o erro exato do Supabase
+                mostrarMensagem("Erro ao registar: " + error.message, "red");
             } else {
                 mostrarMensagem("Conta criada com sucesso! Já podes clicar em Entrar.", "green");
             }
@@ -112,7 +113,8 @@
             });
 
             if (error) {
-                mostrarMensagem("Erro ao entrar. Verifica o email e a senha.", "red");
+                // Melhoria: Mostra o erro exato do Supabase em vez de uma mensagem genérica
+                mostrarMensagem("Erro: " + error.message, "red");
                 btnEntrar.innerText = "Entrar";
             } else {
                 // Se tudo estiver bem, vai para o Painel!
