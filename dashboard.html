@@ -135,7 +135,7 @@
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clica no 'check' ao pagar ou receber.</p>
+                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Os meses futuros projetam-se baseados no ativo.</p>
                 </div>
             </div>
 
@@ -326,7 +326,7 @@
             <!-- FORMULÁRIO 2: DIÁRIO RÁPIDO -->
             <form id="form-rapido" class="space-y-6 w-full hidden">
                 <div class="bg-app-blue/10 border border-app-blue/20 rounded-2xl p-4 mb-2 shadow-float w-full">
-                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando o acumulado final na hora.</p>
+                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando a projeção final em tempo real.</p>
                 </div>
 
                 <div class="w-full">
@@ -518,7 +518,7 @@
                     
                     <div class="flex items-center px-4 py-4 border-b border-app-border bg-[#0A84FF]/10">
                         <label class="w-36 shrink-0 font-bold text-app-blue">Forçar Saldo Inicial</label>
-                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Vem do anterior)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
+                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Cascata)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
                     </div>
 
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
@@ -562,13 +562,22 @@
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         
-        // Variáveis para o funcionamento do Modal de Detalhes da Timeline
         window.timelineDetailsHTML = {}; 
         window.mesDetalheAberto = null;
 
-        // Padrões de formatação da moeda
+        // Padrões de formatação rigorosa
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
         const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
+
+        function getMesAtualStr() {
+            const dataSistema = new Date();
+            let mesStr = dataSistema.getFullYear() + '-' + String(dataSistema.getMonth() + 1).padStart(2, '0');
+            // Se a Timeline começa numa data à frente (ex: Abril), forçamos Abril a ser o Mês Ativo (Interativo)
+            if (dadosTimeline.length > 0 && mesStr < dadosTimeline[0].id) {
+                mesStr = dadosTimeline[0].id;
+            }
+            return mesStr;
+        }
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
@@ -587,7 +596,7 @@
         }
 
         function limparHistoricoConfirmacao() {
-            if(confirm("⚠️ ATENÇÃO: Tens a certeza que queres eliminar TODAS as tuas conquistas gravadas?\nEsta ação não pode ser desfeita e vai limpar a tua Sala de Troféus.")) {
+            if(confirm("⚠️ ATENÇÃO: Tens a certeza que queres eliminar TODAS as tuas conquistas gravadas?")) {
                 limparHistoricoReal();
             }
         }
@@ -595,12 +604,7 @@
         async function limparHistoricoReal() {
             if(!idUtilizadorAtual) return;
             const { error } = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
-            if(!error) {
-                alert("Histórico de conquistas apagado com sucesso!");
-                buscarSonhos(); 
-            } else {
-                alert("Erro ao tentar limpar histórico: " + error.message);
-            }
+            if(!error) { alert("Histórico apagado."); buscarSonhos(); }
         }
 
         function mudarTipoRegisto(tipo) {
@@ -753,7 +757,6 @@
                     let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
                     let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
                     
-                    // Blindagem Matemática para percentagem não ultrapassar 100%
                     if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
                     
                     let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
@@ -971,7 +974,6 @@
 
             const custoDoItem = parseFloat(sonho.itens_compostos[itemIndex].custo) || 0;
             
-            // ENGRENAGEM: O dinheiro transita de "Líquido" (Guardado) para "Investido" (Comprado)
             let caixaAtual = parseFloat(sonho.valor_guardado) || 0;
             if (novoStatus === true) {
                 caixaAtual = Math.max(0, caixaAtual - custoDoItem);
@@ -985,13 +987,7 @@
             abrirModalDetalhesSonho(sonhoId);
             renderizarUIEcossistema();
 
-            const { error } = await clienteSupabase.from('sonhos')
-                .update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual })
-                .eq('id', sonhoId);
-                
-            if(error) {
-                alert("Erro ao sincronizar engrenagem. Verifica a internet.");
-            }
+            await clienteSupabase.from('sonhos').update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual }).eq('id', sonhoId);
         }
 
         async function finalizarConquista(sonhoId) {
@@ -1003,13 +999,7 @@
             renderizarUIEcossistema();
             renderizarUIConquistas();
 
-            const { error } = await clienteSupabase.from('sonhos')
-                .update({ status: 'concluido' })
-                .eq('id', sonhoId);
-                
-            if(error) {
-                alert("Para esta funcionalidade precisas de correr o código SQL fornecido na base de dados (Adicionar coluna status).");
-            }
+            await clienteSupabase.from('sonhos').update({ status: 'concluido' }).eq('id', sonhoId);
         }
 
         // ========================================================
@@ -1089,7 +1079,6 @@
                 const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: false };
                 
                 let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
-
                 const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
 
                 const payload = {
@@ -1115,7 +1104,6 @@
                     document.getElementById('input-valor-rapido').value = '';
                     document.getElementById('input-desc-rapido').value = '';
                 } else {
-                    console.error("Erro Supabase:", error);
                     msg.innerHTML = "Erro: " + error.message; 
                     msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
                 }
@@ -1125,12 +1113,10 @@
             setTimeout(() => { msg.classList.add('hidden'); }, 4000);
         }
 
-
         // ========================================================
-        // 5. TIMELINE 2026 E MODAIS BASE (COM DUPLA CASCATA 100% BLINDADA)
+        // 5. TIMELINE 2026 E MODAIS BASE (A MAGIA DA PROJEÇÃO ROLLING FORECAST)
         // ========================================================
         
-        // TEMPLATE COM BASE OK E EXTRAS COM STATUS
         const templateMeses = [
             { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Foco no arranque da obra e ajustes.', extras: [
                 { id: 'ab1', tipo: 'receita', descricao: 'Rendimento Extra / Venda', valor: 2500, realizado: false },
@@ -1182,7 +1168,7 @@
             
             const { data } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
             
-            let precisaSincronizarSupabase = false;
+            let precisaSincronizar = false;
 
             dadosTimeline = templateMeses.map(temp => {
                 const mesBD = data?.find(d => d.mes_id === temp.id);
@@ -1210,50 +1196,29 @@
                     let usarExtras = bdExtras;
                     
                     if (bdExtras.length === 0 && temp.extras.length > 0) {
-                        usarExtras = temp.extras;
-                        precisaSincronizarSupabase = true; 
+                        usarExtras = temp.extras; precisaSincronizar = true; 
                     } else {
-                        // Garante que os extras têm a propriedade realizado e valor numérico forte
                         usarExtras = usarExtras.map(e => ({ ...e, valor: parseFloat(e.valor)||0, realizado: e.realizado || false }));
                     }
                     
-                    return { 
-                        ...temp, 
-                        entradas: parseFloat(mesBD.entradas)||0, 
-                        fixos: parseFloat(mesBD.fixos)||0, 
-                        parcela: parseFloat(mesBD.parcela)||0, 
-                        obs: obsTexto, 
-                        saldo_inicial: saldoIn, 
-                        extras: usarExtras, 
-                        base_ok: baseOk 
-                    };
+                    return { ...temp, entradas: parseFloat(mesBD.entradas)||0, fixos: parseFloat(mesBD.fixos)||0, parcela: parseFloat(mesBD.parcela)||0, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras, base_ok: baseOk };
                 }
                 
-                precisaSincronizarSupabase = true;
+                precisaSincronizar = true;
                 return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false } };
             });
 
-            if (precisaSincronizarSupabase) {
+            if (precisaSincronizar) {
                 const payloadSinc = dadosTimeline.map(m => ({
-                    user_id: idUtilizadorAtual,
-                    mes_id: m.id,
-                    entradas: parseFloat(m.entradas)||0,
-                    fixos: parseFloat(m.fixos)||0,
-                    parcela: parseFloat(m.parcela)||0,
-                    observacoes: JSON.stringify({ texto: m.obs, base_ok: m.base_ok }),
-                    saldo_inicial: m.saldo_inicial !== null ? parseFloat(m.saldo_inicial) : null,
-                    extras: m.extras
+                    user_id: idUtilizadorAtual, mes_id: m.id, entradas: parseFloat(m.entradas)||0, fixos: parseFloat(m.fixos)||0, parcela: parseFloat(m.parcela)||0,
+                    observacoes: JSON.stringify({ texto: m.obs, base_ok: m.base_ok }), saldo_inicial: m.saldo_inicial !== null ? parseFloat(m.saldo_inicial) : null, extras: m.extras
                 }));
-                clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => {
-                    if(error) console.log("Aviso: Sincronização inicial falhou", error);
-                });
+                clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => { if(error) console.log("Sincronização inicial falhou", error); });
             }
 
             const selectRapido = document.getElementById('val-mes-rapido');
             selectRapido.innerHTML = '';
-            dadosTimeline.forEach(m => {
-                selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`;
-            });
+            dadosTimeline.forEach(m => { selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`; });
 
             renderizarTimelineUI();
         }
@@ -1280,26 +1245,16 @@
                 if(ext) ext.realizado = !ext.realizado;
             }
 
-            // Atualiza UI da base instantaneamente com dados matematicamente blindados
             renderizarTimelineUI();
 
             const modalTimeline = document.getElementById('modal-timeline-detalhes');
-            if (modalTimeline && !modalTimeline.classList.contains('hidden')) {
-                if (window.mesDetalheAberto === mesId) {
-                    document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
-                }
+            if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === mesId) {
+                document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
             }
 
-            // Grava background
             const payload = {
-                user_id: idUtilizadorAtual,
-                mes_id: mes.id,
-                entradas: parseFloat(mes.entradas)||0,
-                fixos: parseFloat(mes.fixos)||0,
-                parcela: parseFloat(mes.parcela)||0,
-                observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }),
-                saldo_inicial: mes.saldo_inicial !== null ? parseFloat(mes.saldo_inicial) : null,
-                extras: mes.extras
+                user_id: idUtilizadorAtual, mes_id: mes.id, entradas: parseFloat(mes.entradas)||0, fixos: parseFloat(mes.fixos)||0, parcela: parseFloat(mes.parcela)||0,
+                observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial !== null ? parseFloat(mes.saldo_inicial) : null, extras: mes.extras
             };
             await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
         }
@@ -1314,55 +1269,70 @@
         function atualizarCardResumo() {
             const prev = dadosTimeline[mesResumoIndex];
             if(!prev) return;
-            document.getElementById('resumo-mes-titulo').innerText = prev.mes;
             
+            let mesAtualStr = getMesAtualStr();
+            let isFuturo = prev.id > mesAtualStr;
+
+            document.getElementById('resumo-mes-titulo').innerText = prev.mes + (isFuturo ? ' (Projeção)' : '');
+            
+            document.getElementById('lbl-resumo-inicial').innerHTML = `<i class="ph-bold ph-calendar"></i> ${isFuturo ? 'Início Projetado' : 'Inicial Real'}`;
+            document.getElementById('lbl-resumo-atual').innerHTML = `<i class="ph-fill ph-wallet"></i> ${isFuturo ? 'Acumulado Fim' : 'Saldo Carteira'}`;
+            document.getElementById('lbl-resumo-previsto').innerHTML = `<i class="ph-bold ph-target"></i> ${isFuturo ? 'Sobra do Mês' : 'Previsto Fim'}`;
+
             document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
             document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
-            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
+            
+            if (isFuturo) {
+                document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcBalanco || 0);
+                document.getElementById('resumo-val-previsto').className = `font-bold text-[13px] ${prev._calcBalanco >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'}`;
+            } else {
+                document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
+                document.getElementById('resumo-val-previsto').className = `font-bold text-[13px] text-white`;
+            }
         }
 
+        // ====== A MAGIA DA PROJEÇÃO (CASCATA BLINDADA) ======
         function renderizarTimelineUI() {
             const resumoContainer = document.getElementById('resumo-timeline-container');
-            resumoContainer.innerHTML = `
-                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
-                    <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
-                    
-                    <div class="flex justify-between items-center mb-6 relative z-10">
-                        <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-left"></i></button>
-                        <h3 class="font-bold text-[18px] tracking-wide" id="resumo-mes-titulo">Mês</h3>
-                        <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-right"></i></button>
+            if(resumoContainer.innerHTML.trim() === '') {
+                resumoContainer.innerHTML = `
+                    <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
+                        <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
+                        <div class="flex justify-between items-center mb-6 relative z-10">
+                            <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-left"></i></button>
+                            <h3 class="font-bold text-[18px] tracking-wide" id="resumo-mes-titulo">Mês</h3>
+                            <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-right"></i></button>
+                        </div>
+                        <div class="flex justify-between items-end relative z-10 pb-2">
+                            <div class="text-left flex-1">
+                                <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider" id="lbl-resumo-inicial"><i class="ph-bold ph-calendar"></i> Inicial Real</p>
+                                <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
+                            </div>
+                            <div class="text-center flex-[1.5]">
+                                <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md" id="lbl-resumo-atual"><i class="ph-fill ph-wallet"></i> Saldo Carteira</p>
+                                <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-atual">R$ 0</p>
+                            </div>
+                            <div class="text-right flex-1">
+                                <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider" id="lbl-resumo-previsto"><i class="ph-bold ph-target"></i> Previsto Fim</p>
+                                <p class="font-bold text-[13px] text-white" id="resumo-val-previsto">R$ 0</p>
+                            </div>
+                        </div>
                     </div>
-
-                    <div class="flex justify-between items-end relative z-10 pb-2">
-                        <div class="text-left flex-1">
-                            <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider"><i class="ph-bold ph-calendar"></i> Inicial Real</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
-                        </div>
-                        <div class="text-center flex-[1.5]">
-                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-wallet"></i> Saldo Carteira</p>
-                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-atual">R$ 0</p>
-                        </div>
-                        <div class="text-right flex-1">
-                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-target"></i> Previsto Fim</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+                `;
+            }
 
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            // DUAS LINHAS DE CASCATA BLINDADAS
-            let saldoAtualAnterior = 0; 
-            let saldoPrevistoAnterior = 0;
+            let mesAtualStr = getMesAtualStr();
+            let cascataReal = 0; 
+            let cascataPrevista = 0;
             
-            window.timelineDetailsHTML = {}; // Clean up
+            window.timelineDetailsHTML = {}; 
 
             dadosTimeline.forEach((prev, index) => {
-                let htmlExtras = '';
-                
-                // Lógica de Soma Atual (Realizada) e Prevista (Pendente) garantindo formato de números puros
+                let isFuturo = prev.id > mesAtualStr;
+
                 let somaRealizada = 0;
                 let somaPendente = 0;
 
@@ -1370,14 +1340,13 @@
                 const valFixos = parseFloat(prev.fixos) || 0;
                 const valParcela = parseFloat(prev.parcela) || 0;
 
-                // Base
                 if (prev.base_ok.entradas) somaRealizada += valEntradas; else somaPendente += valEntradas;
                 if (prev.base_ok.fixos) somaRealizada -= valFixos; else somaPendente -= valFixos;
                 if (valParcela > 0) {
                     if (prev.base_ok.parcela) somaRealizada -= valParcela; else somaPendente -= valParcela;
                 }
 
-                // Extras
+                let htmlExtras = '';
                 if(prev.extras && prev.extras.length > 0) {
                     prev.extras.forEach(ext => {
                         const val = parseFloat(ext.valor) || 0;
@@ -1401,48 +1370,60 @@
                 
                 let somaTotalMes = somaRealizada + somaPendente;
 
-                // CASCATA PROTEGIDA: Herda sempre o rasto do mês anterior. 
-                let saldoStartAtual = saldoAtualAnterior;
-                let saldoStartPrevisto = saldoPrevistoAnterior;
-                let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
+                // --- O SEGREDO DO ROLLING FORECAST ---
+                // Se for mês futuro, o arranque é igual ao Previsto (A realidade já não importa no futuro, projetamos)
+                let saldoStartAtual = isFuturo ? cascataPrevista : cascataReal;
+                let saldoStartPrevisto = isFuturo ? cascataPrevista : cascataReal; 
                 
-                // BLINDAGEM NO FORÇAR SALDO: Se o utilizador inserir saldo inicial, ele quebra a cascata e recomeça o plano a partir deste mês!
+                let textoOrigem = index === 0 ? 'Início do Plano' : (isFuturo ? 'Vem da Projeção Anterior' : 'Vem do Mês Anterior');
+                
+                // Se o utilizador força o saldo na mão, quebra a cascata e recomeça a matemática exata daqui.
                 if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
                     saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
                     textoOrigem = 'Saldo Inicial Manual';
                 }
 
-                // Matemática Perfeita: O Atual soma só as bolinhas verdes. O Previsto soma todo o orçamento como se fosses cumprir.
-                let saldoAtual = saldoStartAtual + somaRealizada;
-                let saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
-                
-                // Passa a cascata de forma limpa para o mês seguinte (Isto é a base da Projeção para Dezembro)
-                saldoAtualAnterior = saldoAtual;
-                saldoPrevistoAnterior = saldoPrevistoFinal;
+                let saldoAtualFinal;
+                let saldoPrevistoFinal;
 
-                // Salva para o card de Resumo Azul
+                if (isFuturo) {
+                    // MÊS FUTURO: "Projetados como se eu já tivesse pago e recebido tudo"
+                    saldoAtualFinal = saldoStartAtual + somaTotalMes;
+                    saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes;
+                } else {
+                    // MÊS ATUAL/PASSADO: O Real vive da verdade das checkboxes.
+                    saldoAtualFinal = saldoStartAtual + somaRealizada;
+                    // A Projeção para o fim deste mês assume a verdade que tens AGORA + o orçamento que falta.
+                    saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
+                }
+
+                cascataReal = saldoAtualFinal;
+                cascataPrevista = saldoPrevistoFinal;
+
                 prev._calcStart = saldoStartAtual;
-                prev._calcAtual = saldoAtual; 
+                prev._calcAtual = saldoAtualFinal; 
                 prev._calcPrevisto = saldoPrevistoFinal;
+                prev._calcBalanco = somaTotalMes; // Sobra do mês
 
+                // HTML BUILD
                 let htmlSaldoAnterior = `
                     <div class="flex flex-col gap-2">
                         <div class="flex justify-between items-center">
-                            <span class="text-[11px] uppercase tracking-widest text-app-sub">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Real)</span></span>
+                            <span class="text-[11px] uppercase tracking-widest text-app-sub">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(${isFuturo ? 'Projetado' : 'Real'})</span></span>
                             <span class="font-bold text-[13px] ${saldoStartAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStartAtual >= 0 ? '+' : ''}${formatarMoeda(saldoStartAtual)}</span>
                         </div>
+                        ${!isFuturo ? `
                         <div class="flex justify-between items-center">
                             <span class="text-[11px] uppercase tracking-widest text-app-sub opacity-60">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Previsto)</span></span>
                             <span class="font-bold text-[13px] text-app-text opacity-60">${saldoStartPrevisto >= 0 ? '+' : ''}${formatarMoeda(saldoStartPrevisto)}</span>
-                        </div>
+                        </div>` : ''}
                     </div>`;
                 
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
                 let sobraMesHTML = somaTotalMes >= 0 ? `+${formatarMoeda(somaTotalMes)}` : formatarMoeda(somaTotalMes);
 
-                // --- BUILD DETAILED HTML FOR MODAL ---
                 window.timelineDetailsHTML[prev.id] = `
                     <div class="flex justify-between items-center mb-4">
                         <h4 class="text-[15px] font-bold text-app-text flex items-center">Movimentações</h4>
@@ -1483,22 +1464,30 @@
                     <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-5 mt-6 mb-8 shadow-inner">
                         <div class="flex justify-between items-center pb-3 border-b border-[#2C2C2E]/50">
                             <div>
-                                <span class="font-bold text-[12px] text-app-blue uppercase tracking-widest block mb-0.5">Saldo Atual Real</span>
-                                <span class="text-[10px] text-app-sub font-medium">Na tua carteira hoje</span>
+                                <span class="font-bold text-[12px] text-app-blue uppercase tracking-widest block mb-0.5">${isFuturo ? 'Projeção Acumulada' : 'Saldo Atual Real'}</span>
+                                <span class="text-[10px] text-app-sub font-medium">${isFuturo ? 'Assumindo execução total' : 'Na tua carteira hoje'}</span>
                             </div>
-                            <span class="font-black text-[18px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                            <span class="font-black text-[18px] ${saldoAtualFinal >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtualFinal)}</span>
                         </div>
+                        ${!isFuturo ? `
                         <div class="flex justify-between items-center pt-3">
                             <div>
                                 <span class="font-bold text-[12px] text-app-sub uppercase tracking-widest block mb-0.5">Projeção Final</span>
                                 <span class="text-[10px] text-app-sub font-medium block mt-0.5">Sobra Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
                             </div>
                             <span class="font-black text-[18px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
+                        </div>` : `
+                        <div class="flex justify-between items-center pt-3">
+                            <div>
+                                <span class="font-bold text-[12px] text-app-sub uppercase tracking-widest block mb-0.5">Dinheiro Gerado no Mês</span>
+                                <span class="text-[10px] text-app-sub font-medium block mt-0.5">Sobras/Défice:</span>
+                            </div>
+                            <span class="font-black text-[18px] ${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span>
                         </div>
+                        `}
                     </div>
                 `;
 
-                // --- BUILD MACRO CARD FOR TIMELINE ---
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
                 card.innerHTML = `
@@ -1509,20 +1498,20 @@
                     <div onclick="abrirDetalhesTimeline('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full cursor-pointer active:scale-[0.98] transition-transform">
                         <div class="flex justify-between items-center pb-3 border-b border-[#2C2C2E]/50">
                             <div class="flex flex-col">
-                                <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest">Saldo Real</span>
-                                <span class="text-[9px] text-app-sub">No bolso hoje</span>
+                                <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest">${isFuturo ? 'Saldo Projetado' : 'Saldo Real'}</span>
+                                <span class="text-[9px] text-app-sub">${isFuturo ? 'Assumindo plano' : 'No bolso hoje'}</span>
                             </div>
-                            <span class="font-black text-[18px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                            <span class="font-black text-[18px] ${saldoAtualFinal >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtualFinal)}</span>
                         </div>
                         <div class="flex justify-between items-center pt-3">
                             <div class="flex flex-col">
-                                <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest">Previsto Mês</span>
-                                <span class="text-[9px] text-app-sub">Final projetado</span>
+                                <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest">${isFuturo ? 'Balanço do Mês' : 'Previsto Mês'}</span>
+                                <span class="text-[9px] text-app-sub">${isFuturo ? 'Sobra ou Falta' : 'Final projetado'}</span>
                             </div>
-                            <span class="font-bold text-[15px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
+                            <span class="font-bold text-[15px] ${isFuturo ? (somaTotalMes > 0 ? 'text-app-green' : 'text-app-red') : (saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text'))}">${isFuturo ? sobraMesHTML : formatarMoeda(saldoPrevistoFinal)}</span>
                         </div>
                         <div class="mt-4 pt-3 border-t border-dashed border-app-border flex items-center justify-between text-app-sub">
-                            <span class="text-[11px] font-medium line-clamp-1 flex-1 pr-4 border-l-2 border-app-blue/50 pl-2">${prev.obs || 'Ver detalhes e marcar checks'}</span>
+                            <span class="text-[11px] font-medium line-clamp-1 flex-1 pr-4 border-l-2 border-app-blue/50 pl-2">${prev.obs || 'Ver detalhes e marcações'}</span>
                             <i class="ph-bold ph-caret-right text-sm"></i>
                         </div>
                     </div>`;
@@ -1584,14 +1573,8 @@
                 const baseOk = dadosTimeline[index].base_ok || { entradas: false, fixos: false, parcela: false };
 
                 const dados = { 
-                    user_id: idUtilizadorAtual, 
-                    mes_id: id, 
-                    entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0, 
-                    fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0, 
-                    parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0, 
-                    observacoes: JSON.stringify({ texto: obsText, base_ok: baseOk }),      
-                    saldo_inicial: saldoInicialVal, 
-                    extras: extrasTemp 
+                    user_id: idUtilizadorAtual, mes_id: id, entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0, fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0, 
+                    parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0, observacoes: JSON.stringify({ texto: obsText, base_ok: baseOk }), saldo_inicial: saldoInicialVal, extras: extrasTemp 
                 };
                 
                 const { error } = await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
@@ -1604,9 +1587,7 @@
                     if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === id) {
                         document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[id];
                     }
-
                 } else {
-                    console.error("Erro detalhado do Supabase:", error);
                     alert(`Erro ao gravar:\n${error.message}`);
                 }
             }
