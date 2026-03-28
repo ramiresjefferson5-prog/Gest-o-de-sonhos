@@ -74,7 +74,7 @@
 </head>
 <body class="min-h-screen pb-[100px] md:pb-0 w-full">
 
-    <!-- DESKTOP NAV (Nova Ordem) -->
+    <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
         <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
             <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
@@ -90,7 +90,7 @@
         </div>
     </nav>
 
-    <!-- MOBILE NAV (Nova Ordem) -->
+    <!-- MOBILE NAV -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
         <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
             <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
@@ -129,7 +129,7 @@
     <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
         <!-- ========================================== -->
-        <!-- ABA 1: PREVISÕES 2026 (AGORA É A INICIAL) -->
+        <!-- ABA 1: PREVISÕES 2026 (INICIAL) -->
         <!-- ========================================== -->
         <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full">
@@ -154,7 +154,6 @@
                 <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
             </div>
 
-            <!-- Resumo Financeiro Dinâmico -->
             <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
                 
@@ -191,7 +190,7 @@
                 <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
             </div>
 
-            <!-- Segmented Control (Tabs Rápidas) -->
+            <!-- Segmented Control -->
             <div class="bg-app-card p-1 rounded-xl flex mb-6 w-full border border-app-border">
                 <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-2 text-[13px] rounded-lg segment-active transition-all">🏗️ Nova Obra / Meta</button>
                 <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita Dia</button>
@@ -387,7 +386,7 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 5: PERFIL E DEFINIÇÕES (NOVO) -->
+        <!-- ABA 5: PERFIL E DEFINIÇÕES -->
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             
@@ -439,7 +438,7 @@
     <!-- MODAIS NATIVOS INTERATIVOS -->
     <!-- ========================================== -->
     
-    <!-- Modal: Editar Perfil (NOVO) -->
+    <!-- Modal: Editar Perfil -->
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
@@ -506,7 +505,7 @@
                     </div>
 
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
-                        <label class="w-32 shrink-0 font-medium">Entradas (R$)</label>
+                        <label class="w-32 shrink-0 font-medium">Entradas Base (R$)</label>
                         <input type="number" id="edit-mes-entradas" class="flex-1 min-w-0 bg-transparent text-right font-bold text-app-green text-lg outline-none">
                     </div>
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
@@ -546,10 +545,8 @@
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         
-        // Padrão Geral da app (mostra os centavos na app normal)
+        // Padrões de formatação da moeda
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
-        
-        // Padrão Arredondado para o cartão azul inicial (arredonda sempre para cima sem cêntimos)
         const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
 
         function irParaLogin() {
@@ -561,7 +558,6 @@
         // ========================================================
         // 0. FUNÇÕES DE PERFIL E HISTÓRICO
         // ========================================================
-        
         function guardarPerfil() {
             const nome = document.getElementById('input-perfil-nome').value;
             localStorage.setItem('gestor_nome_perfil', nome);
@@ -580,7 +576,7 @@
             const { error } = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
             if(!error) {
                 alert("Histórico de conquistas apagado com sucesso!");
-                buscarSonhos(); // Recarrega os dados sem os concluídos
+                buscarSonhos(); 
             } else {
                 alert("Erro ao tentar limpar histórico: " + error.message);
             }
@@ -686,7 +682,6 @@
             const container = document.getElementById('lista-sonhos-container');
             container.innerHTML = '<div class="text-center py-10 text-app-sub font-medium text-sm w-full col-span-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block text-app-blue"></i><br>A calcular ecossistema...</div>';
             
-            // Procura todos os sonhos, independentemente do status
             const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
             
             if(error) {
@@ -698,7 +693,6 @@
             renderizarUIEcossistema();
             renderizarUIConquistas();
             
-            // Atualiza estatísticas do perfil
             const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
             const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
             document.getElementById('estatistica-projetos').innerText = ativos.length;
@@ -728,10 +722,7 @@
                         sonho.itens_compostos.forEach(p => {
                             let val = parseFloat(p.custo) || 0;
                             custoSubItens += val;
-                            if (p.comprado) {
-                                valorItensComprados += val;
-                                qtdComprada++;
-                            }
+                            if (p.comprado) { valorItensComprados += val; qtdComprada++; }
                         });
                     }
 
@@ -759,19 +750,16 @@
                         infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} items</span>`;
                     }
 
-                    // Caixinha (Card) UI
                     const card = document.createElement('div');
                     card.className = "bg-app-card rounded-[24px] p-5 shadow-float border border-app-border cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
                     card.onclick = () => abrirModalDetalhesSonho(sonho.id);
                     
                     card.innerHTML = `
                         <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percentagem}%"></div></div>
-                        
                         <div class="flex justify-between items-start mb-2">
                             <div class="w-10 h-10 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[20px]">${iconCat}</div>
                             <span class="text-[11px] font-bold text-app-sub bg-[#151515] px-2 py-1 rounded-md border border-[#2C2C2E]">${infoExtra}</span>
                         </div>
-                        
                         <div>
                             <p class="text-[16px] font-bold text-app-text leading-tight mb-1 truncate">${sonho.nome}</p>
                             <div class="flex justify-between items-end">
@@ -850,7 +838,6 @@
             let custoSubItens = 0;
             let valorItensComprados = 0;
             let qtdComprada = 0;
-            
             let HTMLPartes = '';
             
             if(sonho.complexidade === 'Composto' && sonho.itens_compostos) {
@@ -965,22 +952,17 @@
             // ENGRENAGEM: O dinheiro transita de "Líquido" (Guardado) para "Investido" (Comprado)
             let caixaAtual = parseFloat(sonho.valor_guardado) || 0;
             if (novoStatus === true) {
-                // Ao comprar, desconta do caixa (se houver caixa suficiente)
-                // Se não houver, ele desconta até zero (assumindo que puseste do teu bolso)
                 caixaAtual = Math.max(0, caixaAtual - custoDoItem);
             } else {
-                // Se desmarcar, o dinheiro "volta" para o caixa
                 caixaAtual += custoDoItem;
             }
             
-            // Aplica novos valores localmente (UI Rápida)
             sonho.valor_guardado = caixaAtual;
             sonho.itens_compostos[itemIndex].comprado = novoStatus;
             
             abrirModalDetalhesSonho(sonhoId);
             renderizarUIEcossistema();
 
-            // Sincroniza Engrenagem com Supabase
             const { error } = await clienteSupabase.from('sonhos')
                 .update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual })
                 .eq('id', sonhoId);
@@ -1047,7 +1029,6 @@
                 tempo_servico: document.getElementById('input-tempo-servico').value,
                 observacoes: document.getElementById('input-observacoes').value,
                 itens_compostos: itensComp
-                // O status vai 'ativo' por default via SQL
             };
 
             const { error } = await clienteSupabase.from('sonhos').insert([dados]);
@@ -1065,7 +1046,7 @@
             setTimeout(() => { msg.classList.add('hidden'); }, 4000);
         };
 
-        // --- B. REGISTO RÁPIDO DIÁRIO (VAI PARA A TIMELINE) ---
+        // --- B. REGISTO RÁPIDO DIÁRIO ---
         const formRapido = document.getElementById('form-rapido');
         formRapido.onsubmit = async (e) => {
             e.preventDefault();
@@ -1080,7 +1061,6 @@
             const valor = parseFloat(document.getElementById('input-valor-rapido').value);
             const desc = document.getElementById('input-desc-rapido').value;
 
-            // Busca o mês na timeline local
             const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
             if (index !== -1) {
                 const mesData = dadosTimeline[index];
@@ -1094,8 +1074,8 @@
                     entradas: mesData.entradas,
                     fixos: mesData.fixos,
                     parcela: mesData.parcela,
-                    observacoes: mesData.obs,      // String Limpa
-                    saldo_inicial: mesData.saldo_inicial, // Número Limpo
+                    observacoes: mesData.obs,      
+                    saldo_inicial: mesData.saldo_inicial, 
                     extras: novosExtras
                 };
 
@@ -1103,8 +1083,8 @@
 
                 msg.classList.remove('hidden');
                 if(!error) {
-                    dadosTimeline[index].extras = novosExtras; // Atualiza local
-                    renderizarTimelineUI(); // Recalcula ecossistema na hora
+                    dadosTimeline[index].extras = novosExtras; 
+                    renderizarTimelineUI(); 
                     
                     msg.innerHTML = `Lançamento integrado na Timeline!`; 
                     msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
@@ -1112,7 +1092,6 @@
                     document.getElementById('input-desc-rapido').value = '';
                 } else {
                     console.error("Erro Supabase:", error);
-                    // Deteção inteligente do erro do 'extras'
                     if (error.message && error.message.includes('extras')) {
                         msg.innerHTML = "Falta a coluna 'extras' na base de dados! Lê o aviso do ecrã para resolver."; 
                     } else {
@@ -1130,32 +1109,67 @@
         // ========================================================
         // 5. TIMELINE 2026 E MODAIS BASE
         // ========================================================
+        
+        // TEMPLATE BASEADO NO TEU MAPA: Já preenchido com todos os extras/receitas detalhadamente
         const templateMeses = [
-            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 5080, fixos: 650, parcela: 0, obs: 'Obra R$ 2200, Ajustes R$ 300, Reserva R$ 300.' },
-            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Lazer 400 | Reserva 500 | Casa 400 | Poup 150' },
-            { id: '2026-06', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável: Lazer 400 | Casa 400' },
-            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2800, fixos: 750, obs: 'Casa 600 | Reserva 500 | Lazer 400' },
-            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Virada', parcela: 520, entradas: 3500, fixos: 750, obs: 'Injeção na Obra: Casa R$ 1200' },
-            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.' },
-            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.' },
-            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 3480, fixos: 530, obs: 'Última Parcela do Empréstimo!' },
-            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 3480, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Reserva forte.' }
+            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Foco no arranque da obra e ajustes.', extras: [
+                { id: 'ab1', tipo: 'receita', descricao: 'Rendimento Extra / Venda', valor: 2500 },
+                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200 },
+                { id: 'ab3', tipo: 'gasto', descricao: 'Ajustes', valor: 300 },
+                { id: 'ab4', tipo: 'gasto', descricao: 'Reserva', valor: 300 }
+            ]},
+            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Equilíbrio entre lazer e obra.', extras: [
+                { id: 'ma1', tipo: 'gasto', descricao: 'Lazer', valor: 400 },
+                { id: 'ma2', tipo: 'gasto', descricao: 'Reserva', valor: 500 },
+                { id: 'ma3', tipo: 'gasto', descricao: 'Casa', valor: 400 },
+                { id: 'ma4', tipo: 'gasto', descricao: 'Poupança', valor: 150 }
+            ]},
+            { id: '2026-06', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável.', extras: [
+                { id: 'ju1', tipo: 'gasto', descricao: 'Lazer', valor: 400 },
+                { id: 'ju2', tipo: 'gasto', descricao: 'Casa', valor: 400 }
+            ]},
+            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Manter a disciplina.', extras: [
+                { id: 'jl1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 220 },
+                { id: 'jl2', tipo: 'gasto', descricao: 'Casa', valor: 600 },
+                { id: 'jl3', tipo: 'gasto', descricao: 'Reserva', valor: 500 },
+                { id: 'jl4', tipo: 'gasto', descricao: 'Lazer', valor: 400 }
+            ]},
+            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Virada', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção forte na Obra.', extras: [
+                { id: 'ag1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 920 },
+                { id: 'ag2', tipo: 'gasto', descricao: 'Casa (Injeção Obra)', valor: 1200 }
+            ]},
+            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.', extras: [
+                { id: 'se1', tipo: 'gasto', descricao: 'Poupança / Reserva', valor: 400 }
+            ]},
+            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.', extras: [
+                { id: 'oc1', tipo: 'gasto', descricao: 'Casa', valor: 600 }
+            ]},
+            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 2580, fixos: 530, obs: 'Última Parcela do Empréstimo!', extras: [
+                { id: 'no1', tipo: 'receita', descricao: '13º Salário (Adiantamento)', valor: 900 },
+                { id: 'no2', tipo: 'gasto', descricao: 'Lazer', valor: 300 }
+            ]},
+            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 2580, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Reserva forte.', extras: [
+                { id: 'de1', tipo: 'receita', descricao: '13º Salário (Final)', valor: 900 },
+                { id: 'de2', tipo: 'gasto', descricao: 'Férias / Festas', valor: 600 },
+                { id: 'de3', tipo: 'gasto', descricao: 'Reserva Forte', valor: 1000 }
+            ]}
         ];
 
         async function inicializarTimeline() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('timeline-container');
-            container.innerHTML = '<div class="text-center py-8 text-app-sub font-medium text-sm w-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block"></i><br>A sincronizar mapa...</div>';
+            container.innerHTML = '<div class="text-center py-8 text-app-sub font-medium text-sm w-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block"></i><br>A sincronizar ecossistema...</div>';
             
             const { data } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
             
+            let precisaSincronizarSupabase = false;
+
             dadosTimeline = templateMeses.map(temp => {
                 const mesBD = data?.find(d => d.mes_id === temp.id);
                 if(mesBD) {
                     let obsTexto = mesBD.observacoes || '';
                     let saldoIn = mesBD.saldo_inicial !== undefined ? mesBD.saldo_inicial : null;
                     
-                    // Lógica para resgatar dados antigos se estiverem sujos em JSON
                     if (obsTexto && typeof obsTexto === 'string' && obsTexto.trim().startsWith('{')) {
                         try {
                             const parsed = JSON.parse(obsTexto);
@@ -1169,15 +1183,41 @@
                         obsTexto = obsTexto.texto || '';
                     }
                     
-                    // Garante que o extras é sempre um array para não crashar o JS
-                    const arrayExtras = Array.isArray(mesBD.extras) ? mesBD.extras : (mesBD.extras ? [mesBD.extras] : []);
+                    // LÓGICA DE INJEÇÃO: Se a base de dados não tiver os extras do template, nós forçamos o template para preencher a app como pediste!
+                    let bdExtras = Array.isArray(mesBD.extras) ? mesBD.extras : (mesBD.extras ? [mesBD.extras] : []);
+                    let usarExtras = bdExtras;
                     
-                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: arrayExtras };
+                    if (bdExtras.length === 0 && temp.extras.length > 0) {
+                        usarExtras = temp.extras;
+                        precisaSincronizarSupabase = true; // Força gravação na BD a seguir
+                    }
+                    
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras };
                 }
-                return { ...temp, extras: [], saldo_inicial: null };
+                
+                // Se o mês não existe na BD, marcamos para salvar tudo o que vem no template!
+                precisaSincronizarSupabase = true;
+                return { ...temp, saldo_inicial: null };
             });
 
-            // Preenche o Select do Registo Rápido
+            // "Jogar no Supabase" se for a primeira vez ou estiver vazio de extras
+            if (precisaSincronizarSupabase) {
+                const payloadSinc = dadosTimeline.map(m => ({
+                    user_id: idUtilizadorAtual,
+                    mes_id: m.id,
+                    entradas: m.entradas,
+                    fixos: m.fixos,
+                    parcela: m.parcela,
+                    observacoes: m.obs,
+                    saldo_inicial: m.saldo_inicial,
+                    extras: m.extras
+                }));
+                // Salva no fundo de forma invisível para o utilizador
+                clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => {
+                    if(error) console.log("Aviso: Sincronização inicial falhou", error);
+                });
+            }
+
             const selectRapido = document.getElementById('val-mes-rapido');
             selectRapido.innerHTML = '';
             dadosTimeline.forEach(m => {
@@ -1199,20 +1239,18 @@
             if(!prev) return;
             document.getElementById('resumo-mes-titulo').innerText = prev.mes;
             
-            // Aqui usamos a função sem centavos (arredondada para cima) conforme pediste
+            // ATUALIZAÇÃO REQUISITADA
+            // O Previsto agora é o Acumulado (End) e o Sobra Mês é a Sobra Real do Mês (_calcSobra)
             document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
-            document.getElementById('resumo-val-saldo').innerText = formatarMoedaSemCentavos(prev._calcEnd || 0);
-            
-            // O Previsto agora mostra exatamente quanto sobra NAQUELE mês após todas as contas (Sobra Líquida)
-            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcSobra || 0);
+            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcEnd || 0);
+            document.getElementById('resumo-val-sobra').innerText = formatarMoedaSemCentavos(prev._calcSobra || 0);
         }
 
         function renderizarTimelineUI() {
-            // Cartão de Resumo Azul (Estilo Bancário com ajustes de tamanho e nomeclatura)
+            // UI do Cartão de Resumo - Alterados os textos (Previsto = Meio, Sobra = Direita)
             const resumoContainer = document.getElementById('resumo-timeline-container');
             resumoContainer.innerHTML = `
                 <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
-                    <!-- Detalhe de fundo curvo simples -->
                     <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
                     
                     <div class="flex justify-between items-center mb-6 relative z-10">
@@ -1227,12 +1265,12 @@
                             <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
                         </div>
                         <div class="text-center flex-[1.5]">
-                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-target"></i> Saldo</p>
-                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-saldo">R$ 0</p>
+                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-target"></i> Previsto</p>
+                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-previsto">R$ 0</p>
                         </div>
                         <div class="text-right flex-1">
-                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-clock"></i> Previsto</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p>
+                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-clock"></i> Líquido Mês</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-sobra">R$ 0</p>
                         </div>
                     </div>
                 </div>
@@ -1241,7 +1279,7 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            let saldoCorrente = 0; // Total acumulado progressivo
+            let saldoCorrente = 0; 
             
             dadosTimeline.forEach((prev, index) => {
                 let somaExtras = 0; let htmlExtras = '';
@@ -1253,12 +1291,10 @@
                     });
                 }
                 
-                // --- LÓGICA DE CASCATA COM SALDO INICIAL ---
                 let saldoStart = saldoCorrente;
                 let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
                 let corOrigem = 'text-app-sub font-medium';
                 
-                // Se o utilizador tiver forçado um Saldo Inicial neste mês específico
                 if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStart = parseFloat(prev.saldo_inicial) || 0;
                     textoOrigem = 'Saldo Inicial (Ajustado Manualmente)';
@@ -1270,10 +1306,10 @@
                 const sobraMes = prev.entradas - prev.fixos - prev.parcela + somaExtras;
                 saldoCorrente = saldoStart + sobraMes; 
                 
-                // Guardar para o Cartão de Resumo usar
+                // Guardar para o Cartão de Resumo usar a lógica certa pedida
                 prev._calcStart = saldoStart;
-                prev._calcEnd = saldoCorrente;
-                prev._calcSobra = sobraMes; // Este é o nosso "Previsto" agora
+                prev._calcEnd = saldoCorrente; // Acumulado Final = SaldoStart + SobraMes
+                prev._calcSobra = sobraMes;    // Líquido Exato Apenas Daquele Mês
 
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
@@ -1303,7 +1339,7 @@
                 container.appendChild(card);
             });
             
-            atualizarCardResumo(); // Atualiza o cartão do topo
+            atualizarCardResumo(); 
         }
 
         let extrasTemp = [];
@@ -1313,7 +1349,6 @@
             document.getElementById('display-mes-nome').innerText = prev.mes;
             document.getElementById('edit-mes-id').value = prev.id;
             
-            // Carrega o Saldo Inicial Opcional
             document.getElementById('edit-mes-saldo-inicial').value = (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined) ? prev.saldo_inicial : '';
             
             document.getElementById('edit-mes-entradas').value = prev.entradas;
@@ -1363,8 +1398,8 @@
                     entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0, 
                     fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0, 
                     parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0, 
-                    observacoes: obsText,          // Agora é APENAS o texto!
-                    saldo_inicial: saldoInicialVal, // Nova coluna direta!
+                    observacoes: obsText,          
+                    saldo_inicial: saldoInicialVal, 
                     extras: extrasTemp 
                 };
                 
@@ -1375,7 +1410,6 @@
                     renderizarTimelineUI(); 
                 } else {
                     console.error("Erro detalhado do Supabase:", error);
-                    // Deteção inteligente do erro do 'extras' (Para a página dos ajustes rápidos também dar o aviso correto)
                     if (error.message && error.message.includes('extras')) {
                         alert(`Falta a coluna 'extras' na base de dados!\n\nPor favor, corre este comando no SQL do Supabase:\nALTER TABLE fluxo_caixa ADD COLUMN extras JSONB DEFAULT '[]'::jsonb;`);
                     } else if (error.message && error.message.includes('saldo_inicial')) {
@@ -1433,7 +1467,6 @@
             
             idUtilizadorAtual = session.user.id;
             
-            // Carrega perfil salvo localmente
             const emailUser = session.user.email;
             const nomeSalvo = localStorage.getItem('gestor_nome_perfil');
             document.getElementById('display-user-nome').innerText = nomeSalvo || emailUser.split('@')[0];
@@ -1441,12 +1474,11 @@
             document.getElementById('input-perfil-nome').value = nomeSalvo || '';
             document.getElementById('input-perfil-email').value = emailUser;
 
-            // Pseudo-dados de uso (exemplo visual de consistência)
             const diasFake = Math.floor(Math.random() * 15) + 3; 
             document.getElementById('estatistica-dias').innerText = diasFake;
 
-            inicializarTimeline(); // Carrega timeline para o select rápido e a visualiza
-            buscarSonhos(); // Carrega dados gerais de projetos e conquistas
+            inicializarTimeline(); 
+            buscarSonhos(); 
         };
 
         document.getElementById('btn-sair').onclick = async () => { await clienteSupabase.auth.signOut(); irParaLogin(); };
