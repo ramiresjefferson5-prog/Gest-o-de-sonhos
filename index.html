@@ -13,26 +13,36 @@
 </head>
 <body class="bg-slate-100 h-screen flex items-center justify-center font-sans">
 
-    <!-- Caixa principal do Login -->
+    <!-- Caixa principal do Login por Email/Senha -->
     <div class="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full text-center">
         
         <!-- Ícone e Título -->
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-slate-800">Gestor de Sonhos</h1>
-            <p class="text-slate-500 text-sm mt-2">Protege o teu dinheiro, alcança os teus objetivos.</p>
+            <p class="text-slate-500 text-sm mt-2">Acede à tua conta ou regista-te.</p>
         </div>
 
-        <!-- Botão de Login com GitHub -->
-        <button id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-colors">
-            <!-- Desenho do logo do GitHub -->
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
-            </svg>
-            Entrar com GitHub
-        </button>
+        <!-- Formulário de Email e Senha -->
+        <div class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">O teu Email</label>
+                <input type="email" id="email" placeholder="exemplo@email.com" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">A tua Senha</label>
+                <input type="password" id="password" placeholder="Mínimo 6 caracteres" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <button id="btn-entrar" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-lg transition-colors mt-2">
+                Entrar
+            </button>
+            <button id="btn-registar" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 border border-slate-200 rounded-lg transition-colors">
+                Criar Nova Conta
+            </button>
+        </div>
 
-        <!-- Mensagem de estado (escondida no início) -->
-        <p id="mensagem" class="mt-4 text-sm text-green-600 hidden"></p>
+        <!-- Mensagem de estado -->
+        <p id="mensagem" class="mt-4 text-sm font-medium hidden"></p>
     </div>
 
     <!-- O nosso código lógico (O "cérebro" da página) -->
@@ -41,33 +51,79 @@
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
 
-        // Inicializamos o guarda-costas
         const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
 
-        // PASSO 2: Encontrar o botão na página
-        const botaoLogin = document.getElementById('btn-login');
+        // PASSO 2: Encontrar os elementos na página
+        const btnEntrar = document.getElementById('btn-entrar');
+        const btnRegistar = document.getElementById('btn-registar');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
         const mensagemTexto = document.getElementById('mensagem');
 
-        // PASSO 3: Dizer ao botão o que fazer quando for clicado
-        botaoLogin.addEventListener('click', async function() {
-            botaoLogin.innerText = "A carregar...";
+        function mostrarMensagem(texto, cor) {
+            mensagemTexto.innerText = texto;
+            // Remove as cores antigas e adiciona a nova
+            mensagemTexto.className = `mt-4 text-sm font-medium text-${cor}-600`;
+            mensagemTexto.classList.remove('hidden');
+        }
+
+        // AÇÃO: Criar Conta
+        btnRegistar.addEventListener('click', async function() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
             
-            // Pedimos ao clienteSupabase para fazer o login
-            const { data, error } = await clienteSupabase.auth.signInWithOAuth({
-                provider: 'github',
+            if(!email || !password) {
+                mostrarMensagem("Por favor, preenche o email e a senha.", "red");
+                return;
+            }
+            
+            btnRegistar.innerText = "A registar...";
+            
+            // O Supabase tenta criar o utilizador no cofre
+            const { data, error } = await clienteSupabase.auth.signUp({
+                email: email,
+                password: password,
             });
 
             if (error) {
-                console.error("Erro ao entrar:", error.message);
-                botaoLogin.innerText = "Erro. Tenta de novo.";
-            } 
+                mostrarMensagem(error.message, "red");
+            } else {
+                mostrarMensagem("Conta criada com sucesso! Já podes clicar em Entrar.", "green");
+            }
+            btnRegistar.innerText = "Criar Nova Conta";
         });
 
-        // VERIFICAÇÃO: Se já tem sessão, envia para a subpágina (dashboard.html)
+        // AÇÃO: Entrar (Login)
+        btnEntrar.addEventListener('click', async function() {
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            
+            if(!email || !password) {
+                mostrarMensagem("Por favor, preenche o email e a senha.", "red");
+                return;
+            }
+
+            btnEntrar.innerText = "A verificar...";
+            
+            // O Supabase verifica se a senha bate certo
+            const { data, error } = await clienteSupabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                mostrarMensagem("Erro ao entrar. Verifica o email e a senha.", "red");
+                btnEntrar.innerText = "Entrar";
+            } else {
+                // Se tudo estiver bem, vai para o Painel!
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // VERIFICAÇÃO: Se já tem sessão, envia para a subpágina
         async function verificarSessao() {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (session) {
-                // A MÁGICA ACONTECE AQUI: Redireciona para o Painel de Controlo
                 window.location.href = 'dashboard.html';
             }
         }
