@@ -1055,17 +1055,27 @@
             dadosTimeline = templateMeses.map(temp => {
                 const mesBD = data?.find(d => d.mes_id === temp.id);
                 if(mesBD) {
-                    let obsTexto = mesBD.observacoes || '';
+                    let obsTexto = mesBD.observacoes;
                     let saldoIn = null;
-                    try {
-                        if(obsTexto.trim().startsWith('{')) {
-                            const parsed = JSON.parse(obsTexto);
-                            if(parsed.texto !== undefined) {
-                                obsTexto = parsed.texto;
-                                saldoIn = parsed.saldo_inicial;
+                    
+                    if (obsTexto) {
+                        if (typeof obsTexto === 'object') {
+                            saldoIn = obsTexto.saldo_inicial !== undefined ? obsTexto.saldo_inicial : null;
+                            obsTexto = obsTexto.texto || '';
+                        } else if (typeof obsTexto === 'string') {
+                            try {
+                                const parsed = JSON.parse(obsTexto);
+                                if (parsed && typeof parsed === 'object' && ('texto' in parsed || 'saldo_inicial' in parsed)) {
+                                    saldoIn = parsed.saldo_inicial !== undefined ? parsed.saldo_inicial : null;
+                                    obsTexto = parsed.texto || '';
+                                }
+                            } catch(e) {
+                                // Fallback para texto plano se não for JSON válido
                             }
                         }
-                    } catch(e) {}
+                    } else {
+                        obsTexto = '';
+                    }
                     
                     return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: mesBD.extras || [] };
                 }
@@ -1153,7 +1163,7 @@
                 let corOrigem = 'text-app-sub font-medium';
                 
                 // Se o utilizador tiver forçado um Saldo Inicial neste mês específico
-                if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined) {
+                if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStart = parseFloat(prev.saldo_inicial) || 0;
                     textoOrigem = 'Saldo Inicial (Ajustado Manualmente)';
                     corOrigem = 'text-app-blue font-bold';
@@ -1247,7 +1257,7 @@
             
             if(index !== -1) {
                 const saldoInicialStr = document.getElementById('edit-mes-saldo-inicial').value;
-                const saldoInicialVal = saldoInicialStr === '' ? null : parseFloat(saldoInicialStr);
+                const saldoInicialVal = (saldoInicialStr === '' || isNaN(saldoInicialStr)) ? null : parseFloat(saldoInicialStr);
                 const obsText = document.getElementById('edit-mes-obs').value;
                 
                 const obsObj = { texto: obsText, saldo_inicial: saldoInicialVal };
