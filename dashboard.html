@@ -65,8 +65,11 @@
         }
         select option { direction: ltr; background-color: #1C1C1E; color: #FFFFFF; } 
         
-        /* Transições Suaves para Checkboxes */
         .check-transition { transition: all 0.2s ease-in-out; }
+        
+        /* Estilos do Toggle Segmentado */
+        .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .segment-inactive { color: #8E8E93; font-weight: 500; }
     </style>
 </head>
 <body class="min-h-screen pb-[100px] md:pb-0 w-full">
@@ -82,35 +85,36 @@
             <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-plus"></i> Registar</button>
             <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Portfólio</button>
             <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-calendar-check"></i> Plano 2026</button>
-            <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-brain"></i> Mindset</button>
+            <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-medal"></i> Histórico</button>
+            <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-user"></i> Perfil</button>
         </div>
     </nav>
 
     <!-- MOBILE NAV -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
-        <ul class="flex justify-around items-center px-2 py-2" id="mobile-nav">
+        <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
             <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-blue transition-colors">
-                    <i class="ph-fill ph-plus-circle text-2xl nav-icon"></i>
-                    <span class="text-[10px] font-medium">Registar</span>
+                    <i class="ph-fill ph-plus-circle text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Registar</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                    <i class="ph-fill ph-wallet text-2xl nav-icon"></i>
-                    <span class="text-[10px] font-medium">Portfólio</span>
+                    <i class="ph-fill ph-squares-four text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Obras</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                    <i class="ph-fill ph-calendar-check text-2xl nav-icon"></i>
-                    <span class="text-[10px] font-medium">2026</span>
+                    <i class="ph-fill ph-chart-line-up text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Timeline</span>
                 </button>
             </li>
-            <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
+            <li class="nav-item flex-1" onclick="mudarAba('historico', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                    <i class="ph-fill ph-brain text-2xl nav-icon"></i>
-                    <span class="text-[10px] font-medium">Mindset</span>
+                    <i class="ph-fill ph-medal text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Conquistas</span>
                 </button>
             </li>
         </ul>
@@ -119,21 +123,24 @@
     <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
         <!-- ========================================== -->
-        <!-- ABA 1: REGISTO -->
+        <!-- ABA 1: REGISTO INTELIGENTE -->
         <!-- ========================================== -->
         <section id="aba-sonhos" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-5 px-1 text-center">
-                <h2 class="text-[22px] font-bold tracking-tight text-app-text">Novo Lançamento</h2>
-                <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema ajusta-se automaticamente.</p>
+                <h2 class="text-[22px] font-bold tracking-tight text-app-text">Centro de Lançamentos</h2>
+                <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
             </div>
 
-            <div class="bg-app-orange/10 border border-app-orange/20 rounded-2xl p-4 mb-6 shadow-float w-full">
-                <p class="text-[11px] font-bold text-app-orange uppercase tracking-widest mb-1 text-center">Foco Estratégico</p>
-                <p class="text-[13px] text-app-orange text-center font-medium leading-relaxed">Estás na fase de <b>estruturação</b>. Foca na casa, evita parcelas soltas.</p>
+            <!-- Segmented Control (Tabs Rápidas) -->
+            <div class="bg-app-card p-1 rounded-xl flex mb-6 w-full border border-app-border">
+                <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-2 text-[13px] rounded-lg segment-active transition-all">🏗️ Nova Obra / Meta</button>
+                <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita Dia</button>
             </div>
 
+            <!-- ===================== -->
+            <!-- FORMULÁRIO 1: OBRA / META -->
+            <!-- ===================== -->
             <form id="form-sonho" class="space-y-6 w-full">
-                
                 <!-- IDENTIFICAÇÃO -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Identificação</span>
@@ -184,7 +191,6 @@
                             </div>
                         </div>
                         
-                        <!-- Compra Simples -->
                         <div id="div-simples" class="w-full transition-all">
                             <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
                                 <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Preço Unit.</label>
@@ -197,7 +203,6 @@
                             </div>
                         </div>
 
-                        <!-- Compra Composta -->
                         <div id="div-composto" class="hidden bg-[#151515] px-4 py-4 w-full border-b border-app-border">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-[12px] font-bold text-app-sub uppercase tracking-wider">Itens da Obra</span>
@@ -207,7 +212,6 @@
                         </div>
                     </div>
 
-                    <!-- Totais Agrupados Inteligentes -->
                     <div class="bg-gradient-to-r from-app-blue/10 to-app-blue/20 rounded-[20px] border border-app-blue/20 shadow-float overflow-hidden w-full">
                         <div class="flex items-center justify-between px-5 py-4 border-b border-app-blue/20">
                             <label class="font-bold text-app-blue text-[15px]">Custo Total Calculado</label>
@@ -253,20 +257,68 @@
                     </div>
                 </div>
 
-                <div id="msg-form" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
+                <div id="msg-form-obra" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
 
-                <button type="submit" id="btn-guardar" class="w-full bg-app-blue text-white font-bold py-4 rounded-[20px] shadow-float transition-opacity active:opacity-60 text-[16px] mb-6">
+                <button type="submit" id="btn-guardar-obra" class="w-full bg-app-blue text-white font-bold py-4 rounded-[20px] shadow-float transition-opacity active:opacity-60 text-[16px] mb-6">
                     Registar Plano
+                </button>
+            </form>
+
+            <!-- ===================== -->
+            <!-- FORMULÁRIO 2: DIÁRIO RÁPIDO -->
+            <!-- ===================== -->
+            <form id="form-rapido" class="space-y-6 w-full hidden">
+                <div class="bg-app-blue/10 border border-app-blue/20 rounded-2xl p-4 mb-2 shadow-float w-full">
+                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando o acumulado final na hora.</p>
+                </div>
+
+                <div class="w-full">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Tipo</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-tipo-rapido" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-bold" onchange="atualizarCorRapido()">
+                                    <option value="gasto" class="text-app-red">🔴 Gasto Extra</option>
+                                    <option value="receita" class="text-app-green">🟢 Receita Extra</option>
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center px-4 py-4 border-b border-app-border bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Valor</label>
+                            <span class="text-app-sub mr-1">R$</span>
+                            <input type="number" id="input-valor-rapido" required min="0.01" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-bold text-[22px] outline-none placeholder-app-sub/50">
+                        </div>
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">O que foi?</label>
+                            <input type="text" id="input-desc-rapido" required placeholder="Ex: Almoço fora..." class="flex-1 min-w-0 bg-transparent text-right text-[15px] text-app-text font-medium outline-none placeholder-app-sub/50">
+                        </div>
+                        <div class="flex items-center px-4 py-3.5 relative bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Qual Mês?</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-mes-rapido" class="w-full bg-transparent text-[15px] text-app-blue outline-none pr-5 cursor-pointer z-10 font-bold">
+                                    <!-- Preenchido via JS -->
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="msg-form-rapido" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
+
+                <button type="submit" id="btn-guardar-rapido" class="w-full bg-[#1C1C1E] border border-app-border text-white font-bold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[16px] mb-6">
+                    Lançar no Ecossistema
                 </button>
             </form>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 2: PORTFÓLIO E GESTÃO INTERATIVA -->
+        <!-- ABA 2: PORTFÓLIO (Caixinhas de Metas) -->
         <!-- ========================================== -->
         <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="flex justify-between items-center mb-5 px-1 w-full">
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Portfólio Ativo</h2>
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Projetos Ativos</h2>
                 <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
             </div>
 
@@ -292,9 +344,9 @@
                 </div>
             </div>
 
-            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">As Tuas Obras / Metas</h3>
-            <div id="lista-sonhos-container" class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">
-                <div class="p-8 text-center text-app-sub text-sm">A analisar ecossistema...</div>
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Caixas de Obras / Metas</h3>
+            <div id="lista-sonhos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div class="p-8 text-center text-app-sub text-sm bg-app-card rounded-[20px]">A analisar ecossistema...</div>
             </div>
         </section>
 
@@ -307,21 +359,36 @@
                 <p class="text-[13px] font-medium text-app-sub mt-0.5">Adapta o teu fluxo aos imprevistos.</p>
             </div>
             
-            <!-- RESUMO GERAL DINÂMICO (INJETADO VIA JS) -->
             <div id="resumo-timeline-container" class="mb-8 w-full"></div>
-
             <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 4: PERFIL -->
+        <!-- ABA 4: HISTÓRICO DE CONQUISTAS (NOVA) -->
+        <!-- ========================================== -->
+        <section id="aba-historico" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="mb-6 px-1 w-full text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app-green/20 text-app-green mb-4 shadow-[0_0_20px_rgba(48,209,88,0.3)]">
+                    <i class="ph-fill ph-trophy text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Sala de Troféus</h2>
+                <p class="text-[13px] font-medium text-app-sub mt-1">Tudo o que já construíste e pagaste.</p>
+            </div>
+            
+            <div id="lista-conquistas-container" class="space-y-4 w-full">
+                <!-- Injetado via JS -->
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 5: PERFIL -->
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <h2 class="text-2xl font-bold tracking-tight mb-5 px-1 text-app-text">Mindset</h2>
             <div class="bg-app-card border border-app-border rounded-[24px] p-6 mb-6 text-center shadow-float w-full">
                 <div class="w-16 h-16 bg-app-blue/20 text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="ph-fill ph-brain"></i></div>
-                <h3 class="font-bold text-[17px] text-app-text mb-2">Tu Não Estás Quebrado</h3>
-                <p class="text-[14px] text-app-sub leading-relaxed">A base financeira existe. Só falta a execução limpa. Mantém-te focado na casa e evita distrações.</p>
+                <h3 class="font-bold text-[17px] text-app-text mb-2">A Matemática Funciona</h3>
+                <p class="text-[14px] text-app-sub leading-relaxed">A engrenagem está ativa. Foca na execução. Transforma dinheiro líquido em património sólido na tua casa.</p>
             </div>
             <button id="btn-sair" class="w-full bg-[#1C1C1E] border border-app-border text-app-red font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[15px]">Terminar Sessão</button>
         </section>
@@ -329,7 +396,7 @@
     </main>
 
     <!-- ========================================== -->
-    <!-- MODAL NATIVO INTERATIVO (BOTTOM SHEET) -->
+    <!-- MODAL NATIVO INTERATIVO -->
     <!-- ========================================== -->
     
     <!-- Modal: Detalhes & Checklist do Plano -->
@@ -342,7 +409,7 @@
                 <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
             </div>
             <div id="modal-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-6">
-                <!-- Conteúdo Injetado Dinamicamente com a Checklist -->
+                <!-- Conteúdo Injetado Dinamicamente -->
             </div>
         </div>
     </div>
@@ -418,7 +485,38 @@
         }
 
         // ========================================================
-        // 1. CÁLCULOS DO FORMULÁRIO DE REGISTO (ABA 1)
+        // 0. TOGGLE DE REGISTO (NOVA FUNÇÃO RÁPIDA)
+        // ========================================================
+        function mudarTipoRegisto(tipo) {
+            const btnObra = document.getElementById('btn-tab-obra');
+            const btnRapido = document.getElementById('btn-tab-rapido');
+            const formObra = document.getElementById('form-sonho');
+            const formRapido = document.getElementById('form-rapido');
+
+            if(tipo === 'obra') {
+                btnObra.className = 'flex-1 py-2 text-[13px] rounded-lg segment-active transition-all';
+                btnRapido.className = 'flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all';
+                formObra.classList.remove('hidden'); formRapido.classList.add('hidden');
+            } else {
+                btnRapido.className = 'flex-1 py-2 text-[13px] rounded-lg segment-active transition-all';
+                btnObra.className = 'flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all';
+                formRapido.classList.remove('hidden'); formObra.classList.add('hidden');
+            }
+        }
+
+        function atualizarCorRapido() {
+            const select = document.getElementById('val-tipo-rapido');
+            const input = document.getElementById('input-valor-rapido');
+            if(select.value === 'gasto') {
+                input.classList.remove('text-app-green'); input.classList.add('text-app-red');
+            } else {
+                input.classList.remove('text-app-red'); input.classList.add('text-app-green');
+            }
+        }
+
+
+        // ========================================================
+        // 1. CÁLCULOS DO FORMULÁRIO DE REGISTO OBRA
         // ========================================================
         const inputPreco = document.getElementById('input-preco-unit');
         const inputQtd = document.getElementById('input-quantidade');
@@ -482,22 +580,25 @@
 
 
         // ========================================================
-        // 2. LÓGICA DO ECOSSISTEMA: PORTFÓLIO E INTERAÇÃO
+        // 2. LÓGICA DO ECOSSISTEMA: PORTFÓLIO E CONQUISTAS
         // ========================================================
         
         async function buscarSonhos() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('lista-sonhos-container');
-            container.innerHTML = '<div class="text-center py-10 text-app-sub font-medium text-sm w-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block text-app-blue"></i><br>A calcular ecossistema...</div>';
+            container.innerHTML = '<div class="text-center py-10 text-app-sub font-medium text-sm w-full col-span-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block text-app-blue"></i><br>A calcular ecossistema...</div>';
             
+            // Procura todos os sonhos, independentemente do status
             const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
             
             if(error) {
-                container.innerHTML = `<div class="p-6 text-center text-app-red font-medium border border-app-red/20 bg-app-red/10 rounded-xl m-4">Falha de ligação ao sistema.</div>`;
+                container.innerHTML = `<div class="p-6 text-center text-app-red font-medium border border-app-red/20 bg-app-red/10 rounded-xl m-4 col-span-full">Falha de ligação ao sistema.</div>`;
                 return;
             }
             sonhosGlobais = data || [];
+            
             renderizarUIEcossistema();
+            renderizarUIConquistas();
         }
 
         function renderizarUIEcossistema() {
@@ -507,10 +608,12 @@
             let totalGeralCusto = 0;
             let totalGeralInvestido = 0;
 
-            if(sonhosGlobais.length === 0) {
-                container.innerHTML = '<div class="p-10 text-center"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo. Nenhum projeto ativo.</p></div>';
+            const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
+
+            if(ativos.length === 0) {
+                container.innerHTML = '<div class="p-10 text-center col-span-full bg-app-card rounded-[20px] border border-app-border"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo. Nenhum projeto ativo.</p></div>';
             } else {
-                sonhosGlobais.forEach(sonho => {
+                ativos.forEach(sonho => {
                     let custoSubItens = 0;
                     let valorItensComprados = 0;
                     let qtdComprada = 0;
@@ -547,31 +650,38 @@
                     if(sonho.categoria.includes('Lazer')) iconCat = '🍺';
                     if(sonho.categoria.includes('Dívida')) iconCat = '💳';
 
-                    let subtitleInfo = sonho.prioridade.split('(')[0];
+                    let infoExtra = sonho.prioridade.split('(')[0];
                     if (sonho.complexidade === 'Composto') {
-                        subtitleInfo = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} itens</span> • ` + subtitleInfo;
+                        infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} itens</span>`;
                     }
 
-                    const row = document.createElement('div');
-                    row.className = "flex items-center justify-between p-4 bg-app-card active:bg-[#2C2C2E] cursor-pointer transition-colors w-full border-b border-app-border last:border-0";
-                    row.onclick = () => abrirModalDetalhesSonho(sonho.id);
+                    // Caixinha (Card) UI
+                    const card = document.createElement('div');
+                    card.className = "bg-app-card rounded-[24px] p-5 shadow-float border border-app-border cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
+                    card.onclick = () => abrirModalDetalhesSonho(sonho.id);
                     
-                    row.innerHTML = `
-                        <div class="flex items-center gap-3 overflow-hidden flex-1 min-w-0 pr-2">
-                            <div class="w-12 h-12 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[24px]">
-                                ${iconCat}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="text-[15px] font-bold text-app-text truncate ${percentagem >= 100 ? 'line-through text-app-sub' : ''}">${sonho.nome}</p>
-                                <p class="text-[12px] font-medium text-app-sub mt-0.5 truncate">${subtitleInfo}</p>
-                            </div>
+                    card.innerHTML = `
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percentagem}%"></div></div>
+                        
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-10 h-10 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[20px]">${iconCat}</div>
+                            <span class="text-[11px] font-bold text-app-sub bg-[#151515] px-2 py-1 rounded-md border border-[#2C2C2E]">${infoExtra}</span>
                         </div>
-                        <div class="text-right shrink-0">
-                            <p class="text-[15px] font-bold text-app-text">${formatarMoeda(custoTotalProjeto)}</p>
-                            <p class="text-[11px] font-bold mt-0.5 ${percentagem >= 100 ? 'text-app-green' : 'text-app-sub'}">${percentagem}% Concluído</p>
+                        
+                        <div>
+                            <p class="text-[16px] font-bold text-app-text leading-tight mb-1 truncate">${sonho.nome}</p>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-[11px] text-app-sub font-medium uppercase tracking-widest">Falta</p>
+                                    <p class="text-[15px] font-bold text-app-text">${formatarMoeda(Math.max(0, custoTotalProjeto - progressoFinanceiroReal))}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-app-green font-bold bg-app-green/10 px-1.5 py-0.5 rounded">${percentagem}%</p>
+                                </div>
+                            </div>
                         </div>
                     `;
-                    container.appendChild(row);
+                    container.appendChild(card);
                 });
             }
 
@@ -583,8 +693,48 @@
             document.getElementById('saldos-falta').innerText = formatarMoeda(falta);
         }
 
+        function renderizarUIConquistas() {
+            const container = document.getElementById('lista-conquistas-container');
+            container.innerHTML = '';
+            
+            const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
+
+            if(concluidos.length === 0) {
+                container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><i class="ph-fill ph-ghost text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Ainda não há conquistas finalizadas.</p></div>';
+            } else {
+                concluidos.forEach(sonho => {
+                    let total = sonho.custo;
+                    if(sonho.complexidade === 'Composto') {
+                        let sub = 0;
+                        if(sonho.itens_compostos) sonho.itens_compostos.forEach(i => sub += parseFloat(i.custo)||0);
+                        total = sub + (parseFloat(sonho.preco_servico)||0);
+                    }
+
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between p-4 bg-app-card rounded-[20px] border border-app-green/20 w-full mb-3";
+                    
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden flex-1 min-w-0 pr-2">
+                            <div class="w-12 h-12 rounded-full bg-app-green/10 flex items-center justify-center shrink-0 text-[24px] text-app-green">
+                                <i class="ph-fill ph-check-circle"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[15px] font-bold text-app-text truncate">${sonho.nome}</p>
+                                <p class="text-[12px] font-medium text-app-sub mt-0.5 truncate">Conquistado com sucesso</p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <p class="text-[15px] font-bold text-app-green">${formatarMoeda(total)}</p>
+                            <p class="text-[11px] font-bold mt-0.5 text-app-sub uppercase tracking-wider">Investido</p>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+        }
+
         // ========================================================
-        // 3. CHECKLIST INTERATIVA E MODAL (O CÉREBRO)
+        // 3. CHECKLIST INTERATIVA E A "ENGRENAGEM"
         // ========================================================
         
         function abrirModalDetalhesSonho(sonhoId) {
@@ -638,17 +788,28 @@
 
             const percent = custoTotalProjeto > 0 ? Math.min(100, Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100)) : 0;
             
+            let htmlBotaoConquista = '';
+            if (percent >= 100) {
+                htmlBotaoConquista = `
+                    <div class="mt-6 w-full">
+                        <button onclick="finalizarConquista('${sonho.id}')" class="w-full bg-app-green text-black font-black py-4 rounded-[20px] shadow-[0_0_20px_rgba(48,209,88,0.4)] transition-transform active:scale-95 text-[16px] flex justify-center items-center gap-2">
+                            <i class="ph-bold ph-trophy text-xl"></i> Finalizar Conquista
+                        </button>
+                    </div>
+                `;
+            }
+
             document.getElementById('modal-body').innerHTML = `
                 <div class="bg-gradient-to-br from-[#2C2C2E] to-[#1C1C1E] rounded-[24px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full relative">
-                    <div class="absolute top-0 right-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-green transition-all duration-500" style="width: ${percent}%"></div></div>
+                    <div class="absolute top-0 right-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percent}%"></div></div>
                     
                     <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
                         <span class="font-medium text-app-sub">Custo Total Projeto</span>
                         <span class="font-black text-[18px] text-app-text">${formatarMoeda(custoTotalProjeto)}</span>
                     </div>
                     <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
-                        <span class="font-bold text-app-text">Total Investido <span class="text-[10px] text-black ml-1 bg-app-green px-1.5 py-0.5 rounded">${percent}%</span></span>
-                        <span class="text-app-green font-black text-[18px]">${formatarMoeda(progressoFinanceiroReal)}</span>
+                        <span class="font-bold text-app-text">Em Caixa (Líquido)</span>
+                        <span class="text-app-text font-black text-[18px]">${formatarMoeda(dinheiroGuardado)}</span>
                     </div>
                     <div class="flex justify-between items-center px-5 py-4 bg-[#151515]/50">
                         <span class="font-medium text-app-sub text-[13px]">Falta p/ Concluir</span>
@@ -657,6 +818,7 @@
                 </div>
 
                 ${HTMLPartes}
+                ${htmlBotaoConquista}
 
                 <div class="w-full mt-4">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-2 mb-1.5 block">Estrutura & Mão de Obra</span>
@@ -694,46 +856,74 @@
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho || !sonho.itens_compostos) return;
 
+            const custoDoItem = parseFloat(sonho.itens_compostos[itemIndex].custo) || 0;
+            
+            // ENGRENAGEM: O dinheiro transita de "Líquido" (Guardado) para "Investido" (Comprado)
+            let caixaAtual = parseFloat(sonho.valor_guardado) || 0;
+            if (novoStatus === true) {
+                // Ao comprar, desconta do caixa (se houver caixa suficiente)
+                // Se não houver, ele desconta até zero (assumindo que puseste do teu bolso)
+                caixaAtual = Math.max(0, caixaAtual - custoDoItem);
+            } else {
+                // Se desmarcar, o dinheiro "volta" para o caixa
+                caixaAtual += custoDoItem;
+            }
+            
+            // Aplica novos valores localmente (UI Rápida)
+            sonho.valor_guardado = caixaAtual;
             sonho.itens_compostos[itemIndex].comprado = novoStatus;
             
             abrirModalDetalhesSonho(sonhoId);
             renderizarUIEcossistema();
 
+            // Sincroniza Engrenagem com Supabase
             const { error } = await clienteSupabase.from('sonhos')
-                .update({ itens_compostos: sonho.itens_compostos })
+                .update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual })
                 .eq('id', sonhoId);
                 
             if(error) {
-                sonho.itens_compostos[itemIndex].comprado = !novoStatus;
-                abrirModalDetalhesSonho(sonhoId);
-                renderizarUIEcossistema();
-                alert("Erro ao gravar alteração. Verifica a internet.");
+                alert("Erro ao sincronizar engrenagem. Verifica a internet.");
+            }
+        }
+
+        async function finalizarConquista(sonhoId) {
+            const sonho = sonhosGlobais.find(s => s.id === sonhoId);
+            if(!sonho) return;
+
+            sonho.status = 'concluido';
+            fecharModal('modal-detalhes');
+            renderizarUIEcossistema();
+            renderizarUIConquistas();
+
+            const { error } = await clienteSupabase.from('sonhos')
+                .update({ status: 'concluido' })
+                .eq('id', sonhoId);
+                
+            if(error) {
+                alert("Para esta funcionalidade precisas de correr o código SQL fornecido na base de dados (Adicionar coluna status).");
             }
         }
 
         // ========================================================
-        // 4. GRAVAÇÃO DO NOVO REGISTO (ABA 1)
+        // 4. GRAVAÇÃO DE REGISTOS (OBRA & RÁPIDO)
         // ========================================================
+        
+        // --- A. REGISTO OBRA COMPLETA ---
         const formSonho = document.getElementById('form-sonho');
         formSonho.onsubmit = async (e) => {
             e.preventDefault();
             if(!idUtilizadorAtual) return;
 
-            const btn = document.getElementById('btn-guardar');
-            const msg = document.getElementById('msg-form');
+            const btn = document.getElementById('btn-guardar-obra');
+            const msg = document.getElementById('msg-form-obra');
             btn.innerText = `A integrar no ecossistema...`;
-            btn.disabled = true;
-            btn.classList.add('opacity-50');
+            btn.disabled = true; btn.classList.add('opacity-50');
             
             let itensComp = null;
             if(complexidadeSelect.value === 'Composto'){
                 itensComp = [];
                 document.querySelectorAll('#lista-partes > div').forEach(l => {
-                    itensComp.push({ 
-                        nome: l.querySelector('.nome-parte').value, 
-                        custo: parseFloat(l.querySelector('.custo-parte').value) || 0, 
-                        comprado: false
-                    });
+                    itensComp.push({ nome: l.querySelector('.nome-parte').value, custo: parseFloat(l.querySelector('.custo-parte').value) || 0, comprado: false });
                 });
             }
 
@@ -753,31 +943,77 @@
                 tempo_servico: document.getElementById('input-tempo-servico').value,
                 observacoes: document.getElementById('input-observacoes').value,
                 itens_compostos: itensComp
+                // O status vai 'ativo' por default via SQL
             };
 
             const { error } = await clienteSupabase.from('sonhos').insert([dados]);
 
             msg.classList.remove('hidden');
             if (error) {
-                msg.innerHTML = "Erro: " + error.message;
-                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
+                msg.innerHTML = "Erro: " + error.message; msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
             } else {
-                msg.innerHTML = `Registado com sucesso. Continua focado!`;
-                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
-                formSonho.reset();
-                
-                verificarServico();
-                verificarComplexidade();
-                calcularTotalFormulario();
-                
+                msg.innerHTML = `Registado com sucesso. Continua focado!`; msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
+                formSonho.reset(); verificarServico(); verificarComplexidade(); calcularTotalFormulario();
                 buscarSonhos();
             }
 
-            btn.innerText = `Registar Plano`;
-            btn.disabled = false;
-            btn.classList.remove('opacity-50');
+            btn.innerText = `Registar Plano`; btn.disabled = false; btn.classList.remove('opacity-50');
             setTimeout(() => { msg.classList.add('hidden'); }, 4000);
         };
+
+        // --- B. REGISTO RÁPIDO DIÁRIO (VAI PARA A TIMELINE) ---
+        const formRapido = document.getElementById('form-rapido');
+        formRapido.onsubmit = async (e) => {
+            e.preventDefault();
+            if(!idUtilizadorAtual) return;
+
+            const btn = document.getElementById('btn-guardar-rapido');
+            const msg = document.getElementById('msg-form-rapido');
+            btn.innerText = `A injetar...`; btn.disabled = true; btn.classList.add('opacity-50');
+
+            const mesAlvo = document.getElementById('val-mes-rapido').value;
+            const tipo = document.getElementById('val-tipo-rapido').value;
+            const valor = parseFloat(document.getElementById('input-valor-rapido').value);
+            const desc = document.getElementById('input-desc-rapido').value;
+
+            // Busca o mês na timeline local
+            const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
+            if (index !== -1) {
+                const mesData = dadosTimeline[index];
+                const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor };
+                
+                let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
+                
+                const payload = {
+                    user_id: idUtilizadorAtual,
+                    mes_id: mesAlvo,
+                    entradas: mesData.entradas,
+                    fixos: mesData.fixos,
+                    parcela: mesData.parcela,
+                    observacoes: mesData.obs,
+                    extras: novosExtras
+                };
+
+                const { error } = await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+
+                msg.classList.remove('hidden');
+                if(!error) {
+                    dadosTimeline[index].extras = novosExtras; // Atualiza local
+                    renderizarTimelineUI(); // Recalcula ecossistema na hora
+                    
+                    msg.innerHTML = `Lançamento integrado na Timeline!`; 
+                    msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
+                    document.getElementById('input-valor-rapido').value = '';
+                    document.getElementById('input-desc-rapido').value = '';
+                } else {
+                    msg.innerHTML = "Erro de Sincronização."; 
+                    msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
+                }
+            }
+
+            btn.innerText = `Lançar no Ecossistema`; btn.disabled = false; btn.classList.remove('opacity-50');
+            setTimeout(() => { msg.classList.add('hidden'); }, 3000);
+        }
 
 
         // ========================================================
@@ -808,11 +1044,17 @@
                 return { ...temp, extras: [] };
             });
 
+            // Preenche o Select do Registo Rápido
+            const selectRapido = document.getElementById('val-mes-rapido');
+            selectRapido.innerHTML = '';
+            dadosTimeline.forEach(m => {
+                selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`;
+            });
+
             renderizarTimelineUI();
         }
 
         function renderizarTimelineUI() {
-            // 1. CÁLCULO GERAL DA TIMELINE (O CÉREBRO DE PREVISÃO)
             let totalAcumuladoGeral = 0;
             let totalEntradasGerais = 0;
 
@@ -827,7 +1069,6 @@
                 }
                 totalAcumuladoGeral += (prev.entradas - prev.fixos - prev.parcela + somaExtrasLocal);
                 
-                // Soma para calcular a % de saúde
                 let receitasExtras = prev.extras?.filter(e=>e.tipo==='receita').reduce((acc,curr)=>acc+(parseFloat(curr.valor)||0),0) || 0;
                 totalEntradasGerais += (prev.entradas + receitasExtras);
             });
@@ -837,30 +1078,28 @@
             let bgSaude = taxaPoupanca >= 20 ? 'bg-app-green/20' : (taxaPoupanca >= 10 ? 'bg-app-orange/20' : 'bg-app-red/20');
             let txtSaude = taxaPoupanca >= 20 ? 'Excelente' : (taxaPoupanca >= 10 ? 'Boa' : 'Atenção');
 
-            // 2. INJETAR RESUMO NO TOPO DA ABA PREVISÕES
             const resumoContainer = document.getElementById('resumo-timeline-container');
             resumoContainer.innerHTML = `
                 <div class="bg-gradient-to-br from-[#1C1C1E] to-[#151515] rounded-[24px] p-6 shadow-[0_15px_30px_rgba(0,0,0,0.5)] border border-[#38383A] w-full relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-app-blue/10 rounded-full blur-3xl"></div>
                     
                     <div class="flex justify-between items-center mb-4 relative z-10">
-                        <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Acumulado Previsto (Fim de Ano)</span>
+                        <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Acumulado Previsto (Ano)</span>
                         <span class="${bgSaude} ${corSaude} text-[9px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">Saúde: ${txtSaude} (${taxaPoupanca}%)</span>
                     </div>
                     
                     <h3 class="text-[36px] font-black text-white mb-1 relative z-10 ${totalAcumuladoGeral < 0 ? 'text-app-red' : ''}">${formatarMoeda(totalAcumuladoGeral)}</h3>
-                    <p class="text-[12px] font-medium text-app-sub mb-5 relative z-10">Total livre no teu bolso se seguires este plano à risca sem gastar mais nada.</p>
+                    <p class="text-[12px] font-medium text-app-sub mb-5 relative z-10">Poder de manobra se seguires este plano.</p>
                     
                     <div class="flex gap-3 relative z-10 border-t border-white/5 pt-4">
                         <div class="flex-1 bg-[#1A1A1C] rounded-xl p-3 border border-white/5">
-                            <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">Média Livre p/ Mês</p>
+                            <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">Média Livre / Mês</p>
                             <p class="font-bold text-[16px] text-white">${formatarMoeda(totalAcumuladoGeral / Math.max(1, dadosTimeline.length))}</p>
                         </div>
                     </div>
                 </div>
             `;
 
-            // 3. RENDERIZAR MESES DA TIMELINE
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
@@ -888,7 +1127,7 @@
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Entradas Base</span> <span class="font-bold text-app-text">${formatarMoeda(prev.entradas)}</span></div>
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Fixos Base</span> <span class="text-app-red font-medium">-${formatarMoeda(prev.fixos)}</span></div>
                         ${prev.parcela > 0 ? `<div class="flex justify-between items-center mb-2"><span class="text-app-sub font-medium">Empréstimo</span> <span class="text-app-orange font-medium">-${formatarMoeda(prev.parcela)}</span></div>` : ''}
-                        ${htmlExtras !== '' ? `<div class="mt-3 pt-3 border-t border-dashed border-app-border"><p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1.5">Lançamentos Extras</p>${htmlExtras}</div>` : ''}
+                        ${htmlExtras !== '' ? `<div class="mt-3 pt-3 border-t border-dashed border-app-border"><p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1.5">Registo Diário</p>${htmlExtras}</div>` : ''}
                         <div class="flex justify-between items-center pt-3 mt-3 border-t border-app-border">
                             <span class="font-bold text-[13px] text-app-sub uppercase tracking-widest">Sobra Total</span> 
                             <span class="font-black text-[17px] ${sobra > 2000 ? 'text-app-green' : (sobra < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(sobra)}</span>
@@ -950,7 +1189,7 @@
         }
 
         // Navegação
-        const abas = ['sonhos', 'saldos', 'previsoes', 'perfil'];
+        const abas = ['sonhos', 'saldos', 'previsoes', 'historico', 'perfil'];
         function mudarAba(idAba, botaoClicado) {
             abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
             document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
@@ -966,7 +1205,7 @@
                 });
                 botaoClicado.classList.replace('text-app-sub', 'text-app-blue'); botaoClicado.classList.replace('font-medium', 'font-semibold');
             }
-            if(idAba === 'saldos') buscarSonhos();
+            if(idAba === 'saldos' || idAba === 'historico') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
@@ -991,6 +1230,7 @@
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
             idUtilizadorAtual = session.user.id;
+            inicializarTimeline(); // Carrega timeline para o select rápido
             buscarSonhos(); 
         };
 
