@@ -460,8 +460,8 @@
 
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-mes-content">
-            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-10 border-b border-app-border">
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card shadow-modal transform transition-transform duration-300 bottom-sheet-down h-full flex flex-col pb-safe w-full max-w-2xl mx-auto" id="modal-mes-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-app-card shrink-0 sticky top-0 z-10 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Ajustar Mês</h3>
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
@@ -476,6 +476,8 @@
                     <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-mes-nome">Mês</h2>
                     <p class="text-sm text-app-sub mt-0.5">Edita a tua base financeira e ajusta os fluxos.</p>
                 </div>
+
+                <div id="modal-mes-status-container" class="w-full"></div>
 
                 <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Estrutura Base</h4>
                 <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
@@ -969,7 +971,6 @@
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
             dadosTimeline.forEach((prev, index) => {
-                let htmlExtras = '';
                 let totalEntradasMes = prev.entradas;
                 let totalSaidasMes = prev.fixos + prev.parcela;
                 let somaRealizada = 0;
@@ -981,15 +982,6 @@
                         const val = parseFloat(ext.valor) || 0;
                         if (ext.tipo === 'receita') totalEntradasMes += val; else totalSaidasMes += val;
                         if (ext.realizado) ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
-                        htmlExtras += `
-                            <div class="flex justify-between items-center mt-2 group text-[13px]">
-                                <div class="flex items-center gap-2 flex-1 pr-2">
-                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="transition-colors ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                    <span class="${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">${ext.descricao}</span>
-                                </div>
-                                <span class="font-bold ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
-                            </div>
-                        `;
                     });
                 }
                 let saldoStartAtual = saldoAtualAnterior;
@@ -1012,9 +1004,9 @@
                     <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black"></span>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
-                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded">Ajustar</button>
+                        <span class="text-[10px] text-app-sub font-bold uppercase tracking-widest bg-app-bg px-2 py-1 rounded-md border border-app-border">Detalhes</span>
                     </div>
-                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full">
+                    <div onclick="abrirEdicaoMes('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full cursor-pointer active:scale-[0.98] transition-transform">
                         <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5">
                             <h5 class="text-[10px] uppercase tracking-widest font-bold text-app-blue mb-2">Fluxo do Mês (Projeção)</h5>
                             <div class="flex justify-between text-[13px]"><span class="text-app-sub">Saldo Anterior:</span><span class="font-bold">${formatarMoeda(saldoStartPrevisto)}</span></div>
@@ -1022,30 +1014,7 @@
                             <div class="flex justify-between text-[13px]"><span class="text-app-red">Saídas (-):</span><span class="font-bold text-app-red">-${formatarMoeda(totalSaidasMes)}</span></div>
                             <div class="flex justify-between text-[14px] pt-1.5 border-t border-white/10 font-bold"><span class="text-app-text">Saldo Final (=):</span><span class="text-app-blue">${formatarMoeda(saldoPrevistoFinal)}</span></div>
                         </div>
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Entradas Base</span>
-                            </div>
-                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
-                        </div>
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Fixos Base</span>
-                            </div>
-                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
-                        </div>
-                        ${prev.parcela > 0 ? `
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Empréstimo</span>
-                            </div>
-                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
-                        </div>` : ''}
-                        ${htmlExtras}
-                        <div class="bg-[#151515] rounded-xl p-3 mt-4 flex justify-between items-center">
+                        <div class="bg-[#151515] rounded-xl p-3 flex justify-between items-center">
                             <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Real Carteira</span>
                             <span class="font-black text-[15px] ${saldoAtual >= 0 ? 'text-white' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
                         </div>
@@ -1068,7 +1037,65 @@
             document.getElementById('edit-mes-obs').value = prev.obs;
             extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
             renderizarExtrasEditUI();
+            renderizarCheckmarksMes(idMes);
             abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
+        }
+
+        function renderizarCheckmarksMes(mesId) {
+            const prev = dadosTimeline.find(m => m.id === mesId);
+            if(!prev) return;
+            const container = document.getElementById('modal-mes-status-container');
+            let htmlExtras = '';
+            if(prev.extras && prev.extras.length > 0) {
+                prev.extras.forEach(ext => {
+                    const val = parseFloat(ext.valor) || 0;
+                    htmlExtras += `
+                        <div class="flex justify-between items-center mb-2 text-[13px] px-4 py-3 bg-[#151515] rounded-xl border border-app-border">
+                            <div class="flex items-center gap-3 flex-1 pr-2">
+                                <button type="button" onclick="toggleRealizadoModal('${prev.id}', 'extra', '${ext.id}')" class="transition-colors ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'} text-[22px]"></i></button>
+                                <span class="${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">${ext.descricao}</span>
+                            </div>
+                            <span class="font-bold ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                        </div>
+                    `;
+                });
+            }
+            let htmlBase = `
+                <div class="flex justify-between items-center mb-2 text-[13px] px-4 py-3 bg-[#151515] rounded-xl border border-app-border">
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="toggleRealizadoModal('${prev.id}', 'entradas')" class="${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'} text-[22px]"></i></button>
+                        <span class="${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Entradas Base</span>
+                    </div>
+                    <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                </div>
+                <div class="flex justify-between items-center mb-2 text-[13px] px-4 py-3 bg-[#151515] rounded-xl border border-app-border">
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="toggleRealizadoModal('${prev.id}', 'fixos')" class="${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'} text-[22px]"></i></button>
+                        <span class="${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Fixos Base</span>
+                    </div>
+                    <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                </div>
+            `;
+            if (prev.parcela > 0) {
+                htmlBase += `
+                <div class="flex justify-between items-center mb-2 text-[13px] px-4 py-3 bg-[#151515] rounded-xl border border-app-border">
+                    <div class="flex items-center gap-3">
+                        <button type="button" onclick="toggleRealizadoModal('${prev.id}', 'parcela')" class="${prev.base_ok.parcela ? 'text-app-orange' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'} text-[22px]"></i></button>
+                        <span class="${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Empréstimo</span>
+                    </div>
+                    <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                </div>
+                `;
+            }
+            container.innerHTML = `
+                <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Marcar como Realizado</h4>
+                <div class="mb-6">${htmlBase}${htmlExtras}</div>
+            `;
+        }
+
+        async function toggleRealizadoModal(mesId, tipo, extraId = null) {
+            await toggleRealizado(mesId, tipo, extraId); 
+            renderizarCheckmarksMes(mesId); 
         }
 
         function adicionarExtraMes(tipo) {
