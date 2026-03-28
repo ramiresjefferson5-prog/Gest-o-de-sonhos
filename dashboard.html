@@ -624,18 +624,67 @@
         }
 
         // ========================================================
-        // O NOVO COFRE (PATRIMÓNIO GUARDADO)
+        // O NOVO COFRE (PATRIMÓNIO GUARDADO - AUTOMAÇÃO TEXTO)
         // ========================================================
         function abrirCofre() {
             const container = document.getElementById('modal-cofre-body');
             let totalCofre = 0;
             let htmlReservas = '';
 
+            // 1. Calcular reservas da Timeline (Automático por texto)
+            let totalTimelineRealizado = 0;
+            let totalTimelineProjetado = 0;
+            
+            if (dadosTimeline && dadosTimeline.length > 0) {
+                dadosTimeline.forEach(mes => {
+                    if (mes.extras) {
+                        mes.extras.forEach(ext => {
+                            const desc = (ext.descricao || '').toLowerCase();
+                            if (desc.includes('reserva') || desc.includes('poupança') || desc.includes('poupanca') || desc.includes('investimento')) {
+                                const val = parseFloat(ext.valor) || 0;
+                                if (ext.realizado) {
+                                    totalTimelineRealizado += val;
+                                } else {
+                                    totalTimelineProjetado += val;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            
+            totalCofre += totalTimelineRealizado;
+
+            // 2. Calcular reservas do "Centro de Lançamentos" (Projetos criados manualmente)
             const reservas = sonhosGlobais.filter(s => s.categoria === 'Reserva');
             
-            if (reservas.length === 0) {
-                htmlReservas = '<div class="text-center p-6 text-app-sub text-[14px] bg-[#1C1C1E] rounded-xl border border-[#2C2C2E]">Ainda não tens poupanças registadas. Cria uma no "Centro de Lançamentos" usando a categoria "Poupança / Reserva".</div>';
+            if (reservas.length === 0 && totalTimelineRealizado === 0 && totalTimelineProjetado === 0) {
+                htmlReservas = '<div class="text-center p-6 text-app-sub text-[14px] bg-[#1C1C1E] rounded-xl border border-[#2C2C2E]">Ainda não tens dinheiro guardado.<br><br><span class="text-app-blue font-bold">Dica:</span> Escreve "Reserva", "Poupança" ou "Investimento" num lançamento da tua Timeline para que ele apareça aqui magicamente.</div>';
             } else {
+                
+                // Mostrar a caixa automática da Timeline se houver valores
+                if (totalTimelineRealizado > 0 || totalTimelineProjetado > 0) {
+                    htmlReservas += `
+                        <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-blue/30 relative overflow-hidden shadow-sm mb-4">
+                            <div class="flex justify-between items-center mb-3 border-b border-[#2C2C2E] pb-2">
+                                <span class="font-bold text-[14px] text-app-text flex items-center gap-1.5"><i class="ph-fill ph-magic-wand text-app-blue text-lg"></i> Guardado da Timeline</span>
+                                <span class="text-[9px] bg-app-blue/20 text-app-blue px-2 py-0.5 rounded uppercase tracking-widest font-bold">Automático</span>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">Realizado (Já Guardado)</p>
+                                    <p class="font-black text-[18px] text-app-green">${formatarMoeda(totalTimelineRealizado)}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">A Guardar (Projetado)</p>
+                                    <p class="font-bold text-[14px] text-app-sub">${formatarMoeda(totalTimelineProjetado)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Mostrar as reservas criadas manualmente em projetos
                 reservas.forEach(r => {
                     let guardado = parseFloat(r.valor_guardado) || 0;
                     if (r.complexidade === 'Composto' && r.itens_compostos) {
@@ -650,7 +699,7 @@
                     let percent = meta > 0 ? Math.round((guardado/meta)*100) : 0;
 
                     htmlReservas += `
-                        <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-border relative overflow-hidden shadow-sm">
+                        <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-border relative overflow-hidden shadow-sm mb-3 last:mb-0">
                             <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-green" style="width: ${percent}%"></div></div>
                             <div class="flex justify-between items-center mb-2">
                                 <span class="font-bold text-[15px] text-app-text">${r.nome}</span>
@@ -1582,7 +1631,7 @@
                     </div>
                 `;
 
-                // HTML BUILD PARA O CARTÃO (MACRO) NA LISTA DE TIMELINE - COM A NOVA GRELHA
+                // HTML BUILD PARA O CARTÃO (MACRO) NA LISTA DE TIMELINE - O Formato de Lista Limpa Solicitado
                 const colorSaldoFinal = saldoPrevistoFinal >= 0 ? 'text-app-blue' : 'text-app-red';
                 const bgSaldoFinal = saldoPrevistoFinal >= 0 ? 'bg-app-blue/10 border-app-blue/20' : 'bg-app-red/10 border-app-red/20';
 
@@ -1595,23 +1644,23 @@
                     </div>
                     <div onclick="abrirDetalhesTimeline('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-4 text-[14px] shadow-float w-full cursor-pointer active:scale-[0.98] transition-transform">
                         
-                        <!-- A Nova Grelha Pedida -->
-                        <div class="grid grid-cols-2 gap-2 mb-3">
-                            <div class="bg-[#151515] p-2.5 rounded-[12px] border border-[#2C2C2E]">
-                                <p class="text-[9px] text-app-sub uppercase tracking-widest mb-0.5">Vem do Mês Passado</p>
-                                <p class="font-bold text-[13px] text-app-text">${formatarMoeda(saldoStartPrevisto)}</p>
+                        <!-- Formato em Lista Limpa e Simples -->
+                        <div class="space-y-1 mb-3">
+                            <div class="flex justify-between items-center bg-[#151515] px-3 py-2.5 rounded-[12px] border border-[#2C2C2E]">
+                                <span class="text-[12px] text-app-sub font-medium">Saldo do Mês Anterior</span>
+                                <span class="text-[13px] font-bold text-app-text">${formatarMoeda(saldoStartPrevisto)}</span>
                             </div>
-                            <div class="${bgSaldoFinal} p-2.5 rounded-[12px] border">
-                                <p class="text-[9px] ${colorSaldoFinal} uppercase tracking-widest mb-0.5">Sobra Final Prevista</p>
-                                <p class="font-black text-[13px] ${colorSaldoFinal}">${formatarMoeda(saldoPrevistoFinal)}</p>
+                            <div class="flex justify-between items-center bg-app-green/5 px-3 py-2.5 rounded-[12px] border border-app-green/10">
+                                <span class="text-[12px] text-app-green font-medium">Entradas Previstas</span>
+                                <span class="text-[13px] font-bold text-app-green">+${formatarMoeda(totalEntradasPrevistas)}</span>
                             </div>
-                            <div class="bg-app-green/5 p-2.5 rounded-[12px] border border-app-green/10">
-                                <p class="text-[9px] text-app-green uppercase tracking-widest mb-0.5">Previsto Entrar</p>
-                                <p class="font-bold text-[13px] text-app-green">+${formatarMoeda(totalEntradasPrevistas)}</p>
+                            <div class="flex justify-between items-center bg-app-red/5 px-3 py-2.5 rounded-[12px] border border-app-red/10">
+                                <span class="text-[12px] text-app-red font-medium">Saídas Previstas</span>
+                                <span class="text-[13px] font-bold text-app-red">-${formatarMoeda(totalSaidasPrevistas)}</span>
                             </div>
-                            <div class="bg-app-red/5 p-2.5 rounded-[12px] border border-app-red/10">
-                                <p class="text-[9px] text-app-red uppercase tracking-widest mb-0.5">Previsto Gastar</p>
-                                <p class="font-bold text-[13px] text-app-red">-${formatarMoeda(totalSaidasPrevistas)}</p>
+                            <div class="flex justify-between items-center ${bgSaldoFinal} px-3 py-2.5 rounded-[12px] border">
+                                <span class="text-[12px] ${colorSaldoFinal} font-bold">Sobra do Mês Previsto</span>
+                                <span class="text-[13px] font-black ${colorSaldoFinal}">${formatarMoeda(saldoPrevistoFinal)}</span>
                             </div>
                         </div>
 
