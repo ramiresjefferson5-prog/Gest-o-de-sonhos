@@ -652,7 +652,7 @@
 
                     let infoExtra = sonho.prioridade.split('(')[0];
                     if (sonho.complexidade === 'Composto') {
-                        infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} itens</span>`;
+                        infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} items</span>`;
                     }
 
                     // Caixinha (Card) UI
@@ -1103,7 +1103,9 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            dadosTimeline.forEach(prev => {
+            let saldoCorrente = 0; // Total acumulado progressivo
+            
+            dadosTimeline.forEach((prev, index) => {
                 let somaExtras = 0; let htmlExtras = '';
                 if(prev.extras && prev.extras.length > 0) {
                     prev.extras.forEach(ext => {
@@ -1112,7 +1114,15 @@
                         htmlExtras += `<div class="flex justify-between items-center mt-1 text-[13px]"><span class="text-app-sub truncate pr-2">- ${ext.descricao}</span><span class="${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} font-medium shrink-0">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span></div>`;
                     });
                 }
-                const sobra = prev.entradas - prev.fixos - prev.parcela + somaExtras;
+                const sobraMes = prev.entradas - prev.fixos - prev.parcela + somaExtras;
+                
+                let htmlSaldoAnterior = ''; 
+                if (index > 0) {
+                    htmlSaldoAnterior = `<div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Vem do Mês Anterior</span> <span class="font-bold ${saldoCorrente >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoCorrente >= 0 ? '+' : ''}${formatarMoeda(saldoCorrente)}</span></div>`;
+                }
+                
+                saldoCorrente += sobraMes; 
+
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
                 const card = document.createElement('div');
@@ -1127,10 +1137,14 @@
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Entradas Base</span> <span class="font-bold text-app-text">${formatarMoeda(prev.entradas)}</span></div>
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Fixos Base</span> <span class="text-app-red font-medium">-${formatarMoeda(prev.fixos)}</span></div>
                         ${prev.parcela > 0 ? `<div class="flex justify-between items-center mb-2"><span class="text-app-sub font-medium">Empréstimo</span> <span class="text-app-orange font-medium">-${formatarMoeda(prev.parcela)}</span></div>` : ''}
+                        ${htmlSaldoAnterior}
                         ${htmlExtras !== '' ? `<div class="mt-3 pt-3 border-t border-dashed border-app-border"><p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1.5">Registo Diário</p>${htmlExtras}</div>` : ''}
                         <div class="flex justify-between items-center pt-3 mt-3 border-t border-app-border">
-                            <span class="font-bold text-[13px] text-app-sub uppercase tracking-widest">Sobra Total</span> 
-                            <span class="font-black text-[17px] ${sobra > 2000 ? 'text-app-green' : (sobra < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(sobra)}</span>
+                            <div>
+                                <span class="font-bold text-[13px] text-app-sub uppercase tracking-widest block">Acumulado Final</span>
+                                <span class="text-[10px] text-app-sub font-medium mt-0.5 block">Sobra do Mês: ${sobraMes >= 0 ? '+' : ''}${formatarMoeda(sobraMes)}</span>
+                            </div>
+                            <span class="font-black text-[17px] ${saldoCorrente > 2000 ? 'text-app-green' : (saldoCorrente < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoCorrente)}</span>
                         </div>
                         <div class="mt-4 bg-[#151515] rounded-xl p-3 text-[13px] text-app-text leading-relaxed whitespace-pre-line border border-[#2C2C2E]"><span class="font-bold text-app-sub uppercase text-[10px] tracking-widest block mb-1">Foco do Mês</span>${prev.obs}</div>
                     </div>`;
