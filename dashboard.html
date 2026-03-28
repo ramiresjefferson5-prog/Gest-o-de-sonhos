@@ -35,6 +35,16 @@
                     <h2 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">🎯 Registar Novo Sonho</h2>
                     
                     <form id="form-sonho" class="space-y-4">
+                        
+                        <!-- Tipo de Sonho -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Tipo de Item</label>
+                            <select id="input-tipo" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                <option value="Produto">Objeto / Produto</option>
+                                <option value="Servico">Trabalho / Serviço Manual</option>
+                            </select>
+                        </div>
+
                         <!-- O que? -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">O que é o sonho? (Nome/Item)</label>
@@ -60,27 +70,29 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <!-- Quanto custa? -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Custo Total (R$)</label>
-                                <input type="number" id="input-custo" min="0" step="0.01" required placeholder="0.00" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <!-- Valor guardado agora -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Já tens algum valor?</label>
-                                <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                        </div>
-
                         <!-- Consigo fazer? -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Consigo fazer? (Viabilidade)</label>
                             <select id="input-viabilidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                <option value="Fácil e rápido">Fácil e rápido</option>
-                                <option value="Requer planeamento">Requer planeamento médio</option>
-                                <option value="Desafio longo prazo">Desafio de longo prazo</option>
+                                <option value="Fácil e rápido">Sim, fácil e rápido</option>
+                                <option value="Requer planeamento">Sim, requer planeamento/tempo</option>
+                                <option value="Nao">Não (Vou contratar alguém)</option>
                             </select>
+                        </div>
+
+                        <!-- Campos extra de Serviço (Escondidos por padrão) -->
+                        <div id="div-servico" class="hidden bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Detalhes da Contratação</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Preço Serviço (R$)</label>
+                                    <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tempo Estimado</label>
+                                    <input type="text" id="input-tempo-servico" placeholder="Ex: 2 semanas" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -97,9 +109,34 @@
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1">Complexidade</label>
                                 <select id="input-complexidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                    <option value="Simples">Simples (Comprar de uma vez)</option>
-                                    <option value="Composto">Composto (Comprar por partes)</option>
+                                    <option value="Simples">Simples (Único)</option>
+                                    <option value="Composto">Composto (Por partes)</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <!-- Sub-itens para Itens Compostos (Escondido por padrão) -->
+                        <div id="div-composto" class="hidden bg-blue-50 p-3 rounded-lg border border-blue-100 space-y-3">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-bold text-blue-800">Partes do Item Composto</label>
+                                <button type="button" id="btn-add-parte" class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">+ Adicionar Parte</button>
+                            </div>
+                            <div id="lista-partes" class="space-y-2">
+                                <!-- As partes entram aqui via JavaScript -->
+                            </div>
+                            <p class="text-xs text-blue-600 mt-1">* O custo total será a soma de todas as partes.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <!-- Quanto custa? -->
+                            <div>
+                                <label class="block text-sm font-bold text-slate-800 mb-1">Custo Total (R$)</label>
+                                <input type="number" id="input-custo" min="0" step="0.01" required placeholder="0.00" class="w-full px-3 py-2 rounded-lg border border-slate-300 font-bold text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <!-- Valor guardado agora -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Já tens algum valor?</label>
+                                <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                             </div>
                         </div>
 
@@ -118,7 +155,7 @@
                 <!-- Cartão de Resumo Temporário -->
                 <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-lg">
                     <h2 class="text-xl font-bold mb-2">A preparar o teu Império...</h2>
-                    <p class="text-slate-300">Regista o teu primeiro sonho no formulário ao lado. Depois de o guardarmos com sucesso, vamos transformar este espaço da direita no teu ecrã de progresso!</p>
+                    <p class="text-slate-300">O sistema está pronto para receber objetos simples, serviços ou projetos complexos (compostos por partes). Preenche o formulário ao lado e testa as novas opções!</p>
                 </div>
             </div>
 
@@ -147,7 +184,7 @@
             } else {
                 document.getElementById('conteudo-principal').classList.remove('hidden');
                 document.getElementById('mensagem-boas-vindas').innerText = session.user.email;
-                idUtilizadorAtual = session.user.id; // Guardamos a ID do utilizador para gravar os dados no cofre!
+                idUtilizadorAtual = session.user.id;
             }
         }
 
@@ -157,40 +194,130 @@
         });
 
         // --------------------------------------------------------
-        // LÓGICA DO FORMULÁRIO (GUARDAR DADOS)
+        // LÓGICA DO FORMULÁRIO (DINAMISMO E CÁLCULOS)
+        // --------------------------------------------------------
+        const tipoInput = document.getElementById('input-tipo');
+        const viabilidadeInput = document.getElementById('input-viabilidade');
+        const divServico = document.getElementById('div-servico');
+        
+        const complexidadeInput = document.getElementById('input-complexidade');
+        const divComposto = document.getElementById('div-composto');
+        const listaPartes = document.getElementById('lista-partes');
+        const btnAddParte = document.getElementById('btn-add-parte');
+        const custoTotalInput = document.getElementById('input-custo');
+
+        // Função para mostrar/esconder campos de serviço
+        function verificarServico() {
+            if (tipoInput.value === 'Servico' && viabilidadeInput.value === 'Nao') {
+                divServico.classList.remove('hidden');
+            } else {
+                divServico.classList.add('hidden');
+                document.getElementById('input-preco-servico').value = 0;
+                document.getElementById('input-tempo-servico').value = '';
+            }
+        }
+
+        tipoInput.addEventListener('change', verificarServico);
+        viabilidadeInput.addEventListener('change', verificarServico);
+
+        // Função para calcular o custo de itens compostos
+        function recalcularCustoTotal() {
+            if (complexidadeInput.value === 'Composto') {
+                let total = 0;
+                const custosDasPartes = document.querySelectorAll('.custo-parte');
+                custosDasPartes.forEach(input => {
+                    const valor = parseFloat(input.value) || 0;
+                    total += valor;
+                });
+                custoTotalInput.value = total.toFixed(2);
+            }
+        }
+
+        // Mostrar/esconder campos de itens compostos
+        complexidadeInput.addEventListener('change', function() {
+            if (this.value === 'Composto') {
+                divComposto.classList.remove('hidden');
+                custoTotalInput.readOnly = true;
+                custoTotalInput.classList.add('bg-slate-100'); // Fica cinza indicando bloqueio
+                if (listaPartes.children.length === 0) adicionarParte(); // Adiciona 1ª linha vazia
+            } else {
+                divComposto.classList.add('hidden');
+                custoTotalInput.readOnly = false;
+                custoTotalInput.classList.remove('bg-slate-100');
+                listaPartes.innerHTML = ''; // Limpa as partes
+            }
+            recalcularCustoTotal();
+        });
+
+        // Adicionar nova linha de parte composta
+        function adicionarParte() {
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 items-center';
+            div.innerHTML = `
+                <input type="text" placeholder="Nome da parte (ex: Placa Mãe)" required class="nome-parte flex-1 px-2 py-1 text-sm rounded border border-slate-300">
+                <input type="number" placeholder="R$ 0.00" min="0" step="0.01" required class="custo-parte w-24 px-2 py-1 text-sm rounded border border-slate-300">
+                <button type="button" class="text-red-500 hover:text-red-700 font-bold px-2 remover-parte">X</button>
+            `;
+            listaPartes.appendChild(div);
+            
+            // Eventos para recalcular ao escrever e para o botão de remover
+            div.querySelector('.custo-parte').addEventListener('input', recalcularCustoTotal);
+            div.querySelector('.remover-parte').addEventListener('click', function() {
+                div.remove();
+                recalcularCustoTotal();
+            });
+        }
+
+        btnAddParte.addEventListener('click', adicionarParte);
+
+        // --------------------------------------------------------
+        // GUARDAR DADOS NO SUPABASE
         // --------------------------------------------------------
         const formSonho = document.getElementById('form-sonho');
         const btnGuardar = document.getElementById('btn-guardar');
         const msgForm = document.getElementById('msg-form');
 
         formSonho.addEventListener('submit', async function(evento) {
-            evento.preventDefault(); // Impede a página de recarregar
-            
-            if(!idUtilizadorAtual) return; // Segurança extra
+            evento.preventDefault(); 
+            if(!idUtilizadorAtual) return; 
 
-            // 1. Mostrar estado de carregamento
             btnGuardar.innerText = "A guardar...";
             btnGuardar.disabled = true;
 
-            // 2. Recolher todos os valores preenchidos
+            // Extrair partes se for composto
+            let itensCompostosArray = [];
+            if (complexidadeInput.value === 'Composto') {
+                const linhas = document.querySelectorAll('#lista-partes > div');
+                linhas.forEach(linha => {
+                    itensCompostosArray.push({
+                        nome: linha.querySelector('.nome-parte').value,
+                        custo: parseFloat(linha.querySelector('.custo-parte').value) || 0,
+                        comprado: false // Já definimos como "não comprado" inicialmente
+                    });
+                });
+            }
+
+            // Construir o objeto para a base de dados
             const dadosDoSonho = {
                 user_id: idUtilizadorAtual,
+                tipo: tipoInput.value,
                 nome: document.getElementById('input-nome').value,
                 quantidade: parseInt(document.getElementById('input-quantidade').value),
-                custo: parseFloat(document.getElementById('input-custo').value),
+                custo: parseFloat(custoTotalInput.value),
                 valor_guardado: parseFloat(document.getElementById('input-guardado').value),
-                viabilidade: document.getElementById('input-viabilidade').value,
+                viabilidade: viabilidadeInput.value,
+                preco_servico: parseFloat(document.getElementById('input-preco-servico').value),
+                tempo_servico: document.getElementById('input-tempo-servico').value,
                 prioridade: document.getElementById('input-prioridade').value,
-                complexidade: document.getElementById('input-complexidade').value,
-                categoria: document.getElementById('input-categoria').value
+                complexidade: complexidadeInput.value,
+                categoria: document.getElementById('input-categoria').value,
+                itens_compostos: itensCompostosArray.length > 0 ? itensCompostosArray : null
             };
 
-            // 3. Enviar para a tabela 'sonhos' no Supabase
             const { data, error } = await clienteSupabase
                 .from('sonhos')
                 .insert([dadosDoSonho]);
 
-            // 4. Lidar com o resultado
             if (error) {
                 console.error("Erro do Supabase:", error);
                 msgForm.innerText = "Erro ao guardar: " + error.message;
@@ -198,14 +325,15 @@
             } else {
                 msgForm.innerText = "🎉 Sonho guardado com sucesso!";
                 msgForm.className = "text-sm font-medium mt-2 text-green-600 block";
-                formSonho.reset(); // Limpa o formulário para o próximo
+                
+                // Limpar formulário mantendo regras visuais
+                formSonho.reset(); 
+                complexidadeInput.dispatchEvent(new Event('change'));
+                tipoInput.dispatchEvent(new Event('change'));
             }
 
-            // Restaurar o botão
             btnGuardar.innerText = "Guardar Sonho no Cofre";
             btnGuardar.disabled = false;
-            
-            // Esconde a mensagem de sucesso após 4 segundos
             setTimeout(() => { msgForm.classList.add('hidden'); }, 4000);
         });
 
