@@ -16,49 +16,27 @@
 
         /* Animações de entrada e transição de abas */
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .aba-ativa {
             display: block;
-            animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .aba-oculta { display: none; }
 
-        /* Magia do Indicador Mobile */
-        .nav-item { position: relative; z-index: 10; }
-        .nav-icon { transition: transform 0.3s ease, color 0.3s ease; }
-        .nav-item.active .nav-icon {
-            transform: translateY(-16px);
-            color: white;
-        }
-        
-        #magic-indicator {
-            position: absolute;
-            top: -20px;
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
-            border-radius: 50%;
-            border: 6px solid #F8FAFC; /* Cor de fundo da app para criar o "recorte" */
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.26, 1.55);
-            z-index: 1;
-            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
-        }
-
         /* Efeito Vidro (Glassmorphism) */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
     </style>
 </head>
-<body class="bg-[#F8FAFC] min-h-screen font-sans text-slate-800 pb-24 md:pb-0">
+<body class="bg-[#F8FAFC] min-h-screen font-sans text-slate-800 pb-28 md:pb-0">
 
     <!-- BARRA DE NAVEGAÇÃO DESKTOP (Escondida no Mobile) -->
-    <nav class="hidden md:flex glass-panel shadow-sm px-8 py-4 justify-between items-center sticky top-0 z-50">
+    <nav class="hidden md:flex glass-panel shadow-sm border-b border-slate-200/60 px-8 py-4 justify-between items-center sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-200">
                 <i class="ph-bold ph-planet text-xl"></i>
@@ -92,37 +70,42 @@
         </div>
     </nav>
 
-    <!-- BARRA DE NAVEGAÇÃO MOBILE (Bottom Magic Menu) -->
-    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.06)] z-50 px-6 pt-3 pb-6">
-        <ul class="flex justify-between items-center relative" id="mobile-nav">
-            <!-- Indicador Mágico -->
-            <div id="magic-indicator"></div>
+    <!-- BARRA DE NAVEGAÇÃO MOBILE (Ilha Flutuante Moderna) -->
+    <nav class="md:hidden fixed bottom-6 left-6 right-6 glass-panel rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 z-50 p-2">
+        <ul class="flex justify-between items-center gap-1" id="mobile-nav">
+            
+            <!-- Botão Sonhos (Ativo por defeito) -->
+            <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-2xl bg-indigo-50 transition-colors duration-300">
+                    <i class="ph-fill ph-target text-[22px] nav-icon text-indigo-600 transition-colors duration-300"></i>
+                    <span class="text-[10px] font-extrabold text-indigo-700 transition-colors duration-300">Sonhos</span>
+                </button>
+            </li>
+            
+            <!-- Botão Saldos -->
+            <li class="nav-item flex-1" onclick="mudarAba('orcamentos', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-2xl bg-transparent transition-colors duration-300">
+                    <i class="ph-fill ph-wallet text-[22px] nav-icon text-slate-400 transition-colors duration-300"></i>
+                    <span class="text-[10px] font-bold text-slate-500 transition-colors duration-300">Saldos</span>
+                </button>
+            </li>
+            
+            <!-- Botão Previsões -->
+            <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-2xl bg-transparent transition-colors duration-300">
+                    <i class="ph-fill ph-trend-up text-[22px] nav-icon text-slate-400 transition-colors duration-300"></i>
+                    <span class="text-[10px] font-bold text-slate-500 transition-colors duration-300">Previsões</span>
+                </button>
+            </li>
+            
+            <!-- Botão Perfil -->
+            <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-2xl bg-transparent transition-colors duration-300">
+                    <i class="ph-fill ph-user-circle text-[22px] nav-icon text-slate-400 transition-colors duration-300"></i>
+                    <span class="text-[10px] font-bold text-slate-500 transition-colors duration-300">Perfil</span>
+                </button>
+            </li>
 
-            <!-- Botões -->
-            <li class="nav-item active flex-1 flex justify-center" onclick="mudarAba('sonhos', this)">
-                <button class="flex flex-col items-center gap-1 w-full pt-1">
-                    <i class="ph-fill ph-target text-2xl nav-icon text-indigo-600"></i>
-                    <span class="text-[10px] font-bold text-slate-400 mt-1 transition-opacity opacity-100">Sonhos</span>
-                </button>
-            </li>
-            <li class="nav-item flex-1 flex justify-center" onclick="mudarAba('orcamentos', this)">
-                <button class="flex flex-col items-center gap-1 w-full pt-1">
-                    <i class="ph-fill ph-wallet text-2xl nav-icon text-slate-400"></i>
-                    <span class="text-[10px] font-bold text-slate-400 mt-1">Saldos</span>
-                </button>
-            </li>
-            <li class="nav-item flex-1 flex justify-center" onclick="mudarAba('previsoes', this)">
-                <button class="flex flex-col items-center gap-1 w-full pt-1">
-                    <i class="ph-fill ph-trend-up text-2xl nav-icon text-slate-400"></i>
-                    <span class="text-[10px] font-bold text-slate-400 mt-1">Previsões</span>
-                </button>
-            </li>
-            <li class="nav-item flex-1 flex justify-center" onclick="mudarAba('perfil', this)">
-                <button class="flex flex-col items-center gap-1 w-full pt-1">
-                    <i class="ph-fill ph-user-circle text-2xl nav-icon text-slate-400"></i>
-                    <span class="text-[10px] font-bold text-slate-400 mt-1">Perfil</span>
-                </button>
-            </li>
         </ul>
     </nav>
 
@@ -135,9 +118,9 @@
         <!-- ========================================== -->
         <section id="aba-sonhos" class="aba-ativa">
             <!-- Título Mobile -->
-            <div class="md:hidden mb-6 mt-2">
+            <div class="md:hidden mb-6 mt-2 px-2">
                 <h2 class="text-2xl font-extrabold text-slate-900">Meus Sonhos</h2>
-                <p class="text-sm text-slate-500">Regista e acompanha as tuas metas.</p>
+                <p class="text-sm font-medium text-slate-500">Regista e acompanha as tuas metas.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
@@ -262,7 +245,7 @@
 
                             <div id="msg-form" class="text-sm font-bold text-center hidden py-2 px-4 rounded-xl"></div>
 
-                            <button type="submit" id="btn-guardar" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 active:scale-95 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all duration-200 flex justify-center items-center gap-2">
+                            <button type="submit" id="btn-guardar" class="w-full bg-indigo-600 active:scale-95 hover:bg-indigo-700 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all duration-200 flex justify-center items-center gap-2">
                                 <i class="ph-bold ph-paper-plane-right text-xl"></i>
                                 Gravar no Cofre
                             </button>
@@ -272,32 +255,49 @@
 
                 <!-- LISTA DE SONHOS (Tamanho 7/12) -->
                 <div class="lg:col-span-7 space-y-6">
-                    <!-- Widget Moderno -->
-                    <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
-                        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+                    
+                    <!-- Widget Moderno e Compacto -->
+                    <div class="bg-white p-6 md:p-8 rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-100">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-lg font-extrabold text-slate-900">Resumo do Império</h2>
+                                <p class="text-[13px] font-medium text-slate-500">Progresso geral das tuas metas</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100 shrink-0">
+                                <i class="ph-bold ph-chart-pie-slice text-2xl"></i>
+                            </div>
+                        </div>
                         
-                        <div class="relative z-10">
-                            <h2 class="text-3xl font-extrabold mb-2 tracking-tight">O teu Império.</h2>
-                            <p class="text-slate-400 text-sm mb-8">Nesta área irás ver o progresso circular de cada sonho, o que falta comprar e a barra geral de conclusão.</p>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="glass-panel border-white/10 p-5 rounded-3xl">
-                                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-3 text-indigo-300">
-                                        <i class="ph-fill ph-target text-xl"></i>
-                                    </div>
-                                    <p class="text-2xl font-bold">0</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Card Ativos -->
+                            <div class="bg-slate-50 border border-slate-100 p-4 md:p-5 rounded-2xl flex items-center gap-4 transition-transform hover:scale-[1.02] cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 shadow-sm">
+                                    <i class="ph-fill ph-target text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-extrabold text-slate-800 leading-none mb-1">0</p>
                                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sonhos Ativos</p>
                                 </div>
-                                <div class="glass-panel border-white/10 p-5 rounded-3xl">
-                                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-3 text-green-300">
-                                        <i class="ph-fill ph-check-circle text-xl"></i>
-                                    </div>
-                                    <p class="text-2xl font-bold">0</p>
+                            </div>
+                            
+                            <!-- Card Realizados -->
+                            <div class="bg-slate-50 border border-slate-100 p-4 md:p-5 rounded-2xl flex items-center gap-4 transition-transform hover:scale-[1.02] cursor-default">
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 shadow-sm">
+                                    <i class="ph-fill ph-check-circle text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-extrabold text-slate-800 leading-none mb-1">0</p>
                                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Realizados</p>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Espaço para a futura lista -->
+                    <div class="h-32 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-400 font-medium text-sm">
+                        A tua lista de sonhos aparecerá aqui...
+                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -306,17 +306,17 @@
         <!-- ABA: ORÇAMENTOS -->
         <!-- ========================================== -->
         <section id="aba-orcamentos" class="aba-oculta">
-            <div class="mb-8 mt-2">
+            <div class="mb-8 mt-2 px-2">
                 <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Orçamentos</h2>
                 <p class="text-slate-500 mt-1">Gere as tuas receitas e os montantes disponíveis.</p>
             </div>
             
             <div class="bg-white p-12 rounded-[2rem] shadow-sm border border-slate-100 text-center flex flex-col items-center justify-center min-h-[400px]">
-                <div class="w-24 h-24 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-4xl mb-6">
+                <div class="w-24 h-24 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center text-4xl mb-6">
                     <i class="ph-fill ph-wallet"></i>
                 </div>
                 <h3 class="text-xl font-bold text-slate-800 mb-2">Em Construção</h3>
-                <p class="text-slate-500 max-w-md">Em breve, poderás adicionar os teus rendimentos mensais e distribuir automaticamente os valores pelos teus sonhos ativos!</p>
+                <p class="text-sm font-medium text-slate-500 max-w-md">Em breve, poderás adicionar os teus rendimentos mensais e distribuir automaticamente os valores pelos teus sonhos ativos!</p>
             </div>
         </section>
 
@@ -324,7 +324,7 @@
         <!-- ABA: PREVISÕES -->
         <!-- ========================================== -->
         <section id="aba-previsoes" class="aba-oculta">
-            <div class="mb-8 mt-2">
+            <div class="mb-8 mt-2 px-2">
                 <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Previsões</h2>
                 <p class="text-slate-500 mt-1">O teu futuro financeiro desenhado no tempo.</p>
             </div>
@@ -334,7 +334,7 @@
                     <i class="ph-fill ph-trend-up"></i>
                 </div>
                 <h3 class="text-xl font-bold text-slate-800 mb-2">Linha do Tempo</h3>
-                <p class="text-slate-500 max-w-md">Aqui irás ver gráficos preditivos que te dizem exatamente em que mês e ano irás alcançar cada sonho com base no teu ritmo de poupança.</p>
+                <p class="text-sm font-medium text-slate-500 max-w-md">Aqui irás ver gráficos preditivos que te dizem exatamente em que mês e ano irás alcançar cada sonho com base no teu ritmo de poupança.</p>
             </div>
         </section>
 
@@ -342,12 +342,12 @@
         <!-- ABA: PERFIL -->
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta">
-            <div class="mb-8 mt-2">
+            <div class="mb-8 mt-2 px-2">
                 <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">O teu Perfil</h2>
             </div>
             
             <div class="max-w-md mx-auto bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-                <div class="h-32 bg-gradient-to-r from-indigo-500 to-blue-500"></div>
+                <div class="h-32 bg-indigo-600"></div>
                 <div class="px-8 pb-8 flex flex-col items-center text-center -mt-12">
                     <div class="w-24 h-24 bg-white rounded-full p-2 mb-4 shadow-lg">
                         <div class="w-full h-full bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-4xl">
@@ -381,22 +381,15 @@
         let idUtilizadorAtual = null;
 
         // ========================================================
-        // 1. LÓGICA DE NAVEGAÇÃO "MAGIC MENU"
+        // 1. LÓGICA DE NAVEGAÇÃO
         // ========================================================
         const abas = ['sonhos', 'orcamentos', 'previsoes', 'perfil'];
         
-        // Inicializar indicadores no load
         window.addEventListener('load', () => {
             setTimeout(() => {
-                const navMobile = document.getElementById('mobile-nav');
-                if (navMobile) {
-                    const btnMobile = navMobile.querySelector('.nav-item.active');
-                    if (btnMobile) moverIndicadorMobile(btnMobile, 0);
-                }
-
                 const btnDesktop = document.querySelector('.desktop-tab');
                 if (btnDesktop) moverIndicadorDesktop(btnDesktop);
-            }, 100); // pequeno delay para garantir q renderizou
+            }, 100); 
         });
 
         function mudarAba(idAba, botaoClicado) {
@@ -411,34 +404,42 @@
             document.getElementById(`aba-${idAba}`).classList.remove('aba-oculta');
             document.getElementById(`aba-${idAba}`).classList.add('aba-ativa');
 
-            // 2. Animar Menu Mobile
-            const isMobile = window.innerWidth < 768; // Tailwind md breakpoint
-            
+            // 2. Cores da App Mobile
             if (botaoClicado.closest('#mobile-nav')) {
                 const itensMobile = document.querySelectorAll('#mobile-nav .nav-item');
-                let indexClicado = 0;
                 
-                itensMobile.forEach((item, index) => {
-                    item.classList.remove('active');
+                itensMobile.forEach((item) => {
+                    const btn = item.querySelector('button');
                     const icone = item.querySelector('.nav-icon');
-                    // Reset cores
+                    const span = item.querySelector('span');
+                    
+                    // Fica Cinzento (Inativo)
+                    btn.classList.remove('bg-indigo-50');
+                    btn.classList.add('bg-transparent');
+                    
                     icone.classList.remove('text-indigo-600');
                     icone.classList.add('text-slate-400');
-                    item.querySelector('span').style.opacity = '1';
                     
-                    if (item === botaoClicado) indexClicado = index;
+                    span.classList.remove('text-indigo-700', 'font-extrabold');
+                    span.classList.add('text-slate-500', 'font-bold');
                 });
 
-                botaoClicado.classList.add('active');
+                // Fica Azul Escuro (Ativo)
+                const btnAtivo = botaoClicado.querySelector('button');
                 const iconeAtivo = botaoClicado.querySelector('.nav-icon');
-                iconeAtivo.classList.remove('text-slate-400');
-                iconeAtivo.classList.add('text-white'); // O ícone fica branco pq está em cima do círculo azul
-                botaoClicado.querySelector('span').style.opacity = '0'; // Esconde o texto da ativa
+                const spanAtivo = botaoClicado.querySelector('span');
                 
-                moverIndicadorMobile(botaoClicado, indexClicado);
+                btnAtivo.classList.remove('bg-transparent');
+                btnAtivo.classList.add('bg-indigo-50');
+                
+                iconeAtivo.classList.remove('text-slate-400');
+                iconeAtivo.classList.add('text-indigo-600');
+                
+                spanAtivo.classList.remove('text-slate-500', 'font-bold');
+                spanAtivo.classList.add('text-indigo-700', 'font-extrabold');
             }
 
-            // 3. Animar Menu Desktop
+            // 3. Cores App Desktop
             if (botaoClicado.closest('#desktop-nav')) {
                 const tabsDesktop = document.querySelectorAll('.desktop-tab');
                 tabsDesktop.forEach(tab => {
@@ -452,20 +453,10 @@
             }
         }
 
-        function moverIndicadorMobile(botao, index) {
-            const indicador = document.getElementById('magic-indicator');
-            // Como são 4 botões, cada um tem 25% de largura.
-            // O centro de cada botão é: 12.5%, 37.5%, 62.5%, 87.5%
-            // O indicador tem 56px de largura, então subtraímos 28px (metade) para centrar perfeitamente
-            const percentagemCentro = 12.5 + (25 * index);
-            indicador.style.left = `calc(${percentagemCentro}% - 28px)`;
-        }
-
         function moverIndicadorDesktop(botao) {
             const indicador = document.getElementById('desktop-indicator');
-            indicador.style.transform = `translateX(${botao.offsetLeft - 6}px)`; // -6px compensa o padding do container
+            indicador.style.transform = `translateX(${botao.offsetLeft - 6}px)`; 
         }
-
 
         // ========================================================
         // 2. SEGURANÇA E SESSÃO
