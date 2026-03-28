@@ -74,7 +74,7 @@
 </head>
 <body class="min-h-screen pb-[100px] md:pb-0 w-full">
 
-    <!-- DESKTOP NAV -->
+    <!-- DESKTOP NAV (Nova Ordem) -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
         <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
             <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
@@ -82,21 +82,21 @@
         </div>
         
         <div class="flex gap-4">
-            <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-plus"></i> Registar</button>
-            <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Portfólio</button>
-            <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-calendar-check"></i> Plano 2026</button>
-            <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-medal"></i> Histórico</button>
+            <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-calendar-check"></i> Timeline</button>
+            <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Obras</button>
+            <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-plus"></i> Inserir</button>
+            <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-medal"></i> Conquistas</button>
             <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-user"></i> Perfil</button>
         </div>
     </nav>
 
-    <!-- MOBILE NAV -->
+    <!-- MOBILE NAV (Nova Ordem) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
         <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
-            <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
+            <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-blue transition-colors">
-                    <i class="ph-fill ph-plus-circle text-[22px] nav-icon"></i>
-                    <span class="text-[9px] font-medium mt-0.5">Registar</span>
+                    <i class="ph-fill ph-chart-line-up text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Timeline</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
@@ -105,10 +105,10 @@
                     <span class="text-[9px] font-medium mt-0.5">Obras</span>
                 </button>
             </li>
-            <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
+            <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
                 <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                    <i class="ph-fill ph-chart-line-up text-[22px] nav-icon"></i>
-                    <span class="text-[9px] font-medium mt-0.5">Timeline</span>
+                    <i class="ph-fill ph-plus-circle text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Inserir</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('historico', this)">
@@ -117,15 +117,75 @@
                     <span class="text-[9px] font-medium mt-0.5">Conquistas</span>
                 </button>
             </li>
+            <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-user text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Perfil</span>
+                </button>
+            </li>
         </ul>
     </nav>
 
     <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
         <!-- ========================================== -->
-        <!-- ABA 1: REGISTO INTELIGENTE -->
+        <!-- ABA 1: PREVISÕES 2026 (AGORA É A INICIAL) -->
         <!-- ========================================== -->
-        <section id="aba-sonhos" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
+        <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="mb-6 px-1 w-full">
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
+                <p class="text-[13px] font-medium text-app-sub mt-0.5">O teu fluxo financeiro projetado ao longo dos meses.</p>
+            </div>
+
+            <!-- Resumo Dinâmico do Mês (Estilo App Bancária - Sem Centavos) -->
+            <div id="resumo-timeline-container" class="w-full">
+                <!-- Preenchido via JS dinamicamente -->
+            </div>
+            
+            <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 2: PORTFÓLIO (Caixinhas de Metas) -->
+        <!-- ========================================== -->
+        <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="flex justify-between items-center mb-5 px-1 w-full">
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Projetos Ativos</h2>
+                <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
+            </div>
+
+            <!-- Resumo Financeiro Dinâmico -->
+            <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                
+                <div class="flex justify-between items-start mb-1 relative z-10">
+                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Custo Total Projetos</p>
+                    <span class="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase border border-white/10 backdrop-blur-md">Status Geral</span>
+                </div>
+                <h2 class="text-[36px] font-black tracking-tight mb-5 relative z-10" id="saldos-total-geral">R$ 0,00</h2>
+                
+                <div class="flex gap-4 border-t border-white/10 pt-5 relative z-10">
+                    <div class="flex-1">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Total Investido (Progresso)</p>
+                        <p class="font-bold text-[16px] text-[#30D158]" id="saldos-guardado">R$ 0,00</p>
+                    </div>
+                    <div class="flex-1 pl-4 border-l border-white/10">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Falta Para Concluir</p>
+                        <p class="font-bold text-[16px] text-white" id="saldos-falta">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Caixas de Obras / Metas</h3>
+            <div id="lista-sonhos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div class="p-8 text-center text-app-sub text-sm bg-app-card rounded-[20px]">A analisar ecossistema...</div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 3: INSERIR (REGISTO INTELIGENTE) -->
+        <!-- ========================================== -->
+        <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-5 px-1 text-center">
                 <h2 class="text-[22px] font-bold tracking-tight text-app-text">Centro de Lançamentos</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
@@ -137,9 +197,7 @@
                 <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita Dia</button>
             </div>
 
-            <!-- ===================== -->
             <!-- FORMULÁRIO 1: OBRA / META -->
-            <!-- ===================== -->
             <form id="form-sonho" class="space-y-6 w-full">
                 <!-- IDENTIFICAÇÃO -->
                 <div class="w-full">
@@ -264,9 +322,7 @@
                 </button>
             </form>
 
-            <!-- ===================== -->
             <!-- FORMULÁRIO 2: DIÁRIO RÁPIDO -->
-            <!-- ===================== -->
             <form id="form-rapido" class="space-y-6 w-full hidden">
                 <div class="bg-app-blue/10 border border-app-blue/20 rounded-2xl p-4 mb-2 shadow-float w-full">
                     <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando o acumulado final na hora.</p>
@@ -314,61 +370,7 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 2: PORTFÓLIO (Caixinhas de Metas) -->
-        <!-- ========================================== -->
-        <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-            <div class="flex justify-between items-center mb-5 px-1 w-full">
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Projetos Ativos</h2>
-                <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
-            </div>
-
-            <!-- Resumo Financeiro Dinâmico -->
-            <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                
-                <div class="flex justify-between items-start mb-1 relative z-10">
-                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Custo Total Projetos</p>
-                    <span class="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase border border-white/10 backdrop-blur-md">Status Geral</span>
-                </div>
-                <h2 class="text-[36px] font-black tracking-tight mb-5 relative z-10" id="saldos-total-geral">R$ 0,00</h2>
-                
-                <div class="flex gap-4 border-t border-white/10 pt-5 relative z-10">
-                    <div class="flex-1">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Total Investido (Progresso)</p>
-                        <p class="font-bold text-[16px] text-[#30D158]" id="saldos-guardado">R$ 0,00</p>
-                    </div>
-                    <div class="flex-1 pl-4 border-l border-white/10">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Falta Para Concluir</p>
-                        <p class="font-bold text-[16px] text-white" id="saldos-falta">R$ 0,00</p>
-                    </div>
-                </div>
-            </div>
-
-            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Caixas de Obras / Metas</h3>
-            <div id="lista-sonhos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                <div class="p-8 text-center text-app-sub text-sm bg-app-card rounded-[20px]">A analisar ecossistema...</div>
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 3: PREVISÕES 2026 -->
-        <!-- ========================================== -->
-        <section id="aba-previsoes" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-            <div class="mb-6 px-1 w-full">
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                <p class="text-[13px] font-medium text-app-sub mt-0.5">O teu fluxo financeiro projetado ao longo dos meses.</p>
-            </div>
-
-            <!-- Resumo Dinâmico do Mês (Estilo App Bancária) -->
-            <div id="resumo-timeline-container" class="w-full">
-                <!-- Preenchido via JS dinamicamente -->
-            </div>
-            
-            <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- ABA 4: HISTÓRICO DE CONQUISTAS (NOVA) -->
+        <!-- ABA 4: HISTÓRICO DE CONQUISTAS -->
         <!-- ========================================== -->
         <section id="aba-historico" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full text-center">
@@ -385,24 +387,81 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 5: PERFIL -->
+        <!-- ABA 5: PERFIL E DEFINIÇÕES (NOVO) -->
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-            <h2 class="text-2xl font-bold tracking-tight mb-5 px-1 text-app-text">Mindset</h2>
-            <div class="bg-app-card border border-app-border rounded-[24px] p-6 mb-6 text-center shadow-float w-full">
-                <div class="w-16 h-16 bg-app-blue/20 text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="ph-fill ph-brain"></i></div>
-                <h3 class="font-bold text-[17px] text-app-text mb-2">A Matemática Funciona</h3>
-                <p class="text-[14px] text-app-sub leading-relaxed">A engrenagem está ativa. Foca na execução. Transforma dinheiro líquido em património sólido na tua casa.</p>
+            
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-app-blue/20 text-app-blue mb-3 border-[3px] border-app-blue/30 relative shadow-[0_0_20px_rgba(10,132,255,0.2)]">
+                    <i class="ph-fill ph-user text-4xl"></i>
+                    <button onclick="abrirModal('modal-editar-perfil', 'modal-perfil-backdrop', 'modal-perfil-content')" class="absolute bottom-0 right-0 w-7 h-7 bg-app-blue text-white rounded-full flex items-center justify-center border-2 border-app-bg active:scale-95 transition-transform"><i class="ph-bold ph-pencil-simple text-[12px]"></i></button>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-user-nome">Utilizador</h2>
+                <p class="text-[13px] text-app-sub mt-0.5 font-medium" id="display-user-email">A carregar...</p>
             </div>
-            <button id="btn-sair" class="w-full bg-[#1C1C1E] border border-app-border text-app-red font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[15px]">Terminar Sessão</button>
+
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Constância & Uso</h3>
+            <div class="bg-app-card border border-app-border rounded-[24px] p-5 mb-6 shadow-float w-full flex justify-between items-center text-center">
+                <div class="flex-1 border-r border-app-border pr-2">
+                    <p class="text-[20px] font-black text-app-blue" id="estatistica-dias">1</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Dias Ativos</p>
+                </div>
+                <div class="flex-1 border-r border-app-border px-2">
+                    <p class="text-[20px] font-black text-app-orange" id="estatistica-projetos">0</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Na Obra</p>
+                </div>
+                <div class="flex-1 pl-2">
+                    <p class="text-[20px] font-black text-app-green" id="estatistica-conquistas">0</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Troféus</p>
+                </div>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Ferramentas de Sistema</h3>
+            <div class="bg-app-card border border-app-border rounded-[24px] overflow-hidden mb-6 shadow-float w-full">
+                <button onclick="abrirModal('modal-editar-perfil', 'modal-perfil-backdrop', 'modal-perfil-content')" class="w-full flex items-center justify-between px-5 py-4 border-b border-app-border active:bg-[#2C2C2E] transition-colors">
+                    <div class="flex items-center gap-3"><i class="ph-fill ph-gear text-xl text-app-sub"></i> <span class="text-[15px] font-medium text-app-text">Ajustar Perfil</span></div>
+                    <i class="ph-bold ph-caret-right text-app-sub"></i>
+                </button>
+                <button onclick="limparHistoricoConfirmacao()" class="w-full flex items-center justify-between px-5 py-4 active:bg-[#2C2C2E] transition-colors">
+                    <div class="flex items-center gap-3"><i class="ph-fill ph-trash text-xl text-app-red"></i> <span class="text-[15px] font-medium text-app-red">Limpar Histórico de Conquistas</span></div>
+                    <i class="ph-bold ph-caret-right text-app-sub"></i>
+                </button>
+            </div>
+
+            <button id="btn-sair" class="w-full bg-[#1C1C1E] border border-app-border text-app-text font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[15px] flex justify-center items-center gap-2">
+                <i class="ph-bold ph-sign-out"></i> Terminar Sessão
+            </button>
         </section>
 
     </main>
 
     <!-- ========================================== -->
-    <!-- MODAL NATIVO INTERATIVO -->
+    <!-- MODAIS NATIVOS INTERATIVOS -->
     <!-- ========================================== -->
     
+    <!-- Modal: Editar Perfil (NOVO) -->
+    <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 border-b border-app-border">
+                <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
+                <button onclick="guardarPerfil()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
+            </div>
+            <div class="px-5 py-6">
+                <div class="mb-4">
+                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Como queres ser chamado?</label>
+                    <input type="text" id="input-perfil-nome" placeholder="O teu nome ou apelido" class="w-full bg-[#151515] border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-text shadow-sm focus:border-app-blue transition-colors">
+                </div>
+                <div class="mb-6">
+                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Email de Registo</label>
+                    <input type="text" id="input-perfil-email" disabled class="w-full bg-[#151515]/50 border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-sub cursor-not-allowed">
+                    <p class="text-[11px] text-app-sub mt-2 ml-2">O email não pode ser alterado por motivos de segurança.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Detalhes & Checklist do Plano -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
@@ -485,9 +544,13 @@
         let idUtilizadorAtual = null;
         let sonhosGlobais = []; 
         let dadosTimeline = []; 
-        let mesResumoIndex = 0; // Para navegar no card azul
+        let mesResumoIndex = 0; 
         
+        // Padrão Geral da app (mostra os centavos na app normal)
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+        
+        // Padrão Arredondado para o cartão azul inicial (arredonda sempre para cima sem cêntimos)
+        const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
@@ -496,8 +559,33 @@
         }
 
         // ========================================================
-        // 0. TOGGLE DE REGISTO (NOVA FUNÇÃO RÁPIDA)
+        // 0. FUNÇÕES DE PERFIL E HISTÓRICO
         // ========================================================
+        
+        function guardarPerfil() {
+            const nome = document.getElementById('input-perfil-nome').value;
+            localStorage.setItem('gestor_nome_perfil', nome);
+            document.getElementById('display-user-nome').innerText = nome || "Utilizador";
+            fecharModal('modal-editar-perfil');
+        }
+
+        function limparHistoricoConfirmacao() {
+            if(confirm("⚠️ ATENÇÃO: Tens a certeza que queres eliminar TODAS as tuas conquistas gravadas?\nEsta ação não pode ser desfeita e vai limpar a tua Sala de Troféus.")) {
+                limparHistoricoReal();
+            }
+        }
+        
+        async function limparHistoricoReal() {
+            if(!idUtilizadorAtual) return;
+            const { error } = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
+            if(!error) {
+                alert("Histórico de conquistas apagado com sucesso!");
+                buscarSonhos(); // Recarrega os dados sem os concluídos
+            } else {
+                alert("Erro ao tentar limpar histórico: " + error.message);
+            }
+        }
+
         function mudarTipoRegisto(tipo) {
             const btnObra = document.getElementById('btn-tab-obra');
             const btnRapido = document.getElementById('btn-tab-rapido');
@@ -524,7 +612,6 @@
                 input.classList.remove('text-app-red'); input.classList.add('text-app-green');
             }
         }
-
 
         // ========================================================
         // 1. CÁLCULOS DO FORMULÁRIO DE REGISTO OBRA
@@ -610,6 +697,12 @@
             
             renderizarUIEcossistema();
             renderizarUIConquistas();
+            
+            // Atualiza estatísticas do perfil
+            const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
+            const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
+            document.getElementById('estatistica-projetos').innerText = ativos.length;
+            document.getElementById('estatistica-conquistas').innerText = concluidos.length;
         }
 
         function renderizarUIEcossistema() {
@@ -1105,19 +1198,20 @@
             const prev = dadosTimeline[mesResumoIndex];
             if(!prev) return;
             document.getElementById('resumo-mes-titulo').innerText = prev.mes;
-            document.getElementById('resumo-val-inicial').innerText = formatarMoeda(prev._calcStart || 0);
-            document.getElementById('resumo-val-saldo').innerText = formatarMoeda(prev._calcEnd || 0);
             
-            // Previsto: Entradas Base - Fixos - Parcela (Visão base do mês sem extras)
-            const previsto = prev.entradas - prev.fixos - prev.parcela;
-            document.getElementById('resumo-val-previsto').innerText = formatarMoeda(previsto);
+            // Aqui usamos a função sem centavos (arredondada para cima) conforme pediste
+            document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
+            document.getElementById('resumo-val-saldo').innerText = formatarMoedaSemCentavos(prev._calcEnd || 0);
+            
+            // O Previsto agora mostra exatamente quanto sobra NAQUELE mês após todas as contas (Sobra Líquida)
+            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcSobra || 0);
         }
 
         function renderizarTimelineUI() {
-            // Cartão de Resumo Azul (Estilo Bancário)
+            // Cartão de Resumo Azul (Estilo Bancário com ajustes de tamanho e nomeclatura)
             const resumoContainer = document.getElementById('resumo-timeline-container');
             resumoContainer.innerHTML = `
-                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8">
+                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
                     <!-- Detalhe de fundo curvo simples -->
                     <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
                     
@@ -1130,15 +1224,15 @@
                     <div class="flex justify-between items-end relative z-10 pb-2">
                         <div class="text-left flex-1">
                             <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider"><i class="ph-bold ph-check-circle"></i> Inicial</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0,00</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
                         </div>
                         <div class="text-center flex-[1.5]">
                             <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-target"></i> Saldo</p>
-                            <p class="font-black text-[26px] leading-none tracking-tight drop-shadow-md" id="resumo-val-saldo">R$ 0,00</p>
+                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-saldo">R$ 0</p>
                         </div>
                         <div class="text-right flex-1">
                             <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-clock"></i> Previsto</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0,00</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p>
                         </div>
                     </div>
                 </div>
@@ -1179,6 +1273,7 @@
                 // Guardar para o Cartão de Resumo usar
                 prev._calcStart = saldoStart;
                 prev._calcEnd = saldoCorrente;
+                prev._calcSobra = sobraMes; // Este é o nosso "Previsto" agora
 
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
@@ -1295,7 +1390,7 @@
         }
 
         // Navegação
-        const abas = ['sonhos', 'saldos', 'previsoes', 'historico', 'perfil'];
+        const abas = ['previsoes', 'saldos', 'sonhos', 'historico', 'perfil'];
         function mudarAba(idAba, botaoClicado) {
             abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
             document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
@@ -1311,7 +1406,7 @@
                 });
                 botaoClicado.classList.replace('text-app-sub', 'text-app-blue'); botaoClicado.classList.replace('font-medium', 'font-semibold');
             }
-            if(idAba === 'saldos' || idAba === 'historico') buscarSonhos();
+            if(idAba === 'saldos' || idAba === 'historico' || idAba === 'perfil') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
@@ -1335,9 +1430,23 @@
         window.onload = async () => {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
+            
             idUtilizadorAtual = session.user.id;
-            inicializarTimeline(); // Carrega timeline para o select rápido
-            buscarSonhos(); 
+            
+            // Carrega perfil salvo localmente
+            const emailUser = session.user.email;
+            const nomeSalvo = localStorage.getItem('gestor_nome_perfil');
+            document.getElementById('display-user-nome').innerText = nomeSalvo || emailUser.split('@')[0];
+            document.getElementById('display-user-email').innerText = emailUser;
+            document.getElementById('input-perfil-nome').value = nomeSalvo || '';
+            document.getElementById('input-perfil-email').value = emailUser;
+
+            // Pseudo-dados de uso (exemplo visual de consistência)
+            const diasFake = Math.floor(Math.random() * 15) + 3; 
+            document.getElementById('estatistica-dias').innerText = diasFake;
+
+            inicializarTimeline(); // Carrega timeline para o select rápido e a visualiza
+            buscarSonhos(); // Carrega dados gerais de projetos e conquistas
         };
 
         document.getElementById('btn-sair').onclick = async () => { await clienteSupabase.auth.signOut(); irParaLogin(); };
