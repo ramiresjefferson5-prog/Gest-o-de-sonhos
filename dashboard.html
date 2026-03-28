@@ -67,22 +67,11 @@
         
         .check-transition { transition: all 0.2s ease-in-out; }
         
-        /* Estilos do Toggle Segmentado */
         .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
         .segment-inactive { color: #8E8E93; font-weight: 500; }
     </style>
 </head>
 <body class="min-h-screen pb-[100px] md:pb-0 w-full">
-
-    <!-- MOBILE TOP NAV (NOVO COFRE) -->
-    <nav class="md:hidden fixed top-0 left-0 right-0 glass-nav border-b border-app-border z-40 px-4 py-3 flex justify-between items-center w-full">
-        <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
-            <i class="ph-fill ph-planet text-app-blue text-xl"></i> Gestor
-        </div>
-        <button onclick="abrirCofre()" class="flex items-center gap-1.5 text-app-green bg-app-green/10 px-4 py-2 rounded-full font-bold text-[13px] active:scale-95 transition-transform shadow-[0_0_15px_rgba(48,209,88,0.2)]">
-            <i class="ph-fill ph-vault"></i> Cofre
-        </button>
-    </nav>
 
     <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
@@ -91,20 +80,16 @@
             Gestor<span class="text-app-blue">Pessoal</span>
         </div>
         
-        <div class="flex gap-4 items-center">
+        <div class="flex gap-4">
             <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-calendar-check"></i> Timeline</button>
             <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Obras</button>
             <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-plus"></i> Inserir</button>
             <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-medal"></i> Conquistas</button>
             <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-user"></i> Perfil</button>
-            <div class="w-px h-5 bg-app-border mx-1"></div>
-            <button onclick="abrirCofre()" class="flex items-center gap-1.5 text-app-green bg-app-green/10 hover:bg-app-green/20 px-4 py-2 rounded-full font-bold text-sm transition-colors shadow-[0_0_15px_rgba(48,209,88,0.2)]">
-                <i class="ph-fill ph-vault"></i> Cofre
-            </button>
         </div>
     </nav>
 
-    <!-- MOBILE NAV BOTTOM -->
+    <!-- MOBILE NAV -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
         <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
             <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
@@ -140,7 +125,7 @@
         </ul>
     </nav>
 
-    <main class="max-w-xl mx-auto w-full overflow-hidden pt-[60px] md:pt-0" id="conteudo-principal">
+    <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
         <!-- ========================================== -->
         <!-- ABA 1: PREVISÕES 2026 (INICIAL) -->
@@ -149,11 +134,11 @@
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Os meses futuros projetam-se baseados no ativo.</p>
+                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clica no 'check' ao pagar ou receber.</p>
                 </div>
             </div>
 
-            <!-- Resumo Dinâmico do Mês (Estilo App Bancária - Sem Centavos) -->
+            <!-- Resumo Dinâmico do Mês -->
             <div id="resumo-timeline-container" class="w-full">
                 <!-- Preenchido via JS dinamicamente -->
             </div>
@@ -206,15 +191,12 @@
                 <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
             </div>
 
-            <!-- Segmented Control -->
             <div class="bg-app-card p-1 rounded-xl flex mb-6 w-full border border-app-border">
                 <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-2 text-[13px] rounded-lg segment-active transition-all">🏗️ Nova Obra / Meta</button>
                 <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita Dia</button>
             </div>
 
-            <!-- FORMULÁRIO 1: OBRA / META -->
             <form id="form-sonho" class="space-y-6 w-full">
-                <!-- IDENTIFICAÇÃO -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Identificação</span>
                     <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
@@ -249,7 +231,6 @@
                     </div>
                 </div>
 
-                <!-- VALORES E ITENS -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Estrutura Financeira</span>
                     <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float mb-4 w-full">
@@ -301,7 +282,6 @@
                     </div>
                 </div>
 
-                <!-- EXECUÇÃO -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Execução da Tarefa</span>
                     <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
@@ -337,10 +317,9 @@
                 </button>
             </form>
 
-            <!-- FORMULÁRIO 2: DIÁRIO RÁPIDO -->
             <form id="form-rapido" class="space-y-6 w-full hidden">
                 <div class="bg-app-blue/10 border border-app-blue/20 rounded-2xl p-4 mb-2 shadow-float w-full">
-                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando a projeção final em tempo real.</p>
+                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando o acumulado final na hora.</p>
                 </div>
 
                 <div class="w-full">
@@ -368,7 +347,6 @@
                             <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Qual Mês?</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-mes-rapido" class="w-full bg-transparent text-[15px] text-app-blue outline-none pr-5 cursor-pointer z-10 font-bold">
-                                    <!-- Preenchido via JS -->
                                 </select>
                                 <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
@@ -384,9 +362,7 @@
             </form>
         </section>
 
-        <!-- ========================================== -->
-        <!-- ABA 4: HISTÓRICO DE CONQUISTAS -->
-        <!-- ========================================== -->
+        <!-- ABA 4: HISTÓRICO -->
         <section id="aba-historico" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app-green/20 text-app-green mb-4 shadow-[0_0_20px_rgba(48,209,88,0.3)]">
@@ -397,15 +373,11 @@
             </div>
             
             <div id="lista-conquistas-container" class="space-y-4 w-full">
-                <!-- Injetado via JS -->
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- ABA 5: PERFIL E DEFINIÇÕES -->
-        <!-- ========================================== -->
+        <!-- ABA 5: PERFIL -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-            
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-app-blue/20 text-app-blue mb-3 border-[3px] border-app-blue/30 relative shadow-[0_0_20px_rgba(10,132,255,0.2)]">
                     <i class="ph-fill ph-user text-4xl"></i>
@@ -450,50 +422,7 @@
 
     </main>
 
-    <!-- ========================================== -->
-    <!-- MODAIS NATIVOS INTERATIVOS -->
-    <!-- ========================================== -->
-
-    <!-- Modal: O Meu Cofre (NOVO) -->
-    <div id="modal-cofre" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-cofre-backdrop" onclick="fecharModal('modal-cofre')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-cofre-content">
-            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
-                <span class="w-12"></span>
-                <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-green flex items-center justify-center gap-2"><i class="ph-fill ph-vault text-xl"></i> O Meu Cofre</h3>
-                <div class="w-12 text-right"><button onclick="fecharModal('modal-cofre')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
-            </div>
-            <div class="px-5 py-6 overflow-y-auto no-scrollbar space-y-6">
-                <div class="text-center mb-2">
-                    <p class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1">Património Guardado</p>
-                    <p class="text-[36px] font-black text-app-green tracking-tight" id="cofre-total-guardado">R$ 0,00</p>
-                </div>
-                <div class="w-full mt-4">
-                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-1 mb-2 block">As tuas Reservas e Investimentos</span>
-                    <div id="modal-cofre-body" class="space-y-3">
-                        <!-- Conteúdo gerado no JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Timeline Detalhes (Macro -> Micro) -->
-    <div id="modal-timeline-detalhes" class="fixed inset-0 z-[90] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-timeline-backdrop" onclick="fecharModal('modal-timeline-detalhes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-timeline-content">
-            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
-                <span class="w-12"></span>
-                <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text" id="modal-timeline-title">Mês</h3>
-                <div class="w-12 text-right"><button onclick="fecharModal('modal-timeline-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
-            </div>
-            <div id="modal-timeline-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-2">
-                <!-- Detalhes injetados via JS -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal: Editar Perfil -->
+    <!-- MODAIS -->
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
@@ -516,7 +445,6 @@
         </div>
     </div>
 
-    <!-- Modal: Detalhes & Checklist do Plano -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
@@ -526,12 +454,10 @@
                 <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
             </div>
             <div id="modal-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-6">
-                <!-- Conteúdo Injetado Dinamicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Modal: Editar Mês Timeline -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-mes-content">
@@ -556,7 +482,7 @@
                     
                     <div class="flex items-center px-4 py-4 border-b border-app-border bg-[#0A84FF]/10">
                         <label class="w-36 shrink-0 font-bold text-app-blue">Forçar Saldo Inicial</label>
-                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Cascata)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
+                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Vem do anterior)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
                     </div>
 
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
@@ -600,22 +526,8 @@
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         
-        window.timelineDetailsHTML = {}; 
-        window.mesDetalheAberto = null;
-
-        // Padrões de formatação rigorosa
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
         const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
-
-        function getMesAtualStr() {
-            const dataSistema = new Date();
-            let mesStr = dataSistema.getFullYear() + '-' + String(dataSistema.getMonth() + 1).padStart(2, '0');
-            // Se a Timeline começa numa data à frente (ex: Abril), forçamos Abril a ser o Mês Ativo (Interativo)
-            if (dadosTimeline.length > 0 && mesStr < dadosTimeline[0].id) {
-                mesStr = dadosTimeline[0].id;
-            }
-            return mesStr;
-        }
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
@@ -623,113 +535,6 @@
             }
         }
 
-        // ========================================================
-        // O NOVO COFRE (PATRIMÓNIO GUARDADO - AUTOMAÇÃO TEXTO)
-        // ========================================================
-        function abrirCofre() {
-            const container = document.getElementById('modal-cofre-body');
-            let totalCofre = 0;
-            let htmlReservas = '';
-
-            // 1. Calcular reservas da Timeline (Automático por texto)
-            let totalTimelineRealizado = 0;
-            let totalTimelineProjetado = 0;
-            
-            if (dadosTimeline && dadosTimeline.length > 0) {
-                dadosTimeline.forEach(mes => {
-                    if (mes.extras) {
-                        mes.extras.forEach(ext => {
-                            const desc = (ext.descricao || '').toLowerCase();
-                            if (desc.includes('reserva') || desc.includes('poupança') || desc.includes('poupanca') || desc.includes('investimento')) {
-                                const val = parseFloat(ext.valor) || 0;
-                                if (ext.realizado) {
-                                    totalTimelineRealizado += val;
-                                } else {
-                                    totalTimelineProjetado += val;
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-            
-            totalCofre += totalTimelineRealizado;
-
-            // 2. Calcular reservas do "Centro de Lançamentos" (Projetos criados manualmente)
-            const reservas = sonhosGlobais.filter(s => s.categoria === 'Reserva');
-            
-            if (reservas.length === 0 && totalTimelineRealizado === 0 && totalTimelineProjetado === 0) {
-                htmlReservas = '<div class="text-center p-6 text-app-sub text-[14px] bg-[#1C1C1E] rounded-xl border border-[#2C2C2E]">Ainda não tens dinheiro guardado.<br><br><span class="text-app-blue font-bold">Dica:</span> Escreve "Reserva", "Poupança" ou "Investimento" num lançamento da tua Timeline para que ele apareça aqui magicamente.</div>';
-            } else {
-                
-                // Mostrar a caixa automática da Timeline se houver valores
-                if (totalTimelineRealizado > 0 || totalTimelineProjetado > 0) {
-                    htmlReservas += `
-                        <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-blue/30 relative overflow-hidden shadow-sm mb-4">
-                            <div class="flex justify-between items-center mb-3 border-b border-[#2C2C2E] pb-2">
-                                <span class="font-bold text-[14px] text-app-text flex items-center gap-1.5"><i class="ph-fill ph-magic-wand text-app-blue text-lg"></i> Guardado da Timeline</span>
-                                <span class="text-[9px] bg-app-blue/20 text-app-blue px-2 py-0.5 rounded uppercase tracking-widest font-bold">Automático</span>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">Realizado (Já Guardado)</p>
-                                    <p class="font-black text-[18px] text-app-green">${formatarMoeda(totalTimelineRealizado)}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">A Guardar (Projetado)</p>
-                                    <p class="font-bold text-[14px] text-app-sub">${formatarMoeda(totalTimelineProjetado)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Mostrar as reservas criadas manualmente em projetos
-                reservas.forEach(r => {
-                    let guardado = parseFloat(r.valor_guardado) || 0;
-                    if (r.complexidade === 'Composto' && r.itens_compostos) {
-                        r.itens_compostos.forEach(i => { if(i.comprado) guardado += (parseFloat(i.custo)||0); });
-                    }
-                    totalCofre += guardado;
-                    
-                    let meta = r.complexidade === 'Composto' ? 
-                        r.itens_compostos.reduce((acc, i) => acc + (parseFloat(i.custo)||0), 0) + (parseFloat(r.preco_servico)||0) : 
-                        (parseFloat(r.custo)||0);
-                    
-                    let percent = meta > 0 ? Math.round((guardado/meta)*100) : 0;
-
-                    htmlReservas += `
-                        <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-border relative overflow-hidden shadow-sm mb-3 last:mb-0">
-                            <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-green" style="width: ${percent}%"></div></div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-bold text-[15px] text-app-text">${r.nome}</span>
-                                <span class="text-[11px] text-app-green font-bold bg-app-green/10 px-2 py-0.5 rounded">${percent}%</span>
-                            </div>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">Acumulado</p>
-                                    <p class="font-black text-[16px] text-app-green">${formatarMoeda(guardado)}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[10px] text-app-sub uppercase tracking-widest mb-0.5">Meta</p>
-                                    <p class="font-bold text-[13px] text-app-text">${formatarMoeda(meta)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById('cofre-total-guardado').innerText = formatarMoeda(totalCofre);
-            container.innerHTML = htmlReservas;
-            
-            abrirModal('modal-cofre', 'modal-cofre-backdrop', 'modal-cofre-content');
-        }
-
-
-        // ========================================================
-        // 0. FUNÇÕES DE PERFIL E HISTÓRICO
-        // ========================================================
         function guardarPerfil() {
             const nome = document.getElementById('input-perfil-nome').value;
             localStorage.setItem('gestor_nome_perfil', nome);
@@ -746,7 +551,9 @@
         async function limparHistoricoReal() {
             if(!idUtilizadorAtual) return;
             const { error } = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
-            if(!error) { alert("Histórico apagado."); buscarSonhos(); }
+            if(!error) {
+                buscarSonhos(); 
+            }
         }
 
         function mudarTipoRegisto(tipo) {
@@ -776,9 +583,6 @@
             }
         }
 
-        // ========================================================
-        // 1. CÁLCULOS DO FORMULÁRIO DE REGISTO OBRA
-        // ========================================================
         const inputPreco = document.getElementById('input-preco-unit');
         const inputQtd = document.getElementById('input-quantidade');
         const displayTotal = document.getElementById('display-total');
@@ -839,27 +643,15 @@
             div.querySelector('.remover-parte').onclick = () => { div.remove(); calcularTotalFormulario(); };
         }
 
-
-        // ========================================================
-        // 2. LÓGICA DO ECOSSISTEMA: PORTFÓLIO E CONQUISTAS
-        // ========================================================
-        
         async function buscarSonhos() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('lista-sonhos-container');
             container.innerHTML = '<div class="text-center py-10 text-app-sub font-medium text-sm w-full col-span-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block text-app-blue"></i><br>A calcular ecossistema...</div>';
-            
             const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
-            
-            if(error) {
-                container.innerHTML = `<div class="p-6 text-center text-app-red font-medium border border-app-red/20 bg-app-red/10 rounded-xl m-4 col-span-full">Falha de ligação ao sistema.</div>`;
-                return;
-            }
+            if(error) return;
             sonhosGlobais = data || [];
-            
             renderizarUIEcossistema();
             renderizarUIConquistas();
-            
             const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
             const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
             document.getElementById('estatistica-projetos').innerText = ativos.length;
@@ -869,21 +661,17 @@
         function renderizarUIEcossistema() {
             const container = document.getElementById('lista-sonhos-container');
             container.innerHTML = '';
-            
             let totalGeralCusto = 0;
             let totalGeralInvestido = 0;
-
             const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
-
             if(ativos.length === 0) {
-                container.innerHTML = '<div class="p-10 text-center col-span-full bg-app-card rounded-[20px] border border-app-border"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo. Nenhum projeto ativo.</p></div>';
+                container.innerHTML = '<div class="p-10 text-center col-span-full bg-app-card rounded-[20px] border border-app-border"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo.</p></div>';
             } else {
                 ativos.forEach(sonho => {
                     let custoSubItens = 0;
                     let valorItensComprados = 0;
                     let qtdComprada = 0;
                     let qtdTotal = 0;
-
                     if (sonho.complexidade === 'Composto' && sonho.itens_compostos) {
                         qtdTotal = sonho.itens_compostos.length;
                         sonho.itens_compostos.forEach(p => {
@@ -892,35 +680,26 @@
                             if (p.comprado) { valorItensComprados += val; qtdComprada++; }
                         });
                     }
-
                     let maoDeObra = parseFloat(sonho.preco_servico) || 0;
                     let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
-                    
                     let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
                     let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
-                    
                     if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
-                    
                     let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
-
                     totalGeralCusto += custoTotalProjeto;
                     totalGeralInvestido += progressoFinanceiroReal;
-
                     let iconCat = '📌';
                     if(sonho.categoria.includes('Casa')) iconCat = '🏠';
                     if(sonho.categoria.includes('Reserva')) iconCat = '💰';
                     if(sonho.categoria.includes('Lazer')) iconCat = '🍺';
                     if(sonho.categoria.includes('Dívida')) iconCat = '💳';
-
                     let infoExtra = sonho.prioridade.split('(')[0];
                     if (sonho.complexidade === 'Composto') {
                         infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} items</span>`;
                     }
-
                     const card = document.createElement('div');
                     card.className = "bg-app-card rounded-[24px] p-5 shadow-float border border-app-border cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
                     card.onclick = () => abrirModalDetalhesSonho(sonho.id);
-                    
                     card.innerHTML = `
                         <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percentagem}%"></div></div>
                         <div class="flex justify-between items-start mb-2">
@@ -943,10 +722,8 @@
                     container.appendChild(card);
                 });
             }
-
             document.getElementById('saldos-total-geral').innerText = formatarMoeda(totalGeralCusto);
             document.getElementById('saldos-guardado').innerText = formatarMoeda(totalGeralInvestido);
-            
             let falta = totalGeralCusto - totalGeralInvestido;
             if (falta < 0) falta = 0;
             document.getElementById('saldos-falta').innerText = formatarMoeda(falta);
@@ -955,23 +732,19 @@
         function renderizarUIConquistas() {
             const container = document.getElementById('lista-conquistas-container');
             container.innerHTML = '';
-            
             const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
-
             if(concluidos.length === 0) {
-                container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><i class="ph-fill ph-ghost text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Ainda não há conquistas finalizadas.</p></div>';
+                container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><p class="text-app-sub font-medium text-[15px]">Sem conquistas.</p></div>';
             } else {
                 concluidos.forEach(sonho => {
-                    let total = parseFloat(sonho.custo) || 0;
+                    let total = sonho.custo;
                     if(sonho.complexidade === 'Composto') {
                         let sub = 0;
                         if(sonho.itens_compostos) sonho.itens_compostos.forEach(i => sub += parseFloat(i.custo)||0);
                         total = sub + (parseFloat(sonho.preco_servico)||0);
                     }
-
                     const row = document.createElement('div');
                     row.className = "flex items-center justify-between p-4 bg-app-card rounded-[20px] border border-app-green/20 w-full mb-3";
-                    
                     row.innerHTML = `
                         <div class="flex items-center gap-3 overflow-hidden flex-1 min-w-0 pr-2">
                             <div class="w-12 h-12 rounded-full bg-app-green/10 flex items-center justify-center shrink-0 text-[24px] text-app-green">
@@ -979,12 +752,11 @@
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-[15px] font-bold text-app-text truncate">${sonho.nome}</p>
-                                <p class="text-[12px] font-medium text-app-sub mt-0.5 truncate">Conquistado com sucesso</p>
+                                <p class="text-[12px] font-medium text-app-sub mt-0.5 truncate">Concluído</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0">
                             <p class="text-[15px] font-bold text-app-green">${formatarMoeda(total)}</p>
-                            <p class="text-[11px] font-bold mt-0.5 text-app-sub uppercase tracking-wider">Investido</p>
                         </div>
                     `;
                     container.appendChild(row);
@@ -992,27 +764,19 @@
             }
         }
 
-        // ========================================================
-        // 3. CHECKLIST INTERATIVA E A "ENGRENAGEM"
-        // ========================================================
-        
         function abrirModalDetalhesSonho(sonhoId) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho) return;
-
             document.getElementById('modal-title-header').innerText = sonho.nome;
-            
             let custoSubItens = 0;
             let valorItensComprados = 0;
             let qtdComprada = 0;
             let HTMLPartes = '';
-            
             if(sonho.complexidade === 'Composto' && sonho.itens_compostos) {
                 sonho.itens_compostos.forEach((p, index) => {
                     let val = parseFloat(p.custo) || 0;
                     custoSubItens += val;
-                    if(p.comprado) { valorItensComprados += val; qtdComprada++; }
-
+                    if(p.comprado) { valorItemsComprados += val; qtdComprada++; }
                     HTMLPartes += `
                         <div class="flex justify-between items-center px-4 py-3 bg-app-card w-full border-b border-app-border last:border-0 cursor-pointer active:bg-[#2C2C2E] check-transition" 
                              onclick="toggleItemComprado('${sonho.id}', ${index}, ${!p.comprado})">
@@ -1026,139 +790,53 @@
                         </div>
                     `;
                 });
-                
-                HTMLPartes = `
-                    <div class="w-full mt-4">
-                        <div class="flex justify-between items-end mb-1.5 ml-2 mr-2">
-                            <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lista de Compras da Obra</span>
-                            <span class="text-[11px] font-bold ${qtdComprada === sonho.itens_compostos.length ? 'text-app-green' : 'text-app-blue'}">${qtdComprada}/${sonho.itens_compostos.length} Feito</span>
-                        </div>
-                        <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">${HTMLPartes}</div>
-                    </div>`;
+                HTMLPartes = `<div class="w-full mt-4"><div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">${HTMLPartes}</div></div>`;
             }
-
             let maoDeObra = parseFloat(sonho.preco_servico) || 0;
             let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
             let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
             let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
             let falta = custoTotalProjeto - progressoFinanceiroReal;
             if(falta < 0) falta = 0;
-
             const percent = custoTotalProjeto > 0 ? Math.min(100, Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100)) : 0;
-            
-            let htmlBotaoConquista = '';
-            if (percent >= 100) {
-                htmlBotaoConquista = `
-                    <div class="mt-6 w-full">
-                        <button onclick="finalizarConquista('${sonho.id}')" class="w-full bg-app-green text-black font-black py-4 rounded-[20px] shadow-[0_0_20px_rgba(48,209,88,0.4)] transition-transform active:scale-95 text-[16px] flex justify-center items-center gap-2">
-                            <i class="ph-bold ph-trophy text-xl"></i> Finalizar Conquista
-                        </button>
-                    </div>
-                `;
-            }
-
+            let htmlBotaoConquista = percent >= 100 ? `<div class="mt-6 w-full"><button onclick="finalizarConquista('${sonho.id}')" class="w-full bg-app-green text-black font-black py-4 rounded-[20px] shadow-float text-[16px]">Finalizar Conquista</button></div>` : '';
             document.getElementById('modal-body').innerHTML = `
                 <div class="bg-gradient-to-br from-[#2C2C2E] to-[#1C1C1E] rounded-[24px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full relative">
                     <div class="absolute top-0 right-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percent}%"></div></div>
-                    
                     <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
-                        <span class="font-medium text-app-sub">Custo Total Projeto</span>
+                        <span class="font-medium text-app-sub">Custo Total</span>
                         <span class="font-black text-[18px] text-app-text">${formatarMoeda(custoTotalProjeto)}</span>
                     </div>
-                    <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
-                        <span class="font-bold text-app-text">Em Caixa (Líquido)</span>
-                        <span class="text-app-text font-black text-[18px]">${formatarMoeda(dinheiroGuardado)}</span>
-                    </div>
-                    <div class="flex justify-between items-center px-5 py-4 bg-[#151515]/50">
-                        <span class="font-medium text-app-sub text-[13px]">Falta p/ Concluir</span>
-                        <span class="text-app-sub font-bold">${formatarMoeda(falta)}</span>
-                    </div>
                 </div>
-
                 ${HTMLPartes}
                 ${htmlBotaoConquista}
-
-                <div class="w-full mt-4">
-                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-2 mb-1.5 block">Estrutura & Mão de Obra</span>
-                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full">
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card border-b border-app-border">
-                            <span class="text-app-text">Estratégia</span><span class="text-app-sub font-medium truncate ml-2">${sonho.categoria} • <span class="text-app-orange font-bold">${sonho.prioridade.split('(')[0]}</span></span>
-                        </div>
-                        ${sonho.viabilidade === 'Nao' ? `
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-orange/10 border-b border-app-orange/20">
-                            <span class="text-app-text">Pedreiro / Serviço</span><span class="text-app-orange font-bold">${formatarMoeda(maoDeObra)}</span>
-                        </div>
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card">
-                            <span class="text-app-text">Tempo Estimado</span><span class="text-app-sub font-medium truncate ml-2">${sonho.tempo_servico || '-'}</span>
-                        </div>` : `
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card">
-                            <span class="text-app-text">Execução</span><span class="text-app-sub font-medium">Eu mesmo (S/ Custo)</span>
-                        </div>
-                        `}
-                    </div>
-                </div>
-
-                ${sonho.observacoes ? `
-                <div class="w-full mt-4">
-                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-2 mb-1.5 block">Análise e Notas</span>
-                    <div class="bg-app-card rounded-[20px] border border-app-border p-4 text-[14px] text-app-text whitespace-pre-line shadow-float leading-relaxed w-full">${sonho.observacoes}</div>
-                </div>` : ''}
-                
-                <div class="pb-8 w-full"></div>
             `;
-
             abrirModal('modal-detalhes', 'modal-backdrop', 'modal-content');
         }
 
         async function toggleItemComprado(sonhoId, itemIndex, novoStatus) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho || !sonho.itens_compostos) return;
-
             const custoDoItem = parseFloat(sonho.itens_compostos[itemIndex].custo) || 0;
-            
             let caixaAtual = parseFloat(sonho.valor_guardado) || 0;
-            if (novoStatus === true) {
-                caixaAtual = Math.max(0, caixaAtual - custoDoItem);
-            } else {
-                caixaAtual += custoDoItem;
-            }
-            
+            if (novoStatus === true) caixaAtual = Math.max(0, caixaAtual - custoDoItem); else caixaAtual += custoDoItem;
             sonho.valor_guardado = caixaAtual;
             sonho.itens_compostos[itemIndex].comprado = novoStatus;
-            
             abrirModalDetalhesSonho(sonhoId);
             renderizarUIEcossistema();
-
             await clienteSupabase.from('sonhos').update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual }).eq('id', sonhoId);
         }
 
         async function finalizarConquista(sonhoId) {
-            const sonho = sonhosGlobais.find(s => s.id === sonhoId);
-            if(!sonho) return;
-
-            sonho.status = 'concluido';
             fecharModal('modal-detalhes');
-            renderizarUIEcossistema();
-            renderizarUIConquistas();
-
             await clienteSupabase.from('sonhos').update({ status: 'concluido' }).eq('id', sonhoId);
+            buscarSonhos();
         }
 
-        // ========================================================
-        // 4. GRAVAÇÃO DE REGISTOS (OBRA & RÁPIDO)
-        // ========================================================
-        
-        // --- A. REGISTO OBRA COMPLETA ---
         const formSonho = document.getElementById('form-sonho');
         formSonho.onsubmit = async (e) => {
             e.preventDefault();
             if(!idUtilizadorAtual) return;
-
-            const btn = document.getElementById('btn-guardar-obra');
-            const msg = document.getElementById('msg-form-obra');
-            btn.innerText = `A integrar no ecossistema...`;
-            btn.disabled = true; btn.classList.add('opacity-50');
-            
             let itensComp = null;
             if(complexidadeSelect.value === 'Composto'){
                 itensComp = [];
@@ -1166,14 +844,10 @@
                     itensComp.push({ nome: l.querySelector('.nome-parte').value, custo: parseFloat(l.querySelector('.custo-parte').value) || 0, comprado: false });
                 });
             }
-
-            const custoCalc = calcularTotalFormulario();
-
             const dados = {
                 user_id: idUtilizadorAtual,
                 nome: document.getElementById('input-nome').value,
-                quantidade: parseInt(inputQtd.value) || 1,
-                custo: custoCalc,
+                custo: calcularTotalFormulario(),
                 valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
                 categoria: document.getElementById('val-categoria').value,
                 viabilidade: document.getElementById('val-viabilidade').value,
@@ -1181,204 +855,71 @@
                 complexidade: document.getElementById('val-complexidade').value,
                 preco_servico: parseFloat(precoServico.value) || 0,
                 tempo_servico: document.getElementById('input-tempo-servico').value,
-                observacoes: document.getElementById('input-observacoes').value,
                 itens_compostos: itensComp
             };
-
-            const { error } = await clienteSupabase.from('sonhos').insert([dados]);
-
-            msg.classList.remove('hidden');
-            if (error) {
-                msg.innerHTML = "Erro: " + error.message; msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
-            } else {
-                msg.innerHTML = `Registado com sucesso. Continua focado!`; msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
-                formSonho.reset(); verificarServico(); verificarComplexidade(); calcularTotalFormulario();
-                buscarSonhos();
-            }
-
-            btn.innerText = `Registar Plano`; btn.disabled = false; btn.classList.remove('opacity-50');
-            setTimeout(() => { msg.classList.add('hidden'); }, 4000);
+            await clienteSupabase.from('sonhos').insert([dados]);
+            formSonho.reset(); buscarSonhos(); mudarAba('saldos');
         };
 
-        // --- B. REGISTO RÁPIDO DIÁRIO ---
         const formRapido = document.getElementById('form-rapido');
         formRapido.onsubmit = async (e) => {
             e.preventDefault();
             if(!idUtilizadorAtual) return;
-
-            const btn = document.getElementById('btn-guardar-rapido');
-            const msg = document.getElementById('msg-form-rapido');
-            btn.innerText = `A injetar...`; btn.disabled = true; btn.classList.add('opacity-50');
-
             const mesAlvo = document.getElementById('val-mes-rapido').value;
             const tipo = document.getElementById('val-tipo-rapido').value;
             const valor = parseFloat(document.getElementById('input-valor-rapido').value);
             const desc = document.getElementById('input-desc-rapido').value;
-
             const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
             if (index !== -1) {
                 const mesData = dadosTimeline[index];
                 const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: false };
-                
                 let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
                 const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
-
-                const payload = {
-                    user_id: idUtilizadorAtual,
-                    mes_id: mesAlvo,
-                    entradas: parseFloat(mesData.entradas) || 0,
-                    fixos: parseFloat(mesData.fixos) || 0,
-                    parcela: parseFloat(mesData.parcela) || 0,
-                    observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }),      
-                    saldo_inicial: mesData.saldo_inicial !== null ? parseFloat(mesData.saldo_inicial) : null, 
-                    extras: novosExtras
-                };
-
-                const { error } = await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
-
-                msg.classList.remove('hidden');
-                if(!error) {
-                    dadosTimeline[index].extras = novosExtras; 
-                    renderizarTimelineUI(); 
-                    
-                    msg.innerHTML = `Lançamento integrado na Timeline!`; 
-                    msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
-                    document.getElementById('input-valor-rapido').value = '';
-                    document.getElementById('input-desc-rapido').value = '';
-                } else {
-                    msg.innerHTML = "Erro: " + error.message; 
-                    msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
-                }
+                const payload = { user_id: idUtilizadorAtual, mes_id: mesAlvo, entradas: mesData.entradas, fixos: mesData.fixos, parcela: mesData.parcela, observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }), saldo_inicial: mesData.saldo_inicial, extras: novosExtras };
+                await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+                dadosTimeline[index].extras = novosExtras; renderizarTimelineUI(); 
+                formRapido.reset(); mudarAba('previsoes');
             }
-
-            btn.innerText = `Lançar no Ecossistema`; btn.disabled = false; btn.classList.remove('opacity-50');
-            setTimeout(() => { msg.classList.add('hidden'); }, 4000);
         }
 
-        // ========================================================
-        // 5. TIMELINE 2026 E MODAIS BASE (A MAGIA DA PROJEÇÃO ROLLING FORECAST)
-        // ========================================================
-        
         const templateMeses = [
-            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Foco no arranque da obra e ajustes.', extras: [
-                { id: 'ab1', tipo: 'receita', descricao: 'Rendimento Extra / Venda', valor: 2500, realizado: false },
-                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200, realizado: false },
-                { id: 'ab3', tipo: 'gasto', descricao: 'Ajustes', valor: 300, realizado: false },
-                { id: 'ab4', tipo: 'gasto', descricao: 'Reserva', valor: 300, realizado: false }
+            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Início.', extras: [
+                { id: 'ab1', tipo: 'receita', descricao: 'Venda', valor: 2500, realizado: false },
+                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200, realizado: false }
             ]},
-            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Equilíbrio entre lazer e obra.', extras: [
-                { id: 'ma1', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false },
-                { id: 'ma2', tipo: 'gasto', descricao: 'Reserva', valor: 500, realizado: false },
-                { id: 'ma3', tipo: 'gasto', descricao: 'Casa', valor: 400, realizado: false },
-                { id: 'ma4', tipo: 'gasto', descricao: 'Poupança', valor: 150, realizado: false }
-            ]},
-            { id: '2026-06', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável.', extras: [
-                { id: 'ju1', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false },
-                { id: 'ju2', tipo: 'gasto', descricao: 'Casa', valor: 400, realizado: false }
-            ]},
-            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Manter a disciplina.', extras: [
-                { id: 'jl1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 220, realizado: false },
-                { id: 'jl2', tipo: 'gasto', descricao: 'Casa', valor: 600, realizado: false },
-                { id: 'jl3', tipo: 'gasto', descricao: 'Reserva', valor: 500, realizado: false },
-                { id: 'jl4', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false }
-            ]},
-            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Virada', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção forte na Obra.', extras: [
-                { id: 'ag1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 920, realizado: false },
-                { id: 'ag2', tipo: 'gasto', descricao: 'Casa (Injeção Obra)', valor: 1200, realizado: false }
-            ]},
-            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.', extras: [
-                { id: 'se1', tipo: 'gasto', descricao: 'Poupança / Reserva', valor: 400, realizado: false }
-            ]},
-            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.', extras: [
-                { id: 'oc1', tipo: 'gasto', descricao: 'Casa', valor: 600, realizado: false }
-            ]},
-            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 2580, fixos: 530, obs: 'Última Parcela do Empréstimo!', extras: [
-                { id: 'no1', tipo: 'receita', descricao: '13º Salário (Adiantamento)', valor: 900, realizado: false },
-                { id: 'no2', tipo: 'gasto', descricao: 'Lazer', valor: 300, realizado: false }
-            ]},
-            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 2580, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Reserva forte.', extras: [
-                { id: 'de1', tipo: 'receita', descricao: '13º Salário (Final)', valor: 900, realizado: false },
-                { id: 'de2', tipo: 'gasto', descricao: 'Férias / Festas', valor: 600, realizado: false },
-                { id: 'de3', tipo: 'gasto', descricao: 'Reserva Forte', valor: 1000, realizado: false }
-            ]}
+            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Foco.', extras: []},
+            { id: '2026-06', mes: 'Junho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Empréstimo.', extras: []},
+            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Foco.', extras: []},
+            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção.', extras: []},
+            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Alívio.', extras: []},
+            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Disciplina.', extras: []},
+            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', parcela: 520, entradas: 2580, fixos: 530, obs: '13º.', extras: []},
+            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2580, fixos: 530, parcela: 0, obs: 'Festa.', extras: []}
         ];
 
         async function inicializarTimeline() {
             if(!idUtilizadorAtual) return;
-            const container = document.getElementById('timeline-container');
-            container.innerHTML = '<div class="text-center py-8 text-app-sub font-medium text-sm w-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block"></i><br>A sincronizar ecossistema...</div>';
-            
             const { data } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
-            
-            let precisaSincronizar = false;
-
             dadosTimeline = templateMeses.map(temp => {
                 const mesBD = data?.find(d => d.mes_id === temp.id);
                 if(mesBD) {
                     let obsTexto = mesBD.observacoes || '';
-                    let saldoIn = mesBD.saldo_inicial !== undefined && mesBD.saldo_inicial !== null ? parseFloat(mesBD.saldo_inicial) : null;
                     let baseOk = { entradas: false, fixos: false, parcela: false };
-                    
-                    if (obsTexto && typeof obsTexto === 'string' && obsTexto.trim().startsWith('{')) {
-                        try {
-                            const parsed = JSON.parse(obsTexto);
-                            if (parsed && typeof parsed === 'object') {
-                                if (saldoIn === null && parsed.saldo_inicial !== undefined && parsed.saldo_inicial !== null) saldoIn = parseFloat(parsed.saldo_inicial);
-                                obsTexto = parsed.texto !== undefined ? parsed.texto : '';
-                                if (parsed.base_ok) baseOk = parsed.base_ok;
-                            }
-                        } catch(e) {}
-                    } else if (typeof obsTexto === 'object') {
-                        if (saldoIn === null && obsTexto.saldo_inicial !== undefined && obsTexto.saldo_inicial !== null) saldoIn = parseFloat(obsTexto.saldo_inicial);
-                        obsTexto = obsTexto.texto || '';
-                        if (obsTexto.base_ok) baseOk = obsTexto.base_ok;
-                    }
-                    
-                    let bdExtras = Array.isArray(mesBD.extras) ? mesBD.extras : (mesBD.extras ? [mesBD.extras] : []);
-                    let usarExtras = bdExtras;
-                    
-                    if (bdExtras.length === 0 && temp.extras.length > 0) {
-                        usarExtras = temp.extras; precisaSincronizar = true; 
-                    } else {
-                        usarExtras = usarExtras.map(e => ({ ...e, valor: parseFloat(e.valor)||0, realizado: e.realizado || false }));
-                    }
-                    
-                    return { ...temp, entradas: parseFloat(mesBD.entradas)||0, fixos: parseFloat(mesBD.fixos)||0, parcela: parseFloat(mesBD.parcela)||0, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras, base_ok: baseOk };
+                    try { const p = JSON.parse(obsTexto); obsTexto = p.texto || ''; baseOk = p.base_ok || baseOk; } catch(e){}
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: mesBD.saldo_inicial, extras: mesBD.extras || [], base_ok: baseOk };
                 }
-                
-                precisaSincronizar = true;
-                return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false } };
+                return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
             });
-
-            if (precisaSincronizar) {
-                const payloadSinc = dadosTimeline.map(m => ({
-                    user_id: idUtilizadorAtual, mes_id: m.id, entradas: parseFloat(m.entradas)||0, fixos: parseFloat(m.fixos)||0, parcela: parseFloat(m.parcela)||0,
-                    observacoes: JSON.stringify({ texto: m.obs, base_ok: m.base_ok }), saldo_inicial: m.saldo_inicial !== null ? parseFloat(m.saldo_inicial) : null, extras: m.extras
-                }));
-                clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => { if(error) console.log("Sincronização inicial falhou", error); });
-            }
-
             const selectRapido = document.getElementById('val-mes-rapido');
             selectRapido.innerHTML = '';
-            dadosTimeline.forEach(m => { selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`; });
-
+            dadosTimeline.forEach(m => selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
             renderizarTimelineUI();
-        }
-
-        function abrirDetalhesTimeline(mesId) {
-            window.mesDetalheAberto = mesId;
-            const prev = dadosTimeline.find(m => m.id === mesId);
-            if(!prev) return;
-            document.getElementById('modal-timeline-title').innerText = prev.mes + " - Detalhes";
-            document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
-            abrirModal('modal-timeline-detalhes', 'modal-timeline-backdrop', 'modal-timeline-content');
         }
 
         async function toggleRealizado(mesId, tipo, extraId = null) {
             const index = dadosTimeline.findIndex(m => m.id === mesId);
             if(index === -1) return;
             const mes = dadosTimeline[index];
-
             if(tipo === 'entradas') mes.base_ok.entradas = !mes.base_ok.entradas;
             else if(tipo === 'fixos') mes.base_ok.fixos = !mes.base_ok.fixos;
             else if(tipo === 'parcela') mes.base_ok.parcela = !mes.base_ok.parcela;
@@ -1386,18 +927,8 @@
                 const ext = mes.extras.find(e => e.id === extraId);
                 if(ext) ext.realizado = !ext.realizado;
             }
-
             renderizarTimelineUI();
-
-            const modalTimeline = document.getElementById('modal-timeline-detalhes');
-            if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === mesId) {
-                document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
-            }
-
-            const payload = {
-                user_id: idUtilizadorAtual, mes_id: mes.id, entradas: parseFloat(mes.entradas)||0, fixos: parseFloat(mes.fixos)||0, parcela: parseFloat(mes.parcela)||0,
-                observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial !== null ? parseFloat(mes.saldo_inicial) : null, extras: mes.extras
-            };
+            const payload = { user_id: idUtilizadorAtual, mes_id: mes.id, entradas: mes.entradas, fixos: mes.fixos, parcela: mes.parcela, observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial, extras: mes.extras };
             await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
         }
 
@@ -1411,272 +942,116 @@
         function atualizarCardResumo() {
             const prev = dadosTimeline[mesResumoIndex];
             if(!prev) return;
-            
-            let mesAtualStr = getMesAtualStr();
-            let isFuturo = prev.id > mesAtualStr;
-
-            document.getElementById('resumo-mes-titulo').innerText = prev.mes + (isFuturo ? ' (Projeção)' : '');
-            
-            document.getElementById('lbl-resumo-inicial').innerHTML = `<i class="ph-bold ph-calendar"></i> ${isFuturo ? 'Início Projetado' : 'Inicial Real'}`;
-            document.getElementById('lbl-resumo-atual').innerHTML = `<i class="ph-fill ph-wallet"></i> ${isFuturo ? 'Acumulado Fim' : 'Saldo Carteira'}`;
-            document.getElementById('lbl-resumo-previsto').innerHTML = `<i class="ph-bold ph-target"></i> ${isFuturo ? 'Sobra do Mês' : 'Previsto Fim'}`;
-
+            document.getElementById('resumo-mes-titulo').innerText = prev.mes;
             document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
             document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
-            
-            if (isFuturo) {
-                document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcBalanco || 0);
-                document.getElementById('resumo-val-previsto').className = `font-bold text-[13px] ${prev._calcBalanco >= 0 ? 'text-[#30D158]' : 'text-[#FF453A]'}`;
-            } else {
-                document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
-                document.getElementById('resumo-val-previsto').className = `font-bold text-[13px] text-white`;
-            }
+            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
         }
 
-        // ====== A MAGIA DA PROJEÇÃO (CASCATA BLINDADA) ======
         function renderizarTimelineUI() {
             const resumoContainer = document.getElementById('resumo-timeline-container');
-            if(resumoContainer.innerHTML.trim() === '') {
-                resumoContainer.innerHTML = `
-                    <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
-                        <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
-                        <div class="flex justify-between items-center mb-6 relative z-10">
-                            <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-left"></i></button>
-                            <h3 class="font-bold text-[18px] tracking-wide" id="resumo-mes-titulo">Mês</h3>
-                            <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-right"></i></button>
-                        </div>
-                        <div class="flex justify-between items-end relative z-10 pb-2">
-                            <div class="text-left flex-1">
-                                <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider" id="lbl-resumo-inicial"><i class="ph-bold ph-calendar"></i> Inicial Real</p>
-                                <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
-                            </div>
-                            <div class="text-center flex-[1.5]">
-                                <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md" id="lbl-resumo-atual"><i class="ph-fill ph-wallet"></i> Saldo Carteira</p>
-                                <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-atual">R$ 0</p>
-                            </div>
-                            <div class="text-right flex-1">
-                                <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider" id="lbl-resumo-previsto"><i class="ph-bold ph-target"></i> Previsto Fim</p>
-                                <p class="font-bold text-[13px] text-white" id="resumo-val-previsto">R$ 0</p>
-                            </div>
-                        </div>
+            resumoContainer.innerHTML = `
+                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
+                    <div class="flex justify-between items-center mb-6 relative z-10">
+                        <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-left"></i></button>
+                        <h3 class="font-bold text-[18px]" id="resumo-mes-titulo">Mês</h3>
+                        <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-right"></i></button>
                     </div>
-                `;
-            }
-
+                    <div class="flex justify-between items-end relative z-10 pb-2">
+                        <div class="text-left flex-1"><p class="text-[10px] uppercase opacity-70">Inicial Real</p><p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p></div>
+                        <div class="text-center flex-[1.5]"><p class="text-[12px] font-bold">Saldo Carteira</p><p class="font-black text-[22px]" id="resumo-val-atual">R$ 0</p></div>
+                        <div class="text-right flex-1"><p class="text-[10px] uppercase opacity-70">Previsto Fim</p><p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p></div>
+                    </div>
+                </div>
+            `;
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
-            
-            let mesAtualStr = getMesAtualStr();
-            let cascataReal = 0; 
-            let cascataPrevista = 0;
-            
-            window.timelineDetailsHTML = {}; 
-
+            let saldoAtualAnterior = 0; 
+            let saldoPrevistoAnterior = 0;
             dadosTimeline.forEach((prev, index) => {
-                let isFuturo = prev.id > mesAtualStr;
-
-                let somaRealizada = 0;
-                let somaPendente = 0;
-
-                const valEntradas = parseFloat(prev.entradas) || 0;
-                const valFixos = parseFloat(prev.fixos) || 0;
-                const valParcela = parseFloat(prev.parcela) || 0;
-
-                let totalEntradasPrevistas = valEntradas;
-                let totalSaidasPrevistas = valFixos + valParcela;
-
-                if (prev.base_ok.entradas) somaRealizada += valEntradas; else somaPendente += valEntradas;
-                if (prev.base_ok.fixos) somaRealizada -= valFixos; else somaPendente -= valFixos;
-                if (valParcela > 0) {
-                    if (prev.base_ok.parcela) somaRealizada -= valParcela; else somaPendente -= valParcela;
-                }
-
                 let htmlExtras = '';
+                let totalEntradasMes = prev.entradas;
+                let totalSaidasMes = prev.fixos + prev.parcela;
+                let somaRealizada = 0;
+                if (prev.base_ok.entradas) somaRealizada += prev.entradas;
+                if (prev.base_ok.fixos) somaRealizada -= prev.fixos;
+                if (prev.parcela > 0 && prev.base_ok.parcela) somaRealizada -= prev.parcela;
                 if(prev.extras && prev.extras.length > 0) {
                     prev.extras.forEach(ext => {
                         const val = parseFloat(ext.valor) || 0;
-                        
-                        if (ext.tipo === 'receita') totalEntradasPrevistas += val;
-                        else totalSaidasPrevistas += val;
-
-                        if (ext.realizado) {
-                            ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
-                        } else {
-                            ext.tipo === 'receita' ? somaPendente += val : somaPendente -= val;
-                        }
-                        
+                        if (ext.tipo === 'receita') totalEntradasMes += val; else totalSaidasMes += val;
+                        if (ext.realizado) ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
                         htmlExtras += `
-                            <div class="flex justify-between items-center p-2 rounded-lg hover:bg-[#2C2C2E]/50 transition-colors">
-                                <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
-                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="text-[20px] transition-colors shrink-0 active:scale-95 ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                    <span class="text-[14px] font-medium truncate ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">${ext.descricao}</span>
+                            <div class="flex justify-between items-center mt-2 group text-[13px]">
+                                <div class="flex items-center gap-2 flex-1 pr-2">
+                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="transition-colors ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                    <span class="${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">${ext.descricao}</span>
                                 </div>
-                                <span class="text-[14px] font-bold shrink-0 ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                                <span class="font-bold ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
                             </div>
                         `;
                     });
                 }
-                
-                let somaTotalMes = somaRealizada + somaPendente;
-
-                // --- O SEGREDO DO ROLLING FORECAST ---
-                let saldoStartAtual = isFuturo ? cascataPrevista : cascataReal;
-                let saldoStartPrevisto = isFuturo ? cascataPrevista : cascataReal; 
-                
-                let textoOrigem = index === 0 ? 'Início do Plano' : (isFuturo ? 'Vem da Projeção Anterior' : 'Vem do Mês Anterior');
-                
-                if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
+                let saldoStartAtual = saldoAtualAnterior;
+                let saldoStartPrevisto = saldoPrevistoAnterior;
+                if (index === 0 && prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
                     saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
-                    textoOrigem = 'Saldo Inicial Manual';
                 }
-
-                let saldoAtualFinal;
-                let saldoPrevistoFinal;
-
-                if (isFuturo) {
-                    saldoAtualFinal = saldoStartAtual + somaTotalMes;
-                    saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes;
-                } else {
-                    saldoAtualFinal = saldoStartAtual + somaRealizada;
-                    saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
-                }
-
-                cascataReal = saldoAtualFinal;
-                cascataPrevista = saldoPrevistoFinal;
-
+                let saldoAtual = saldoStartAtual + somaRealizada;
+                let saldoPrevistoFinal = saldoStartPrevisto + totalEntradasMes - totalSaidasMes; 
+                saldoAtualAnterior = saldoAtual;
+                saldoPrevistoAnterior = saldoPrevistoFinal;
                 prev._calcStart = saldoStartAtual;
-                prev._calcAtual = saldoAtualFinal; 
+                prev._calcAtual = saldoAtual; 
                 prev._calcPrevisto = saldoPrevistoFinal;
-                prev._calcBalanco = somaTotalMes; 
-
-                // HTML BUILD PARA O MODAL (MICRO)
-                const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
-                let sobraMesHTML = somaTotalMes >= 0 ? `+${formatarMoeda(somaTotalMes)}` : formatarMoeda(somaTotalMes);
-
-                window.timelineDetailsHTML[prev.id] = `
-                    <div class="flex justify-between items-center mb-5">
-                        <h4 class="text-[15px] font-bold text-app-text flex items-center">Visão Detalhada</h4>
-                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"><i class="ph-bold ph-pencil-simple"></i> Ajustar Mês</button>
-                    </div>
-
-                    <!-- A CAIXA AZUL VOLTOU PRO MODAL! -->
-                    <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_10px_25px_rgba(10,132,255,0.3)] text-white w-full relative overflow-hidden mb-6 border border-white/20">
-                        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl"></div>
-                        <div class="flex justify-between items-end relative z-10">
-                            <div class="text-left flex-1">
-                                <p class="text-[10px] font-semibold text-white/80 uppercase tracking-widest mb-1">Anterior</p>
-                                <p class="font-bold text-[14px]">${formatarMoedaSemCentavos(saldoStartPrevisto)}</p>
-                            </div>
-                            <div class="text-center flex-[1.2]">
-                                <p class="text-[11px] font-bold text-white uppercase tracking-widest mb-0.5 drop-shadow-sm">Atual (Hoje)</p>
-                                <p class="font-black text-[22px] leading-none drop-shadow-md">${formatarMoedaSemCentavos(saldoAtualFinal)}</p>
-                            </div>
-                            <div class="text-right flex-1">
-                                <p class="text-[10px] font-semibold text-white/80 uppercase tracking-widest mb-1">Previsto</p>
-                                <p class="font-bold text-[14px]">${formatarMoedaSemCentavos(saldoPrevistoFinal)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 mb-4">
-                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
-                            <div class="flex items-center gap-3">
-                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium text-[14px] ${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Entradas Base</span>
-                            </div>
-                            <span class="font-bold text-app-green text-[14px] ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(valEntradas)}</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
-                            <div class="flex items-center gap-3">
-                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium text-[14px] ${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Fixos Base</span>
-                            </div>
-                            <span class="font-bold text-app-red text-[14px] ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(valFixos)}</span>
-                        </div>
-                        ${valParcela > 0 ? `
-                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
-                            <div class="flex items-center gap-3">
-                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium text-[14px] ${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Empréstimo</span>
-                            </div>
-                            <span class="font-bold text-app-orange text-[14px] ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(valParcela)}</span>
-                        </div>` : ''}
-                    </div>
-
-                    ${htmlExtras !== '' ? `<div class="mb-4"><h5 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-1">Extras & Variáveis</h5><div class="bg-app-card border border-app-border rounded-xl p-1 space-y-1">${htmlExtras}</div></div>` : ''}
-
-                    <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-5 mt-6 mb-8 shadow-inner">
-                        <div class="flex justify-between items-center pb-3 border-b border-[#2C2C2E]/50">
-                            <div>
-                                <span class="font-bold text-[12px] text-app-blue uppercase tracking-widest block mb-0.5">${isFuturo ? 'Projeção Acumulada' : 'Saldo Atual Real'}</span>
-                                <span class="text-[10px] text-app-sub font-medium">${isFuturo ? 'Assumindo execução total' : 'Na tua carteira hoje'}</span>
-                            </div>
-                            <span class="font-black text-[18px] ${saldoAtualFinal >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtualFinal)}</span>
-                        </div>
-                        ${!isFuturo ? `
-                        <div class="flex justify-between items-center pt-3">
-                            <div>
-                                <span class="font-bold text-[12px] text-app-sub uppercase tracking-widest block mb-0.5">Projeção Final</span>
-                                <span class="text-[10px] text-app-sub font-medium block mt-0.5">Sobra Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
-                            </div>
-                            <span class="font-black text-[18px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
-                        </div>` : `
-                        <div class="flex justify-between items-center pt-3">
-                            <div>
-                                <span class="font-bold text-[12px] text-app-sub uppercase tracking-widest block mb-0.5">Dinheiro Gerado no Mês</span>
-                                <span class="text-[10px] text-app-sub font-medium block mt-0.5">Sobras/Défice:</span>
-                            </div>
-                            <span class="font-black text-[18px] ${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span>
-                        </div>
-                        `}
-                    </div>
-                `;
-
-                // HTML BUILD PARA O CARTÃO (MACRO) NA LISTA DE TIMELINE - O Formato de Lista Limpa Solicitado
-                const colorSaldoFinal = saldoPrevistoFinal >= 0 ? 'text-app-blue' : 'text-app-red';
-                const bgSaldoFinal = saldoPrevistoFinal >= 0 ? 'bg-app-blue/10 border-app-blue/20' : 'bg-app-red/10 border-app-red/20';
-
+                const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase font-bold ${prev.risco ? 'text-app-red bg-app-red/20' : ''}">${prev.badge}</span>` : '';
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
                 card.innerHTML = `
-                    <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black ${prev.destaque ? 'shadow-[0_0_12px_rgba(10,132,255,0.6)]' : ''}"></span>
+                    <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black"></span>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
+                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded">Ajustar</button>
                     </div>
-                    <div onclick="abrirDetalhesTimeline('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-4 text-[14px] shadow-float w-full cursor-pointer active:scale-[0.98] transition-transform">
-                        
-                        <!-- Formato em Lista Limpa e Simples -->
-                        <div class="space-y-1 mb-3">
-                            <div class="flex justify-between items-center bg-[#151515] px-3 py-2.5 rounded-[12px] border border-[#2C2C2E]">
-                                <span class="text-[12px] text-app-sub font-medium">Saldo do Mês Anterior</span>
-                                <span class="text-[13px] font-bold text-app-text">${formatarMoeda(saldoStartPrevisto)}</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-app-green/5 px-3 py-2.5 rounded-[12px] border border-app-green/10">
-                                <span class="text-[12px] text-app-green font-medium">Entradas Previstas</span>
-                                <span class="text-[13px] font-bold text-app-green">+${formatarMoeda(totalEntradasPrevistas)}</span>
-                            </div>
-                            <div class="flex justify-between items-center bg-app-red/5 px-3 py-2.5 rounded-[12px] border border-app-red/10">
-                                <span class="text-[12px] text-app-red font-medium">Saídas Previstas</span>
-                                <span class="text-[13px] font-bold text-app-red">-${formatarMoeda(totalSaidasPrevistas)}</span>
-                            </div>
-                            <div class="flex justify-between items-center ${bgSaldoFinal} px-3 py-2.5 rounded-[12px] border">
-                                <span class="text-[12px] ${colorSaldoFinal} font-bold">Sobra do Mês Previsto</span>
-                                <span class="text-[13px] font-black ${colorSaldoFinal}">${formatarMoeda(saldoPrevistoFinal)}</span>
-                            </div>
+                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full">
+                        <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5">
+                            <h5 class="text-[10px] uppercase tracking-widest font-bold text-app-blue mb-2">Fluxo do Mês (Projeção)</h5>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-sub">Saldo Anterior:</span><span class="font-bold">${formatarMoeda(saldoStartPrevisto)}</span></div>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-green">Entradas (+):</span><span class="font-bold text-app-green">+${formatarMoeda(totalEntradasMes)}</span></div>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-red">Saídas (-):</span><span class="font-bold text-app-red">-${formatarMoeda(totalSaidasMes)}</span></div>
+                            <div class="flex justify-between text-[14px] pt-1.5 border-t border-white/10 font-bold"><span class="text-app-text">Saldo Final (=):</span><span class="text-app-blue">${formatarMoeda(saldoPrevistoFinal)}</span></div>
                         </div>
-
-                        <!-- Rodapé do Cartão - Realidade -->
-                        <div class="flex items-center justify-between text-app-sub border-t border-dashed border-[#2C2C2E] pt-3 mt-1">
-                            <span class="text-[11px] font-medium line-clamp-1 flex-1 pr-2">
-                                <span class="font-bold text-app-text"><i class="ph-fill ph-wallet"></i> Real Hoje:</span> ${formatarMoeda(saldoAtualFinal)}
-                            </span>
-                            <span class="text-[10px] bg-[#2C2C2E] text-white px-2.5 py-1 rounded-md font-bold uppercase tracking-wider shrink-0 flex items-center gap-1">Check <i class="ph-bold ph-caret-right"></i></span>
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Entradas Base</span>
+                            </div>
+                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Fixos Base</span>
+                            </div>
+                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                        </div>
+                        ${prev.parcela > 0 ? `
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Empréstimo</span>
+                            </div>
+                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                        </div>` : ''}
+                        ${htmlExtras}
+                        <div class="bg-[#151515] rounded-xl p-3 mt-4 flex justify-between items-center">
+                            <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Real Carteira</span>
+                            <span class="font-black text-[15px] ${saldoAtual >= 0 ? 'text-white' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
                         </div>
                     </div>`;
                 container.appendChild(card);
             });
-            
             atualizarCardResumo(); 
         }
 
@@ -1686,9 +1061,7 @@
             if(!prev) return;
             document.getElementById('display-mes-nome').innerText = prev.mes;
             document.getElementById('edit-mes-id').value = prev.id;
-            
-            document.getElementById('edit-mes-saldo-inicial').value = (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined) ? prev.saldo_inicial : '';
-            
+            document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial || '';
             document.getElementById('edit-mes-entradas').value = prev.entradas;
             document.getElementById('edit-mes-fixos').value = prev.fixos;
             document.getElementById('edit-mes-parcela').value = prev.parcela;
@@ -1701,8 +1074,6 @@
         function adicionarExtraMes(tipo) {
             extrasTemp.push({ id: Date.now().toString(), tipo: tipo, descricao: '', valor: 0, realizado: false });
             renderizarExtrasEditUI();
-            const area = document.getElementById('modal-mes-scroll-area');
-            setTimeout(() => area.scrollTo({top: area.scrollHeight, behavior: 'smooth'}), 50);
         }
 
         function removerExtraMes(idExtra) { extrasTemp = extrasTemp.filter(e => e.id !== idExtra); renderizarExtrasEditUI(); }
@@ -1710,109 +1081,49 @@
         function renderizarExtrasEditUI() {
             const list = document.getElementById('lista-extras-mes');
             list.innerHTML = '';
-            if(extrasTemp.length === 0) { list.innerHTML = `<div class="px-4 py-4 text-[14px] text-app-sub text-center bg-app-card font-medium border-b border-app-border">Nenhum lançamento extra.</div>`; return; }
             extrasTemp.forEach((ext, index) => {
                 const div = document.createElement('div');
-                div.className = "flex items-center px-4 py-3.5 bg-app-card border-b border-app-border last:border-0 w-full gap-2";
-                div.innerHTML = `<button type="button" onclick="removerExtraMes('${ext.id}')" class="text-app-red shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-[22px]"></i></button><div class="flex-1 flex gap-2 items-center min-w-0"><span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 ${ext.tipo==='receita'?'bg-app-green/20 text-app-green':'bg-app-red/20 text-app-red'}">${ext.tipo==='receita'?'+ Rec':'- Gas'}</span><input type="text" placeholder="Descrição" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[15px] bg-transparent outline-none text-app-text min-w-0 placeholder-app-sub/50"></div><input type="number" placeholder="0,00" value="${ext.valor || ''}" min="0" step="0.01" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none ${ext.tipo==='receita'?'text-app-green':'text-app-red'} placeholder-app-sub/50">`;
+                div.className = "flex items-center px-4 py-3 bg-app-card border-b border-app-border gap-2";
+                div.innerHTML = `<button onclick="removerExtraMes('${ext.id}')" class="text-app-red"><i class="ph-fill ph-minus-circle text-[22px]"></i></button><input type="text" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[15px] bg-transparent outline-none"><input type="number" value="${ext.valor || ''}" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 text-right text-[15px] font-bold bg-transparent outline-none">`;
                 list.appendChild(div);
             });
         }
 
         async function guardarEdicaoMes() {
-            const btn = event.target; const textOrig = btn.innerText;
-            btn.innerText = 'A gravar...'; btn.classList.add('opacity-50', 'pointer-events-none');
             const id = document.getElementById('edit-mes-id').value;
             const index = dadosTimeline.findIndex(m => m.id === id);
-            
             if(index !== -1) {
-                const saldoInicialStr = document.getElementById('edit-mes-saldo-inicial').value;
-                const saldoInicialVal = (saldoInicialStr === '' || isNaN(saldoInicialStr)) ? null : parseFloat(saldoInicialStr);
-                const obsText = document.getElementById('edit-mes-obs').value;
-                const baseOk = dadosTimeline[index].base_ok || { entradas: false, fixos: false, parcela: false };
-
-                const dados = { 
-                    user_id: idUtilizadorAtual, mes_id: id, entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0, fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0, 
-                    parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0, observacoes: JSON.stringify({ texto: obsText, base_ok: baseOk }), saldo_inicial: saldoInicialVal, extras: extrasTemp 
-                };
-                
-                const { error } = await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
-                
-                if(!error) { 
-                    dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal, base_ok: baseOk }; 
-                    renderizarTimelineUI(); 
-                    
-                    const modalTimeline = document.getElementById('modal-timeline-detalhes');
-                    if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === id) {
-                        document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[id];
-                    }
-                } else {
-                    alert(`Erro ao gravar:\n${error.message}`);
-                }
+                const dados = { user_id: idUtilizadorAtual, mes_id: id, entradas: parseFloat(document.getElementById('edit-mes-entradas').value), fixos: parseFloat(document.getElementById('edit-mes-fixos').value), parcela: parseFloat(document.getElementById('edit-mes-parcela').value), observacoes: JSON.stringify({ texto: document.getElementById('edit-mes-obs').value, base_ok: dadosTimeline[index].base_ok }), saldo_inicial: parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null, extras: extrasTemp };
+                await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
+                inicializarTimeline(); 
             }
-            btn.innerText = textOrig; btn.classList.remove('opacity-50', 'pointer-events-none');
             fecharModal('modal-editar-mes');
         }
 
-        // Navegação
         const abas = ['previsoes', 'saldos', 'sonhos', 'historico', 'perfil'];
         function mudarAba(idAba, botaoClicado) {
             abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
             document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
-            window.scrollTo(0, 0);
-
-            if (botaoClicado && botaoClicado.closest('#mobile-nav')) {
-                document.querySelectorAll('#mobile-nav button').forEach(btn => btn.classList.replace('text-app-blue', 'text-app-sub'));
-                botaoClicado.querySelector('button').classList.replace('text-app-sub', 'text-app-blue');
-            }
-            if (botaoClicado && botaoClicado.closest('.desktop-tab')) {
-                document.querySelectorAll('.desktop-tab').forEach(tab => {
-                    tab.classList.replace('text-app-blue', 'text-app-sub'); tab.classList.replace('font-semibold', 'font-medium');
-                });
-                botaoClicado.classList.replace('text-app-sub', 'text-app-blue'); botaoClicado.classList.replace('font-medium', 'font-semibold');
-            }
-            if(idAba === 'saldos' || idAba === 'historico' || idAba === 'perfil') buscarSonhos();
+            if(idAba === 'saldos') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
         function abrirModal(idModal, idBackdrop, idContent) {
-            const modal = document.getElementById(idModal); modal.classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById(idBackdrop).classList.add('opacity-100');
-                document.getElementById(idContent).classList.remove('bottom-sheet-down');
-                document.getElementById(idContent).classList.add('bottom-sheet-up');
-            }, 10);
+            document.getElementById(idModal).classList.remove('hidden');
+            setTimeout(() => { document.getElementById(idBackdrop).classList.add('opacity-100'); document.getElementById(idContent).classList.add('bottom-sheet-up'); }, 10);
         }
 
         function fecharModal(idModal) {
-            const modal = document.getElementById(idModal);
-            modal.querySelector('[id$="-backdrop"]').classList.remove('opacity-100');
-            modal.querySelector('[id$="-content"]').classList.replace('bottom-sheet-up', 'bottom-sheet-down');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.getElementById(idModal).querySelector('[id$="-content"]').classList.remove('bottom-sheet-up');
+            setTimeout(() => { document.getElementById(idModal).classList.add('hidden'); }, 300);
         }
 
-        // Init
         window.onload = async () => {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
-            
             idUtilizadorAtual = session.user.id;
-            
-            const emailUser = session.user.email;
-            const nomeSalvo = localStorage.getItem('gestor_nome_perfil');
-            document.getElementById('display-user-nome').innerText = nomeSalvo || emailUser.split('@')[0];
-            document.getElementById('display-user-email').innerText = emailUser;
-            document.getElementById('input-perfil-nome').value = nomeSalvo || '';
-            document.getElementById('input-perfil-email').value = emailUser;
-
-            const diasFake = Math.floor(Math.random() * 15) + 3; 
-            document.getElementById('estatistica-dias').innerText = diasFake;
-
-            inicializarTimeline(); 
-            buscarSonhos(); 
+            inicializarTimeline(); buscarSonhos(); 
         };
-
-        document.getElementById('btn-sair').onclick = async () => { await clienteSupabase.auth.signOut(); irParaLogin(); };
     </script>
 </body>
 </html>
