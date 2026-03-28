@@ -6,10 +6,9 @@
     <meta name="color-scheme" content="dark">
     <title>Gestor de Sonhos - App Premium</title>
     
-    <!-- Fontes e Dependências -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -21,27 +20,11 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        app: { 
-                            bg: '#000000', 
-                            card: '#1C1C1E', 
-                            cardLight: '#2C2C2E',
-                            text: '#FFFFFF', 
-                            sub: '#8E8E93', 
-                            border: '#2C2C2E', 
-                            blue: '#0A84FF', 
-                            green: '#30D158', 
-                            orange: '#FF9F0A', 
-                            red: '#FF453A', 
-                            purple: '#BF5AF2' 
-                        }
+                        app: { bg: '#000000', card: '#1C1C1E', text: '#FFFFFF', sub: '#8E8E93', border: '#2C2C2E', blue: '#0A84FF', green: '#30D158', orange: '#FF9F0A', red: '#FF453A', purple: '#BF5AF2' }
                     },
                     boxShadow: {
-                        'float': '0 8px 30px rgba(0, 0, 0, 0.5)',
-                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.7)',
-                        'inner-soft': 'inset 0 2px 4px rgba(255, 255, 255, 0.05)'
-                    },
-                    borderRadius: {
-                        'app': '28px'
+                        'float': '0 4px 20px rgba(0, 0, 0, 0.4)',
+                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.6)'
                     }
                 }
             }
@@ -49,48 +32,28 @@
     </script>
 
     <style>
-        /* Estilos Globais e Otimizações Mobile */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        * { 
-            -webkit-tap-highlight-color: transparent; 
-            outline: none !important; 
-            box-sizing: border-box; 
-            -webkit-font-smoothing: antialiased;
-        }
+        * { -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
 
-        body { 
-            background-color: #000000; 
-            overscroll-behavior-y: none; 
-            overflow-x: hidden; 
-            color: #FFFFFF;
-            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-        }
+        body { background-color: #000000; overscroll-behavior-y: none; overflow-x: hidden; color: #FFFFFF; }
 
-        /* Animações de Transição de Abas */
-        @keyframes slideInUp { 
-            from { opacity: 0; transform: translateY(12px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .aba-ativa { display: block; animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
         .aba-oculta { display: none; }
 
         .bottom-sheet-up { transform: translateY(0%); }
         .bottom-sheet-down { transform: translateY(100%); }
 
         .glass-nav { 
-            background: rgba(28, 28, 30, 0.8); 
-            backdrop-filter: blur(25px) saturate(180%); 
-            -webkit-backdrop-filter: blur(25px) saturate(180%); 
+            background: rgba(28, 28, 30, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
         }
         
-        /* Inputs Customizados */
-        input[type="number"]::-webkit-inner-spin-button, 
-        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
-        input::placeholder { color: rgba(142, 142, 147, 0.5); }
+        input::placeholder, textarea::placeholder { color: #8E8E93; }
         
         select {
             -webkit-appearance: none;
@@ -99,1085 +62,1096 @@
             text-align: right;
             direction: rtl; 
             color: #8E8E93;
-            background: transparent;
         }
         select option { direction: ltr; background-color: #1C1C1E; color: #FFFFFF; } 
         
-        .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .check-transition { transition: all 0.2s ease-in-out; }
+        
+        .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
         .segment-inactive { color: #8E8E93; font-weight: 500; }
-
-        .gradient-border {
-            position: relative;
-            background: #1C1C1E;
-            border-radius: 28px;
-            z-index: 0;
-        }
-        .gradient-border::before {
-            content: "";
-            position: absolute;
-            inset: -1px;
-            border-radius: 29px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        /* Checkbox Premium */
-        .custom-check {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #38383A;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .custom-check.checked {
-            background-color: #30D158;
-            border-color: #30D158;
-        }
-        .custom-check.checked i {
-            display: block;
-            color: black;
-            font-weight: bold;
-        }
-        .custom-check i { display: none; }
     </style>
 </head>
-<body class="min-h-screen w-full selection:bg-app-blue selection:text-white">
+<body class="min-h-screen pb-[100px] md:pb-0 w-full">
 
-    <!-- LOGIN SCREEN -->
-    <div id="auth-screen" class="fixed inset-0 z-[300] bg-black flex items-center justify-center p-6 hidden">
-        <div class="w-full max-w-sm space-y-10">
-            <div class="text-center space-y-4">
-                <div class="inline-flex items-center justify-center w-24 h-24 rounded-[32px] bg-app-blue/15 text-app-blue shadow-float">
-                    <i class="ph-fill ph-planet text-6xl"></i>
-                </div>
-                <div class="space-y-1">
-                    <h1 class="text-4xl font-black tracking-tighter text-white italic">Gestor<span class="text-app-blue not-italic">Pessoal</span></h1>
-                    <p class="text-app-sub font-semibold tracking-tight uppercase text-[10px]">Arquitetura de Sucesso Financeiro</p>
-                </div>
-            </div>
-
-            <div class="bg-app-card border border-app-border rounded-[40px] p-8 shadow-float space-y-6 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-app-blue/50 to-transparent"></div>
-                
-                <div class="space-y-2">
-                    <label class="text-[11px] font-black text-app-sub uppercase tracking-[2px] ml-1">Acesso Seguro</label>
-                    <div class="space-y-3">
-                        <div class="relative group">
-                            <i class="ph-bold ph-envelope absolute left-4 top-1/2 -translate-y-1/2 text-app-sub group-focus-within:text-app-blue transition-colors"></i>
-                            <input type="email" id="auth-email" placeholder="E-mail" class="w-full bg-[#151515] border border-app-border rounded-2xl pl-12 pr-4 py-4 outline-none focus:border-app-blue transition-all font-medium text-white placeholder:opacity-30">
-                        </div>
-                        <div class="relative group">
-                            <i class="ph-bold ph-lock absolute left-4 top-1/2 -translate-y-1/2 text-app-sub group-focus-within:text-app-blue transition-colors"></i>
-                            <input type="password" id="auth-password" placeholder="Palavra-passe" class="w-full bg-[#151515] border border-app-border rounded-2xl pl-12 pr-4 py-4 outline-none focus:border-app-blue transition-all font-medium text-white placeholder:opacity-30">
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="fazerLogin()" class="w-full bg-app-blue text-white font-black py-5 rounded-2xl shadow-float active:scale-[0.98] transition-all text-lg hover:shadow-[0_0_20px_rgba(10,132,255,0.3)]">
-                    Entrar no Sistema
-                </button>
-                <button onclick="fazerRegisto()" class="w-full bg-transparent text-app-sub font-bold py-2 text-sm hover:text-white transition-colors">
-                    Solicitar Novo Acesso
-                </button>
-            </div>
+    <!-- DESKTOP NAV -->
+    <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
+        <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
+            <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
+            Gestor<span class="text-app-blue">Pessoal</span>
         </div>
-    </div>
-
-    <!-- MAIN APP CONTENT -->
-    <div id="app-content" class="pb-[110px] md:pb-0 w-full hidden">
         
-        <!-- DESKTOP TOP BAR -->
-        <nav class="hidden md:flex glass-nav shadow-float px-10 py-5 justify-between items-center sticky top-0 z-50 border-b border-app-border w-full">
-            <div class="flex items-center gap-3 font-black text-2xl tracking-tighter italic">
-                <i class="ph-fill ph-planet text-app-blue text-3xl not-italic"></i>
-                Gestor<span class="text-app-blue not-italic">Pessoal</span>
+        <div class="flex gap-4">
+            <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-calendar-check"></i> Timeline</button>
+            <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Obras</button>
+            <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-plus"></i> Inserir</button>
+            <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-medal"></i> Conquistas</button>
+            <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-user"></i> Perfil</button>
+        </div>
+    </nav>
+
+    <!-- MOBILE NAV -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
+        <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
+            <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-blue transition-colors">
+                    <i class="ph-fill ph-chart-line-up text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Timeline</span>
+                </button>
+            </li>
+            <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-squares-four text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Obras</span>
+                </button>
+            </li>
+            <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-plus-circle text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Inserir</span>
+                </button>
+            </li>
+            <li class="nav-item flex-1" onclick="mudarAba('historico', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-medal text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Conquistas</span>
+                </button>
+            </li>
+            <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-user text-[22px] nav-icon"></i>
+                    <span class="text-[9px] font-medium mt-0.5">Perfil</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
+        
+        <!-- ========================================== -->
+        <!-- ABA 1: PREVISÕES 2026 (INICIAL) -->
+        <!-- ========================================== -->
+        <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="mb-6 px-1 w-full flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
+                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clica no 'check' ao pagar ou receber.</p>
+                </div>
+            </div>
+
+            <!-- Resumo Dinâmico do Mês -->
+            <div id="resumo-timeline-container" class="w-full">
+                <!-- Preenchido via JS dinamicamente -->
             </div>
             
-            <div class="flex gap-2 bg-[#151515] p-1.5 rounded-2xl border border-app-border">
-                <button onclick="mudarAba('previsoes', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-blue font-bold text-sm segment-active transition-all"><i class="ph-bold ph-chart-line-up"></i> Timeline</button>
-                <button onclick="mudarAba('saldos', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-squares-four"></i> Obras</button>
-                <button onclick="mudarAba('sonhos', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-plus-circle"></i> Inserir</button>
-                <button onclick="mudarAba('historico', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-medal"></i> Conquistas</button>
-                <button onclick="mudarAba('perfil', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-user-circle"></i> Perfil</button>
+            <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- ABA 2: PORTFÓLIO (Caixinhas de Metas) -->
+        <!-- ========================================== -->
+        <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="flex justify-between items-center mb-5 px-1 w-full">
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Projetos Ativos</h2>
+                <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
             </div>
-        </nav>
 
-        <!-- MOBILE BOTTOM TAB BAR -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-50 pb-safe w-full">
-            <ul class="flex justify-around items-center px-2 py-3" id="mobile-nav">
-                <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-blue transition-all active:scale-90">
-                        <i class="ph-fill ph-chart-line-up text-2xl"></i>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Timeline</span>
-                    </button>
-                </li>
-                <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
-                        <i class="ph-fill ph-squares-four text-2xl"></i>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Obras</span>
-                    </button>
-                </li>
-                <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
-                        <i class="ph-fill ph-plus-circle text-2xl"></i>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Inserir</span>
-                    </button>
-                </li>
-                <li class="nav-item flex-1" onclick="mudarAba('historico', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
-                        <i class="ph-fill ph-medal text-2xl"></i>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Conquistas</span>
-                    </button>
-                </li>
-                <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
-                        <i class="ph-fill ph-user-circle text-2xl"></i>
-                        <span class="text-[10px] font-black uppercase tracking-tighter">Perfil</span>
-                    </button>
-                </li>
-            </ul>
-        </nav>
-
-        <main class="max-w-xl mx-auto w-full px-4" id="conteudo-principal">
-            
-            <!-- SECTION 1: TIMELINE (FLUXO DE CAIXA) -->
-            <section id="aba-previsoes" class="aba-ativa pt-8 pb-12 w-full">
-                <div class="mb-8 flex justify-between items-end">
-                    <div>
-                        <h2 class="text-3xl font-black tracking-tight text-white italic">Timeline<span class="text-app-blue not-italic">2026</span></h2>
-                        <p class="text-[13px] font-bold text-app-sub mt-1">Clique no mês para detalhar pagamentos.</p>
-                    </div>
-                </div>
+            <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
                 
-                <div id="resumo-timeline-container" class="w-full mb-10 transition-all duration-500">
-                    <!-- Dinâmico: Card do Mês em Foco -->
+                <div class="flex justify-between items-start mb-1 relative z-10">
+                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Custo Total Projetos</p>
+                    <span class="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase border border-white/10 backdrop-blur-md">Status Geral</span>
                 </div>
+                <h2 class="text-[36px] font-black tracking-tight mb-5 relative z-10" id="saldos-total-geral">R$ 0,00</h2>
                 
-                <div class="relative border-l-[3px] border-app-border ml-5 space-y-12 pb-20" id="timeline-container">
-                    <!-- Dinâmico: Lista de Meses Cascata -->
-                </div>
-            </section>
-
-            <!-- SECTION 2: OBRAS & PROJETOS -->
-            <section id="aba-saldos" class="aba-oculta pt-8 pb-12 w-full">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-3xl font-black tracking-tight text-white italic">Portfólio<span class="text-app-blue not-italic">Ativo</span></h2>
-                    <button onclick="buscarSonhos()" class="w-10 h-10 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-blue active:rotate-180 transition-transform duration-500">
-                        <i class="ph-bold ph-arrows-clockwise text-xl"></i>
-                    </button>
-                </div>
-
-                <!-- Painel de Saldos Global -->
-                <div class="gradient-border p-7 shadow-float mb-10 relative overflow-hidden group">
-                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-app-blue/10 rounded-full blur-[80px] group-hover:bg-app-blue/20 transition-all duration-700"></div>
-                    
-                    <div class="flex justify-between items-start mb-2 relative z-10">
-                        <p class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Capital Projetado</p>
-                        <i class="ph-fill ph-chart-pie text-app-blue text-xl opacity-50"></i>
+                <div class="flex gap-4 border-t border-white/10 pt-5 relative z-10">
+                    <div class="flex-1">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Total Investido (Progresso)</p>
+                        <p class="font-bold text-[16px] text-[#30D158]" id="saldos-guardado">R$ 0,00</p>
                     </div>
-                    <h2 class="text-[44px] font-[900] tracking-tighter mb-6 relative z-10 leading-none" id="saldos-total-geral">R$ 0,00</h2>
-                    
-                    <div class="grid grid-cols-2 gap-6 border-t border-app-border pt-6 relative z-10">
-                        <div>
-                            <p class="text-[10px] font-black text-app-sub uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-app-green"></span> Já Investido
-                            </p>
-                            <p class="font-black text-2xl text-app-green tracking-tight" id="saldos-guardado">R$ 0,00</p>
-                        </div>
-                        <div class="pl-6 border-l border-app-border">
-                            <p class="text-[10px] font-black text-app-sub uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-app-red"></span> Em Aberto
-                            </p>
-                            <p class="font-black text-2xl text-white tracking-tight" id="saldos-falta">R$ 0,00</p>
-                        </div>
+                    <div class="flex-1 pl-4 border-l border-white/10">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Falta Para Concluir</p>
+                        <p class="font-bold text-[16px] text-white" id="saldos-falta">R$ 0,00</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="space-y-4" id="lista-sonhos-container">
-                    <!-- Dinâmico: Cards de Obras -->
-                </div>
-            </section>
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Caixas de Obras / Metas</h3>
+            <div id="lista-sonhos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <div class="p-8 text-center text-app-sub text-sm bg-app-card rounded-[20px]">A analisar ecossistema...</div>
+            </div>
+        </section>
 
-            <!-- SECTION 3: LANÇAMENTOS -->
-            <section id="aba-sonhos" class="aba-oculta pt-8 pb-12 w-full">
-                <div class="mb-8 text-center">
-                    <h2 class="text-3xl font-black tracking-tight text-white italic">Centro de<span class="text-app-blue not-italic">Lançamentos</span></h2>
-                </div>
+        <!-- ========================================== -->
+        <!-- ABA 3: INSERIR (REGISTO INTELIGENTE) -->
+        <!-- ========================================== -->
+        <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="mb-5 px-1 text-center">
+                <h2 class="text-[22px] font-bold tracking-tight text-app-text">Centro de Lançamentos</h2>
+                <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
+            </div>
 
-                <div class="bg-app-card p-1.5 rounded-[22px] border border-app-border flex mb-8 w-full shadow-inner-soft">
-                    <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active transition-all duration-300">🏗️ Obra / Projeto</button>
-                    <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive transition-all duration-300">⚡ Movimento Rápido</button>
-                </div>
+            <div class="bg-app-card p-1 rounded-xl flex mb-6 w-full border border-app-border">
+                <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-2 text-[13px] rounded-lg segment-active transition-all">🏗️ Nova Obra / Meta</button>
+                <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita Dia</button>
+            </div>
 
-                <!-- FORM: OBRA/PROJETO -->
-                <form id="form-sonho" class="space-y-8 w-full">
-                    <div class="space-y-1.5">
-                        <span class="text-[10px] font-black text-app-sub uppercase tracking-[2px] ml-4 block">Identificação do Ativo</span>
-                        <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
-                            <div class="flex items-center px-6 py-5 border-b border-app-border group">
-                                <label class="w-24 shrink-0 font-bold text-[15px] text-white">Nome</label>
-                                <input type="text" id="input-nome" required placeholder="Ex: Telhado Cozinha" class="flex-1 bg-transparent text-right text-[15px] text-app-blue font-black outline-none placeholder:opacity-20">
-                            </div>
-                            <div class="flex items-center px-6 py-5 border-b border-app-border relative">
-                                <label class="w-32 shrink-0 font-bold text-[15px] text-white">Categoria</label>
-                                <div class="flex-1 flex justify-end">
-                                    <select id="val-categoria" class="bg-transparent text-[15px] text-app-sub outline-none font-bold cursor-pointer">
-                                        <option value="Casa (Obra)">🏠 Obra Residente</option>
-                                        <option value="Reserva">💰 Fundo de Reserva</option>
-                                        <option value="Lazer">🍺 Lazer & Estilo</option>
-                                        <option value="Dívida">💳 Quitação Débito</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="flex items-center px-6 py-5 relative">
-                                <label class="w-32 shrink-0 font-bold text-[15px] text-white">Estrutura</label>
-                                <div class="flex-1 flex justify-end">
-                                    <select id="val-complexidade" onchange="verificarComplexidade()" class="bg-transparent text-[15px] text-app-sub outline-none font-bold cursor-pointer">
-                                        <option value="Simples">📦 Pagamento Único</option>
-                                        <option value="Composto">🏗️ Lista de Itens</option>
-                                    </select>
-                                </div>
-                            </div>
+            <form id="form-sonho" class="space-y-6 w-full">
+                <div class="w-full">
+                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Identificação</span>
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">O que é?</label>
+                            <input type="text" id="input-nome" required placeholder="Ex: Telhado Frontal" class="flex-1 min-w-0 bg-transparent text-right text-[15px] text-app-blue font-bold outline-none placeholder-app-sub/50">
                         </div>
-                    </div>
-
-                    <div id="div-simples">
-                        <div class="bg-app-card rounded-[32px] border border-app-border p-6 flex items-center justify-between shadow-float">
-                            <label class="font-black text-white text-[15px]">Investimento Total</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub font-black mr-1.5">R$</span>
-                                <input type="number" id="input-preco-unit" step="0.01" placeholder="0,00" class="bg-transparent text-right font-[900] text-app-blue text-3xl outline-none w-40 placeholder:opacity-10" oninput="calcularTotalFormulario()">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="div-composto" class="hidden space-y-4">
-                        <div class="flex justify-between items-center px-4">
-                            <h4 class="text-[10px] font-black text-app-sub uppercase tracking-[2px]">Detalhamento de Custos</h4>
-                            <button type="button" onclick="adicionarParte()" class="text-app-blue text-[11px] font-black bg-app-blue/10 px-4 py-2 rounded-xl flex items-center gap-2 active:scale-95 transition-all">
-                                <i class="ph-bold ph-plus"></i> Novo Item
-                            </button>
-                        </div>
-                        <div id="lista-partes" class="space-y-3"></div>
-                    </div>
-
-                    <div class="gradient-border p-6 shadow-float border-2 border-app-blue/20">
-                        <div class="flex justify-between items-center mb-6">
-                            <span class="font-black text-app-blue tracking-tight">Total Consolidado</span>
-                            <span class="font-[900] text-3xl text-app-blue tracking-tighter" id="display-total">R$ 0,00</span>
-                        </div>
-                        <div class="flex items-center justify-between pt-6 border-t border-app-blue/15">
-                            <div>
-                                <label class="font-black text-white text-sm block tracking-tight">Já em Carteira</label>
-                                <p class="text-[11px] text-app-sub font-medium">Liquidez disponível para este projeto.</p>
-                            </div>
-                            <div class="flex items-center bg-[#151515] px-4 py-2 rounded-xl border border-app-border">
-                                <span class="text-app-sub font-black text-xs mr-2">R$</span>
-                                <input type="number" id="input-guardado" value="0" step="0.01" class="bg-transparent text-right font-black text-app-green text-xl outline-none w-28">
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="w-full bg-app-blue text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.97] transition-all text-[18px] uppercase tracking-wider">
-                        Efetivar Registo
-                    </button>
-                </form>
-
-                <!-- FORM: RÁPIDO (TIMELINE) -->
-                <form id="form-rapido" class="space-y-8 w-full hidden">
-                    <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
-                        <div class="flex items-center px-6 py-5 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Natureza</label>
-                            <div class="flex-1 flex justify-end">
-                                <select id="val-tipo-rapido" onchange="atualizarCorRapido()" class="bg-transparent text-[15px] text-white outline-none font-[900] cursor-pointer">
-                                    <option value="gasto">🔴 Débito / Gasto</option>
-                                    <option value="receita">🟢 Crédito / Receita</option>
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
+                            <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Categoria</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-categoria" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium">
+                                    <option value="Casa (Obra)">🏠 Obra / Casa</option>
+                                    <option value="Reserva">💰 Poupança / Reserva</option>
+                                    <option value="Lazer">🍺 Lazer / Recompensa</option>
+                                    <option value="Dívida">💳 Pagamento Dívida</option>
+                                    <option value="Fixos Extras">🛒 Gastos Extras</option>
                                 </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
-                        <div class="flex items-center px-6 py-8 border-b border-app-border bg-[#151515]/30">
-                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Montante</label>
-                            <div class="flex-1 flex items-center justify-end">
-                                <span class="text-app-sub font-[900] text-lg mr-2">R$</span>
-                                <input type="number" id="input-valor-rapido" required placeholder="0,00" step="0.01" class="bg-transparent text-right text-app-red font-[900] text-4xl outline-none w-full placeholder:opacity-5">
-                            </div>
-                        </div>
-                        <div class="flex items-center px-6 py-5 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Referência</label>
-                            <input type="text" id="input-desc-rapido" required placeholder="Ex: Manutenção Carro" class="flex-1 bg-transparent text-right text-white font-semibold outline-none placeholder:opacity-20">
-                        </div>
-                        <div class="flex items-center px-6 py-5">
-                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Período</label>
-                            <div class="flex-1 flex justify-end">
-                                <select id="val-mes-rapido" class="bg-transparent text-[15px] text-app-blue outline-none font-black cursor-pointer"></select>
+                        <div class="flex items-center px-4 py-3.5 relative bg-app-card">
+                            <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Prioridade</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-prioridade" class="w-full bg-transparent text-[15px] text-app-orange outline-none pr-5 cursor-pointer z-10 font-bold">
+                                    <option value="Alta (Proteção)">🔴 Alta (Urgente/Proteção)</option>
+                                    <option value="Média (Conforto)">🟡 Média (Conforto/Acabamento)</option>
+                                    <option value="Baixa (Futuro)">🟢 Baixa (Futuro/Estética)</option>
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-app-blue text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.97] transition-all text-[18px] uppercase tracking-wider">
-                        Lançar na Timeline
-                    </button>
-                </form>
-            </section>
-
-            <!-- SECTION 4: CONQUISTAS -->
-            <section id="aba-historico" class="aba-oculta pt-8 pb-12 w-full">
-                <div class="text-center mb-12">
-                    <div class="w-24 h-24 bg-app-green/10 rounded-[40px] flex items-center justify-center mx-auto mb-5 shadow-float border border-app-green/20">
-                        <i class="ph-fill ph-trophy text-6xl text-app-green"></i>
-                    </div>
-                    <h2 class="text-3xl font-black text-white italic">Mural de<span class="text-app-green not-italic">Honra</span></h2>
-                    <p class="text-app-sub text-sm font-bold mt-2">Património construído e metas realizadas.</p>
-                </div>
-                <div id="lista-conquistas-container" class="space-y-4 w-full">
-                    <!-- Dinâmico: Conquistas -->
-                </div>
-            </section>
-
-            <!-- SECTION 5: PERFIL -->
-            <section id="aba-perfil" class="aba-oculta pt-8 pb-12 w-full">
-                <div class="text-center mb-12">
-                    <div class="w-28 h-28 bg-app-card rounded-full flex items-center justify-center mx-auto mb-5 border-[3px] border-app-blue shadow-float relative group">
-                        <div class="absolute inset-2 border-2 border-dashed border-app-sub/20 rounded-full animate-spin-slow"></div>
-                        <i class="ph-fill ph-user-circle text-6xl text-app-blue"></i>
-                    </div>
-                    <h2 class="text-3xl font-[900] text-white" id="display-user-nome">Investidor Alpha</h2>
-                    <p class="text-app-sub font-bold tracking-tight" id="display-user-email">...</p>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 mb-10">
-                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
-                        <p class="text-[22px] font-[900] text-app-blue" id="stats-projetos">0</p>
-                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Obras</p>
-                    </div>
-                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
-                        <p class="text-[22px] font-[900] text-app-green" id="stats-conquistas">0</p>
-                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Metas</p>
-                    </div>
-                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
-                        <p class="text-[22px] font-[900] text-app-orange">2026</p>
-                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Foco</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px] ml-4">Gestão de Dados</h4>
-                    <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
-                        <button onclick="limparHistoricoConfirmacao()" class="w-full flex items-center justify-between p-6 active:bg-app-red/5 transition-all group">
-                            <div class="flex items-center gap-5">
-                                <div class="w-10 h-10 rounded-xl bg-app-red/10 flex items-center justify-center text-app-red group-hover:scale-110 transition-transform">
-                                    <i class="ph-bold ph-trash text-xl"></i>
-                                </div>
-                                <div class="text-left">
-                                    <span class="font-black text-app-red block text-sm">Resetar Conquistas</span>
-                                    <span class="text-[10px] text-app-sub font-bold uppercase">Ação Irreversível</span>
-                                </div>
+                <div class="w-full">
+                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Estrutura Financeira</span>
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float mb-4 w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
+                            <label class="w-32 shrink-0 font-medium text-[15px] text-app-text">Tipo de Compra</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-complexidade" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium" onchange="verificarComplexidade()">
+                                    <option value="Simples">📦 Compra Única (Pronto)</option>
+                                    <option value="Composto">🏗️ Por Etapas/Sub-itens</option>
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
-                            <i class="ph-bold ph-caret-right text-app-sub"></i>
-                        </button>
+                        </div>
+                        
+                        <div id="div-simples" class="w-full transition-all">
+                            <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
+                                <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Preço Unit.</label>
+                                <span class="text-app-sub mr-1">R$</span>
+                                <input type="number" id="input-preco-unit" min="0" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-blue font-bold text-[17px] outline-none placeholder-app-sub/50">
+                            </div>
+                            <div class="flex items-center px-4 py-3.5 bg-app-card">
+                                <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Quantidade</label>
+                                <input type="number" id="input-quantidade" min="1" value="1" required class="flex-1 min-w-0 bg-transparent text-right font-medium text-[15px] text-app-sub outline-none">
+                            </div>
+                        </div>
+
+                        <div id="div-composto" class="hidden bg-[#151515] px-4 py-4 w-full border-b border-app-border">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[12px] font-bold text-app-sub uppercase tracking-wider">Itens da Obra</span>
+                                <button type="button" onclick="adicionarParte()" class="text-app-blue text-[12px] font-bold bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-60 transition-opacity flex items-center gap-1"><i class="ph-bold ph-plus"></i> Novo Item</button>
+                            </div>
+                            <div class="space-y-2 w-full" id="lista-partes"></div>
+                        </div>
                     </div>
 
-                    <button onclick="logoutSupabase()" class="w-full bg-[#1C1C1E] border border-app-border text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.98] transition-all flex justify-center items-center gap-3 mt-10">
-                        <i class="ph-bold ph-sign-out text-xl"></i> Terminar Sessão
-                    </button>
+                    <div class="bg-gradient-to-r from-app-blue/10 to-app-blue/20 rounded-[20px] border border-app-blue/20 shadow-float overflow-hidden w-full">
+                        <div class="flex items-center justify-between px-5 py-4 border-b border-app-blue/20">
+                            <label class="font-bold text-app-blue text-[15px]">Custo Total Calculado</label>
+                            <span class="font-black text-xl text-app-blue truncate pl-2" id="display-total">R$ 0,00</span>
+                        </div>
+                        <div class="flex items-center px-5 py-4 bg-[#2C2C2E]/50">
+                            <div class="flex-1 pr-2">
+                                <label class="font-bold text-[15px] text-app-text block">Dinheiro em Caixa</label>
+                                <p class="text-[11px] text-app-sub">Valor já separado na conta para isto.</p>
+                            </div>
+                            <span class="text-app-sub mr-1 font-medium text-lg">R$</span>
+                            <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-24 shrink-0 bg-transparent text-right font-black text-app-green text-xl outline-none focus:text-app-green transition-colors">
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </main>
-    </div>
 
-    <!-- MODAL: DETALHES DE PROJETO -->
-    <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/85 backdrop-blur-xl transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
-        <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[44px] h-[90vh] transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col border-t border-white/5 shadow-modal">
-            <div class="p-6 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[44px]">
-                <button onclick="fecharModal('modal-detalhes')" class="w-12 h-12 rounded-full bg-[#151515] flex items-center justify-center text-app-sub"><i class="ph-bold ph-x"></i></button>
-                <h3 id="modal-title-header" class="text-white font-[900] tracking-tight text-lg max-w-[200px] truncate uppercase tracking-[1px]">Detalhes</h3>
-                <div class="w-12"></div>
+                <div class="w-full">
+                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Execução da Tarefa</span>
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
+                            <label class="w-32 shrink-0 font-medium text-[15px] text-app-text">Quem faz a obra?</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-viabilidade" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium" onchange="verificarServico()">
+                                    <option value="Vou fazer">🛠️ Eu executo (S/ Custo)</option>
+                                    <option value="Nao">👷 Contratar Pedreiro</option>
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
+                            </div>
+                        </div>
+
+                        <div id="div-servico" class="hidden bg-app-orange/10">
+                            <div class="flex items-center px-4 py-3.5 border-b border-app-orange/20">
+                                <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Mão de Obra</label>
+                                <span class="text-app-sub mr-1 text-right flex-1">R$</span>
+                                <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-24 shrink-0 bg-transparent text-right font-bold text-app-orange text-[17px] outline-none">
+                            </div>
+                            <div class="flex items-center px-4 py-3.5">
+                                <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Estimativa</label>
+                                <input type="text" id="input-tempo-servico" placeholder="Ex: 1 semana" class="flex-1 min-w-0 bg-transparent text-right text-[15px] outline-none text-app-sub placeholder-app-sub/50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="msg-form-obra" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
+
+                <button type="submit" id="btn-guardar-obra" class="w-full bg-app-blue text-white font-bold py-4 rounded-[20px] shadow-float transition-opacity active:opacity-60 text-[16px] mb-6">
+                    Registar Plano
+                </button>
+            </form>
+
+            <form id="form-rapido" class="space-y-6 w-full hidden">
+                <div class="bg-app-blue/10 border border-app-blue/20 rounded-2xl p-4 mb-2 shadow-float w-full">
+                    <p class="text-[13px] text-app-blue text-center font-medium leading-relaxed">Este valor será injetado diretamente na tua Timeline (fluxo do mês), ajustando o acumulado final na hora.</p>
+                </div>
+
+                <div class="w-full">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Tipo</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-tipo-rapido" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-bold" onchange="atualizarCorRapido()">
+                                    <option value="gasto" class="text-app-red">🔴 Gasto Extra</option>
+                                    <option value="receita" class="text-app-green">🟢 Receita Extra</option>
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center px-4 py-4 border-b border-app-border bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Valor</label>
+                            <span class="text-app-sub mr-1">R$</span>
+                            <input type="number" id="input-valor-rapido" required min="0.01" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-bold text-[22px] outline-none placeholder-app-sub/50">
+                        </div>
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">O que foi?</label>
+                            <input type="text" id="input-desc-rapido" required placeholder="Ex: Almoço fora..." class="flex-1 min-w-0 bg-transparent text-right text-[15px] text-app-text font-medium outline-none placeholder-app-sub/50">
+                        </div>
+                        <div class="flex items-center px-4 py-3.5 relative bg-app-card">
+                            <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Qual Mês?</label>
+                            <div class="flex-1 relative flex items-center justify-end">
+                                <select id="val-mes-rapido" class="w-full bg-transparent text-[15px] text-app-blue outline-none pr-5 cursor-pointer z-10 font-bold">
+                                </select>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="msg-form-rapido" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
+
+                <button type="submit" id="btn-guardar-rapido" class="w-full bg-[#1C1C1E] border border-app-border text-white font-bold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[16px] mb-6">
+                    Lançar no Ecossistema
+                </button>
+            </form>
+        </section>
+
+        <!-- ABA 4: HISTÓRICO -->
+        <section id="aba-historico" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="mb-6 px-1 w-full text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app-green/20 text-app-green mb-4 shadow-[0_0_20px_rgba(48,209,88,0.3)]">
+                    <i class="ph-fill ph-trophy text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight text-app-text">Sala de Troféus</h2>
+                <p class="text-[13px] font-medium text-app-sub mt-1">Tudo o que já construíste e pagaste.</p>
             </div>
-            <div id="modal-body" class="p-8 overflow-y-auto no-scrollbar flex-1 pb-32">
-                <!-- Dinâmico -->
+            
+            <div id="lista-conquistas-container" class="space-y-4 w-full">
+            </div>
+        </section>
+
+        <!-- ABA 5: PERFIL -->
+        <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-app-blue/20 text-app-blue mb-3 border-[3px] border-app-blue/30 relative shadow-[0_0_20px_rgba(10,132,255,0.2)]">
+                    <i class="ph-fill ph-user text-4xl"></i>
+                    <button onclick="abrirModal('modal-editar-perfil', 'modal-perfil-backdrop', 'modal-perfil-content')" class="absolute bottom-0 right-0 w-7 h-7 bg-app-blue text-white rounded-full flex items-center justify-center border-2 border-app-bg active:scale-95 transition-transform"><i class="ph-bold ph-pencil-simple text-[12px]"></i></button>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-user-nome">Utilizador</h2>
+                <p class="text-[13px] text-app-sub mt-0.5 font-medium" id="display-user-email">A carregar...</p>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Constância & Uso</h3>
+            <div class="bg-app-card border border-app-border rounded-[24px] p-5 mb-6 shadow-float w-full flex justify-between items-center text-center">
+                <div class="flex-1 border-r border-app-border pr-2">
+                    <p class="text-[20px] font-black text-app-blue" id="estatistica-dias">1</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Dias Ativos</p>
+                </div>
+                <div class="flex-1 border-r border-app-border px-2">
+                    <p class="text-[20px] font-black text-app-orange" id="estatistica-projetos">0</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Na Obra</p>
+                </div>
+                <div class="flex-1 pl-2">
+                    <p class="text-[20px] font-black text-app-green" id="estatistica-conquistas">0</p>
+                    <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest mt-1">Troféus</p>
+                </div>
+            </div>
+
+            <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Ferramentas de Sistema</h3>
+            <div class="bg-app-card border border-app-border rounded-[24px] overflow-hidden mb-6 shadow-float w-full">
+                <button onclick="abrirModal('modal-editar-perfil', 'modal-perfil-backdrop', 'modal-perfil-content')" class="w-full flex items-center justify-between px-5 py-4 border-b border-app-border active:bg-[#2C2C2E] transition-colors">
+                    <div class="flex items-center gap-3"><i class="ph-fill ph-gear text-xl text-app-sub"></i> <span class="text-[15px] font-medium text-app-text">Ajustar Perfil</span></div>
+                    <i class="ph-bold ph-caret-right text-app-sub"></i>
+                </button>
+                <button onclick="limparHistoricoConfirmacao()" class="w-full flex items-center justify-between px-5 py-4 active:bg-[#2C2C2E] transition-colors">
+                    <div class="flex items-center gap-3"><i class="ph-fill ph-trash text-xl text-app-red"></i> <span class="text-[15px] font-medium text-app-red">Limpar Histórico de Conquistas</span></div>
+                    <i class="ph-bold ph-caret-right text-app-sub"></i>
+                </button>
+            </div>
+
+            <button id="btn-sair" class="w-full bg-[#1C1C1E] border border-app-border text-app-text font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[15px] flex justify-center items-center gap-2">
+                <i class="ph-bold ph-sign-out"></i> Terminar Sessão
+            </button>
+        </section>
+
+    </main>
+
+    <!-- MODAIS -->
+    <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 border-b border-app-border">
+                <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
+                <button onclick="guardarPerfil()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
+            </div>
+            <div class="px-5 py-6">
+                <div class="mb-4">
+                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Como queres ser chamado?</label>
+                    <input type="text" id="input-perfil-nome" placeholder="O teu nome ou apelido" class="w-full bg-[#151515] border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-text shadow-sm focus:border-app-blue transition-colors">
+                </div>
+                <div class="mb-6">
+                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Email de Registo</label>
+                    <input type="text" id="input-perfil-email" disabled class="w-full bg-[#151515]/50 border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-sub cursor-not-allowed">
+                    <p class="text-[11px] text-app-sub mt-2 ml-2">O email não pode ser alterado por motivos de segurança.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: AJUSTAR MÊS (O QUE VOCÊ PEDIU) -->
-    <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/85 backdrop-blur-xl transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
-        <div id="modal-mes-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[44px] h-[88vh] transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col border-t border-white/5 shadow-modal">
-            <div class="p-6 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[44px]">
-                <button onclick="fecharModal('modal-editar-mes')" class="text-app-sub font-black text-sm uppercase">Cancelar</button>
-                <h3 id="display-mes-nome" class="text-white font-[900] tracking-tighter text-xl italic uppercase">Ajustar Mês</h3>
-                <button onclick="guardarEdicaoMes()" class="text-app-blue font-[900] text-sm uppercase">Gravar</button>
+    <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
+            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
+                <span class="w-12"></span>
+                <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text" id="modal-title-header">Detalhes</h3>
+                <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
             </div>
-            
-            <div class="p-8 overflow-y-auto no-scrollbar flex-1 pb-32 space-y-10">
+            <div id="modal-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-6">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-mes-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-10 border-b border-app-border">
+                <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Ajustar Mês</h3>
+                <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
+            </div>
+            <div class="px-5 py-6 overflow-y-auto no-scrollbar w-full" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
                 
-                <!-- TOP: REALIZADO (CHECKBOXES) -->
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3 ml-2">
-                        <i class="ph-fill ph-check-square text-app-green text-xl"></i>
-                        <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Consolidação Real</h4>
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-app-blue/20 text-app-blue mb-3">
+                        <i class="ph-fill ph-calendar-blank text-3xl"></i>
                     </div>
-                    
-                    <div id="modal-mes-status-container" class="space-y-3">
-                        <!-- Gerado dinamicamente: Checkboxes das bases -->
-                    </div>
-
-                    <!-- EXTRAS COM CHECKBOX -->
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center px-2">
-                            <span class="text-[10px] font-black text-app-sub uppercase tracking-[2px]">Movimentos Avulsos</span>
-                            <div class="flex gap-2">
-                                <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[9px] font-black bg-app-green/10 px-3 py-2 rounded-lg border border-app-green/10 uppercase tracking-widest">+ Receita</button>
-                                <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[9px] font-black bg-app-red/10 px-3 py-2 rounded-lg border border-app-red/10 uppercase tracking-widest">+ Gasto</button>
-                            </div>
-                        </div>
-                        <div id="lista-extras-mes" class="space-y-3">
-                            <!-- Gerado dinamicamente -->
-                        </div>
-                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-mes-nome">Mês</h2>
+                    <p class="text-sm text-app-sub mt-0.5">Edita a tua base financeira e ajusta os fluxos.</p>
                 </div>
 
-                <!-- BOTTOM: PLANEADO (INPUTS) -->
-                <div class="pt-10 border-t border-app-border space-y-6">
-                    <div class="flex items-center gap-3 ml-2">
-                        <i class="ph-fill ph-pencil-circle text-app-blue text-xl"></i>
-                        <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Parâmetros de Planeamento</h4>
-                    </div>
+                <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Estrutura Base</h4>
+                <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
                     
-                    <div class="bg-[#151515] rounded-[32px] border border-app-border overflow-hidden divide-y divide-app-border shadow-inner-soft">
-                        <div class="p-5 flex justify-between items-center bg-[#1C1C1E]">
-                            <label class="text-sm font-bold text-white">Saldo de Abertura</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
-                                <input type="number" id="edit-mes-saldo-inicial" class="bg-transparent text-right font-[900] text-app-blue outline-none w-32" placeholder="Automático">
-                            </div>
-                        </div>
-                        <div class="p-5 flex justify-between items-center">
-                            <label class="text-sm font-bold text-app-sub">Entradas Base</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
-                                <input type="number" id="edit-mes-entradas" class="bg-transparent text-right font-black text-app-green outline-none w-32">
-                            </div>
-                        </div>
-                        <div class="p-5 flex justify-between items-center">
-                            <label class="text-sm font-bold text-app-sub">Gastos Fixos</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
-                                <input type="number" id="edit-mes-fixos" class="bg-transparent text-right font-black text-app-red outline-none w-32">
-                            </div>
-                        </div>
-                        <div class="p-5 flex justify-between items-center">
-                            <label class="text-sm font-bold text-app-sub">Empréstimo (Parcela)</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
-                                <input type="number" id="edit-mes-parcela" class="bg-transparent text-right font-black text-app-orange outline-none w-32">
-                            </div>
-                        </div>
+                    <div class="flex items-center px-4 py-4 border-b border-app-border bg-[#0A84FF]/10">
+                        <label class="w-36 shrink-0 font-bold text-app-blue">Forçar Saldo Inicial</label>
+                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Vem do anterior)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
+                    </div>
+
+                    <div class="flex items-center px-4 py-4 border-b border-app-border">
+                        <label class="w-32 shrink-0 font-medium">Entradas Base (R$)</label>
+                        <input type="number" id="edit-mes-entradas" class="flex-1 min-w-0 bg-transparent text-right font-bold text-app-green text-lg outline-none">
+                    </div>
+                    <div class="flex items-center px-4 py-4 border-b border-app-border">
+                        <label class="w-32 shrink-0 font-medium">Fixos Base (R$)</label>
+                        <input type="number" id="edit-mes-fixos" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-medium outline-none">
+                    </div>
+                    <div class="flex items-center px-4 py-4">
+                        <label class="w-32 shrink-0 font-medium">Empréstimo (R$)</label>
+                        <input type="number" id="edit-mes-parcela" class="flex-1 min-w-0 bg-transparent text-right text-app-orange font-medium outline-none">
                     </div>
                 </div>
+                <div class="flex justify-between items-end mb-2 px-1 w-full">
+                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lançamentos Extras</h4>
+                    <div class="flex gap-2 shrink-0">
+                        <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-app-green/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Receita</button>
+                        <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Gasto</button>
+                    </div>
+                </div>
+                <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 min-h-[50px] w-full" id="lista-extras-mes"></div>
+                <div class="w-full">
+                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Anotações</h4>
+                    <textarea id="edit-mes-obs" class="w-full bg-[#151515] border border-app-border rounded-2xl p-4 text-[15px] min-h-[100px] resize-none shadow-float outline-none text-app-text"></textarea>
+                </div>
+                <div class="pb-6"></div>
             </div>
         </div>
     </div>
 
+
     <script>
-        // CONFIGURAÇÕES SUPABASE
-        const SUPABASE_URL = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
+        const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
+        const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
         
-        // ESTADO GLOBAL
         let idUtilizadorAtual = null;
         let sonhosGlobais = []; 
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
-        let extrasTemp = [];
-
-        // AUXILIARES
+        
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
-        const formatarMoedaSimples = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
+        const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
 
-        // --- AUTHENTICATION ---
-        async function verificarSessao() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                idUtilizadorAtual = session.user.id;
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app-content').classList.remove('hidden');
-                document.getElementById('display-user-email').innerText = session.user.email;
-                document.getElementById('display-user-nome').innerText = session.user.email.split('@')[0];
-                inicializarTimeline();
-                buscarSonhos();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('app-content').classList.add('hidden');
+        function irParaLogin() {
+            try { window.location.href = 'index.html'; } catch (erro) {
+                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6 w-full"><div class="bg-app-card p-8 rounded-3xl shadow-float text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-4xl text-app-sub mb-4"></i><h2 class="text-xl font-bold mb-2 text-white">Sessão Expirada</h2><p class="text-sm text-app-sub">Abre o index.html para aceder.</p></div></div>`;
             }
         }
 
-        async function fazerLogin() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            if(!email || !password) return;
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) alert("Erro: " + error.message);
-            else verificarSessao();
+        function guardarPerfil() {
+            const nome = document.getElementById('input-perfil-nome').value;
+            localStorage.setItem('gestor_nome_perfil', nome);
+            document.getElementById('display-user-nome').innerText = nome || "Utilizador";
+            fecharModal('modal-editar-perfil');
         }
 
-        async function fazerRegisto() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            if(!email || !password) return;
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) alert("Erro: " + error.message);
-            else alert("Acesso solicitado. Verifique o seu e-mail!");
+        function limparHistoricoConfirmacao() {
+            if(confirm("⚠️ ATENÇÃO: Tens a certeza que queres eliminar TODAS as tuas conquistas gravadas?")) {
+                limparHistoricoReal();
+            }
         }
-
-        async function logoutSupabase() {
-            await supabaseClient.auth.signOut();
-            verificarSessao();
-        }
-
-        // --- TIMELINE CORE ---
-        const templateMeses = [
-            { id: '2026-04', mes: 'Abril', cor: 'app-blue', entradas: 2500, fixos: 800, parcela: 0, extras: [] },
-            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2500, fixos: 800, parcela: 0, extras: [] },
-            { id: '2026-06', mes: 'Junho', cor: 'app-orange', entradas: 2500, fixos: 800, parcela: 450, extras: [] },
-            { id: '2026-07', mes: 'Julho', cor: 'app-orange', entradas: 2500, fixos: 800, parcela: 450, extras: [] },
-            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', entradas: 2500, fixos: 800, parcela: 450, extras: [] },
-            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', entradas: 2500, fixos: 600, parcela: 450, extras: [] },
-            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', entradas: 2500, fixos: 600, parcela: 450, extras: [] },
-            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', entradas: 2500, fixos: 600, parcela: 450, extras: [] },
-            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2500, fixos: 600, parcela: 0, extras: [] }
-        ];
-
-        async function inicializarTimeline() {
+        
+        async function limparHistoricoReal() {
             if(!idUtilizadorAtual) return;
-            const { data } = await supabaseClient.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
-            
-            dadosTimeline = templateMeses.map(t => {
-                const db = data?.find(x => x.mes_id === t.id);
-                if(db) {
-                    let config = { base_ok: { entradas: false, fixos: false, parcela: false } };
-                    try { config = JSON.parse(db.observacoes); } catch(e){}
-                    return { 
-                        ...t, 
-                        entradas: db.entradas, 
-                        fixos: db.fixos, 
-                        parcela: db.parcela, 
-                        saldo_inicial: db.saldo_inicial, 
-                        extras: db.extras || [], 
-                        base_ok: config.base_ok 
-                    };
-                }
-                return { ...t, base_ok: { entradas: false, fixos: false, parcela: false }, saldo_inicial: null };
-            });
-
-            // Popula select do form rápido
-            const sel = document.getElementById('val-mes-rapido');
-            sel.innerHTML = '';
-            dadosTimeline.forEach(m => sel.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
-
-            renderizarTimelineUI();
+            const { error } = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
+            if(!error) {
+                buscarSonhos(); 
+            }
         }
 
-        function renderizarTimelineUI() {
-            const container = document.getElementById('timeline-container');
-            container.innerHTML = '';
-            let sRealAnterior = 0, sPrevAnterior = 0;
+        function mudarTipoRegisto(tipo) {
+            const btnObra = document.getElementById('btn-tab-obra');
+            const btnRapido = document.getElementById('btn-tab-rapido');
+            const formObra = document.getElementById('form-sonho');
+            const formRapido = document.getElementById('form-rapido');
 
-            dadosTimeline.forEach((m, idx) => {
-                // Cascata: Saldo Inicial é o Final do mês anterior ou o Saldo de Abertura definido
-                let startReal = idx === 0 && m.saldo_inicial !== null ? m.saldo_inicial : sRealAnterior;
-                let startPrev = idx === 0 && m.saldo_inicial !== null ? m.saldo_inicial : sPrevAnterior;
-
-                // CÁLCULO PREVISTO (O que deve acontecer)
-                let extRecTotal = (m.extras || []).filter(e => e.tipo === 'receita').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-                let extGasTotal = (m.extras || []).filter(e => e.tipo === 'gasto').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-                let totalPlaneadoMes = m.entradas + extRecTotal - (m.fixos + m.parcela + extGasTotal);
-                let finalPrev = startPrev + totalPlaneadoMes;
-
-                // CÁLCULO REAL (O que já está no bolso)
-                let somaReal = 0;
-                if(m.base_ok.entradas) somaReal += m.entradas;
-                if(m.base_ok.fixos) somaReal -= m.fixos;
-                if(m.base_ok.parcela) somaReal -= m.parcela;
-                
-                (m.extras || []).forEach(e => {
-                    if(e.realizado) {
-                        e.tipo === 'receita' ? somaReal += (parseFloat(e.valor)||0) : somaReal -= (parseFloat(e.valor)||0);
-                    }
-                });
-                let finalReal = startReal + somaReal;
-
-                // Armazena cálculos no objeto para o resumo de topo
-                m._calcReal = finalReal;
-                m._calcPrev = finalPrev;
-                sRealAnterior = finalReal;
-                sPrevAnterior = finalPrev;
-
-                // Renderiza Card na Cascata
-                const div = document.createElement('div');
-                div.className = "relative pl-8 w-full group cursor-pointer active:scale-[0.98] transition-all";
-                div.onclick = () => abrirEdicaoMes(m.id);
-                div.innerHTML = `
-                    <span class="absolute -left-[11px] top-2 w-5 h-5 rounded-full bg-${m.cor} ring-4 ring-black shadow-float group-hover:scale-125 transition-all"></span>
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="text-xl font-[900] text-white italic">${m.mes}</h4>
-                        <div class="px-2 py-1 bg-${m.cor}/10 border border-${m.cor}/20 rounded-md">
-                           <i class="ph-bold ph-caret-right text-xs text-app-sub"></i>
-                        </div>
-                    </div>
-                    <div class="bg-app-card border border-app-border rounded-[28px] p-5 shadow-float relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-                        <div class="flex justify-between items-center mb-2 relative z-10">
-                            <span class="text-[10px] text-app-sub font-black uppercase tracking-widest">Saldo Real (Em Carteira)</span>
-                            <span class="text-white font-[900] text-lg tracking-tighter">${formatarMoeda(m._calcReal)}</span>
-                        </div>
-                        <div class="flex justify-between items-center opacity-40 relative z-10">
-                            <span class="text-[9px] font-bold uppercase tracking-widest">Previsão Fim de Mês</span>
-                            <span class="text-[12px] font-black">${formatarMoeda(m._calcPrev)}</span>
-                        </div>
-                    </div>`;
-                container.appendChild(div);
-            });
-            atualizarResumoTopo();
+            if(tipo === 'obra') {
+                btnObra.className = 'flex-1 py-2 text-[13px] rounded-lg segment-active transition-all';
+                btnRapido.className = 'flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all';
+                formObra.classList.remove('hidden'); formRapido.classList.add('hidden');
+            } else {
+                btnRapido.className = 'flex-1 py-2 text-[13px] rounded-lg segment-active transition-all';
+                btnObra.className = 'flex-1 py-2 text-[13px] rounded-lg segment-inactive transition-all';
+                formRapido.classList.remove('hidden'); formObra.classList.add('hidden');
+            }
         }
 
-        function atualizarResumoTopo() {
-            const m = dadosTimeline[mesResumoIndex];
-            const cont = document.getElementById('resumo-timeline-container');
-            if(!m) return;
-            
-            cont.innerHTML = `
-                <div class="gradient-border p-7 shadow-float text-white border-2 border-app-blue/20">
-                    <div class="flex justify-between items-center mb-8">
-                        <button onclick="mudarMesNav(-1)" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-all border border-white/5"><i class="ph-bold ph-caret-left"></i></button>
-                        <div class="text-center">
-                            <h3 class="font-[900] text-2xl uppercase tracking-[2px]">${m.mes}</h3>
-                            <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Análise de Período</p>
-                        </div>
-                        <button onclick="mudarMesNav(1)" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-all border border-white/5"><i class="ph-bold ph-caret-right"></i></button>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6 text-center border-t border-white/5 pt-8">
-                        <div class="border-r border-white/5">
-                            <p class="text-[10px] uppercase font-black text-app-sub tracking-widest mb-2">Liquidez Real</p>
-                            <p class="text-3xl font-[900] text-white tracking-tighter leading-none">${formatarMoedaSimples(m._calcReal)}</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] uppercase font-black text-app-sub tracking-widest mb-2">Plano Teórico</p>
-                            <p class="text-3xl font-[900] text-app-blue tracking-tighter leading-none">${formatarMoedaSimples(m._calcPrev)}</p>
-                        </div>
-                    </div>
-                </div>`;
+        function atualizarCorRapido() {
+            const select = document.getElementById('val-tipo-rapido');
+            const input = document.getElementById('input-valor-rapido');
+            if(select.value === 'gasto') {
+                input.classList.remove('text-app-green'); input.classList.add('text-app-red');
+            } else {
+                input.classList.remove('text-app-red'); input.classList.add('text-app-green');
+            }
         }
 
-        function mudarMesNav(dir) {
-            mesResumoIndex = Math.max(0, Math.min(dadosTimeline.length-1, mesResumoIndex + dir));
-            atualizarResumoTopo();
+        const inputPreco = document.getElementById('input-preco-unit');
+        const inputQtd = document.getElementById('input-quantidade');
+        const displayTotal = document.getElementById('display-total');
+        const complexidadeSelect = document.getElementById('val-complexidade');
+        const viabilidadeSelect = document.getElementById('val-viabilidade');
+        const precoServico = document.getElementById('input-preco-servico');
+        
+        function calcularTotalFormulario() {
+            let total = 0;
+            if (complexidadeSelect.value === 'Composto') {
+                document.querySelectorAll('.custo-parte').forEach(inp => total += (parseFloat(inp.value)||0));
+            } else {
+                total = (parseFloat(inputPreco.value) || 0) * (parseInt(inputQtd.value) || 1);
+            }
+            if (viabilidadeSelect.value === 'Nao') total += parseFloat(precoServico.value) || 0;
+            displayTotal.innerText = formatarMoeda(total);
+            return total;
         }
 
-        // --- GESTÃO DE OBRAS ---
+        inputPreco.addEventListener('input', calcularTotalFormulario);
+        inputQtd.addEventListener('input', calcularTotalFormulario);
+        precoServico.addEventListener('input', calcularTotalFormulario);
+
+        function verificarServico() {
+            if(viabilidadeSelect.value === 'Nao') {
+                document.getElementById('div-servico').classList.remove('hidden');
+            } else {
+                document.getElementById('div-servico').classList.add('hidden');
+                precoServico.value = '0';
+            }
+            calcularTotalFormulario();
+        }
+
         function verificarComplexidade() {
-            const comp = document.getElementById('val-complexidade').value;
-            document.getElementById('div-composto').classList.toggle('hidden', comp !== 'Composto');
-            document.getElementById('div-simples').classList.toggle('hidden', comp === 'Composto');
-            if(comp === 'Composto' && document.getElementById('lista-partes').children.length === 0) adicionarParte();
+            if (complexidadeSelect.value === 'Composto') {
+                document.getElementById('div-composto').classList.remove('hidden');
+                document.getElementById('div-simples').classList.add('hidden');
+                inputPreco.value = '';
+                if(document.getElementById('lista-partes').children.length === 0) adicionarParte();
+            } else {
+                document.getElementById('div-composto').classList.add('hidden');
+                document.getElementById('div-simples').classList.remove('hidden');
+                document.getElementById('lista-partes').innerHTML = '';
+            }
             calcularTotalFormulario();
         }
 
         function adicionarParte() {
             const div = document.createElement('div');
-            div.className = "flex items-center p-4 bg-app-card rounded-[22px] border border-app-border gap-4 shadow-inner-soft group";
+            div.className = 'flex items-center px-4 py-3 bg-[#2C2C2E] rounded-[14px] border border-app-border shadow-sm w-full gap-3 transition-all';
             div.innerHTML = `
-                <button type="button" onclick="this.parentElement.remove(); calcularTotalFormulario()" class="text-app-red active:scale-90 transition-transform"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
-                <input type="text" placeholder="Designação do Item" required class="nome-parte flex-1 bg-transparent text-white font-bold outline-none text-[15px] placeholder:opacity-10">
-                <div class="flex items-center bg-[#151515] px-3 py-1.5 rounded-xl border border-app-border">
-                   <span class="text-app-sub font-black text-xs mr-2">R$</span>
-                   <input type="number" placeholder="0,00" required oninput="calcularTotalFormulario()" class="custo-parte w-20 bg-transparent text-right font-[900] text-app-blue outline-none text-[15px]">
-                </div>`;
+                <button type="button" class="text-app-red remover-parte shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
+                <input type="text" placeholder="Nome do item..." required class="nome-parte flex-1 min-w-0 text-[15px] bg-transparent outline-none text-app-text placeholder-app-sub/50 font-medium">
+                <input type="number" placeholder="0,00" min="0" step="0.01" required class="custo-parte w-24 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none text-app-blue placeholder-app-sub/50">
+            `;
             document.getElementById('lista-partes').appendChild(div);
-        }
-
-        function calcularTotalFormulario() {
-            let total = 0;
-            const comp = document.getElementById('val-complexidade').value;
-            if(comp === 'Composto') {
-                document.querySelectorAll('.custo-parte').forEach(i => total += (parseFloat(i.value)||0));
-            } else {
-                total = parseFloat(document.getElementById('input-preco-unit').value) || 0;
-            }
-            document.getElementById('display-total').innerText = formatarMoeda(total);
-            return total;
+            div.querySelector('.custo-parte').addEventListener('input', calcularTotalFormulario);
+            div.querySelector('.remover-parte').onclick = () => { div.remove(); calcularTotalFormulario(); };
         }
 
         async function buscarSonhos() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('lista-sonhos-container');
-            container.innerHTML = '<div class="col-span-full text-center py-20 opacity-20"><i class="ph-bold ph-circle-notch animate-spin text-4xl"></i></div>';
-            
-            const { data } = await supabaseClient.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
+            container.innerHTML = '<div class="text-center py-10 text-app-sub font-medium text-sm w-full col-span-full"><i class="ph-bold ph-spinner animate-spin text-2xl mb-2 inline-block text-app-blue"></i><br>A calcular ecossistema...</div>';
+            const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
+            if(error) return;
             sonhosGlobais = data || [];
-            
-            renderizarUIProjetos();
+            renderizarUIEcossistema();
             renderizarUIConquistas();
-            
-            document.getElementById('stats-projetos').innerText = sonhosGlobais.filter(s => s.status !== 'concluido').length;
-            document.getElementById('stats-conquistas').innerText = sonhosGlobais.filter(s => s.status === 'concluido').length;
+            const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
+            const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
+            document.getElementById('estatistica-projetos').innerText = ativos.length;
+            document.getElementById('estatistica-conquistas').innerText = concluidos.length;
         }
 
-        function renderizarUIProjetos() {
+        function renderizarUIEcossistema() {
             const container = document.getElementById('lista-sonhos-container');
             container.innerHTML = '';
-            let tPlan = 0, tInv = 0;
-
-            sonhosGlobais.filter(s => s.status !== 'concluido').forEach(s => {
-                let custoTotal = s.custo || 0;
-                let investido = parseFloat(s.valor_guardado) || 0;
-                
-                if(s.complexidade === 'Composto' && s.itens_compostos) {
-                    const jaComprados = s.itens_compostos.filter(i => i.comprado).reduce((acc, curr) => acc + (parseFloat(curr.custo)||0), 0);
-                    investido += jaComprados;
-                }
-
-                tPlan += custoTotal;
-                let realEfetivo = Math.min(custoTotal, investido);
-                tInv += realEfetivo;
-                
-                let perc = custoTotal > 0 ? Math.round((realEfetivo / custoTotal) * 100) : 0;
-                if(perc > 100) perc = 100;
-
-                const div = document.createElement('div');
-                div.className = "bg-app-card rounded-[32px] p-6 border border-app-border relative overflow-hidden flex flex-col justify-between min-h-[160px] shadow-float cursor-pointer active:scale-[0.98] transition-all group";
-                div.onclick = () => abrirDetalhesProjeto(s.id);
-                div.innerHTML = `
-                    <div class="absolute bottom-0 left-0 w-full h-1.5 bg-white/5"><div class="h-full bg-app-blue shadow-[0_0_15px_rgba(10,132,255,0.5)] transition-all duration-1000 ease-out" style="width: ${perc}%"></div></div>
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 rounded-[18px] bg-[#151515] flex items-center justify-center border border-app-border text-2xl group-hover:rotate-6 transition-transform">📌</div>
-                        <span class="text-[10px] font-black text-app-sub bg-[#151515] px-3 py-1.5 rounded-full border border-app-border uppercase tracking-widest">${s.categoria}</span>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-[900] text-white tracking-tight truncate group-hover:text-app-blue transition-colors">${s.nome}</h4>
-                        <div class="flex justify-between items-end mt-2">
-                            <div>
-                                <p class="text-[15px] font-[900] text-white leading-none">${formatarMoeda(Math.max(0, custoTotal - investido))}</p>
-                                <p class="text-[9px] uppercase font-black text-app-sub tracking-widest mt-1">Capital em Falta</p>
-                            </div>
-                            <span class="text-[12px] text-app-green font-black tracking-tighter bg-app-green/10 px-2 py-0.5 rounded-md">${perc}%</span>
+            let totalGeralCusto = 0;
+            let totalGeralInvestido = 0;
+            const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
+            if(ativos.length === 0) {
+                container.innerHTML = '<div class="p-10 text-center col-span-full bg-app-card rounded-[20px] border border-app-border"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo.</p></div>';
+            } else {
+                ativos.forEach(sonho => {
+                    let custoSubItens = 0;
+                    let valorItensComprados = 0;
+                    let qtdComprada = 0;
+                    let qtdTotal = 0;
+                    if (sonho.complexidade === 'Composto' && sonho.itens_compostos) {
+                        qtdTotal = sonho.itens_compostos.length;
+                        sonho.itens_compostos.forEach(p => {
+                            let val = parseFloat(p.custo) || 0;
+                            custoSubItens += val;
+                            if (p.comprado) { valorItensComprados += val; qtdComprada++; }
+                        });
+                    }
+                    let maoDeObra = parseFloat(sonho.preco_servico) || 0;
+                    let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
+                    let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
+                    let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
+                    if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
+                    let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
+                    totalGeralCusto += custoTotalProjeto;
+                    totalGeralInvestido += progressoFinanceiroReal;
+                    let iconCat = '📌';
+                    if(sonho.categoria.includes('Casa')) iconCat = '🏠';
+                    if(sonho.categoria.includes('Reserva')) iconCat = '💰';
+                    if(sonho.categoria.includes('Lazer')) iconCat = '🍺';
+                    if(sonho.categoria.includes('Dívida')) iconCat = '💳';
+                    let infoExtra = sonho.prioridade.split('(')[0];
+                    if (sonho.complexidade === 'Composto') {
+                        infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} items</span>`;
+                    }
+                    const card = document.createElement('div');
+                    card.className = "bg-app-card rounded-[24px] p-5 shadow-float border border-app-border cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
+                    card.onclick = () => abrirModalDetalhesSonho(sonho.id);
+                    card.innerHTML = `
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percentagem}%"></div></div>
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-10 h-10 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[20px]">${iconCat}</div>
+                            <span class="text-[11px] font-bold text-app-sub bg-[#151515] px-2 py-1 rounded-md border border-[#2C2C2E]">${infoExtra}</span>
                         </div>
-                    </div>`;
-                container.appendChild(div);
-            });
-
-            document.getElementById('saldos-total-geral').innerText = formatarMoeda(tPlan);
-            document.getElementById('saldos-guardado').innerText = formatarMoeda(tInv);
-            document.getElementById('saldos-falta').innerText = formatarMoeda(Math.max(0, tPlan - tInv));
+                        <div>
+                            <p class="text-[16px] font-bold text-app-text leading-tight mb-1 truncate">${sonho.nome}</p>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <p class="text-[11px] text-app-sub font-medium uppercase tracking-widest">Falta</p>
+                                    <p class="text-[15px] font-bold text-app-text">${formatarMoeda(Math.max(0, custoTotalProjeto - progressoFinanceiroReal))}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-app-green font-bold bg-app-green/10 px-1.5 py-0.5 rounded">${percentagem}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+            document.getElementById('saldos-total-geral').innerText = formatarMoeda(totalGeralCusto);
+            document.getElementById('saldos-guardado').innerText = formatarMoeda(totalGeralInvestido);
+            let falta = totalGeralCusto - totalGeralInvestido;
+            if (falta < 0) falta = 0;
+            document.getElementById('saldos-falta').innerText = formatarMoeda(falta);
         }
 
         function renderizarUIConquistas() {
             const container = document.getElementById('lista-conquistas-container');
             container.innerHTML = '';
-            sonhosGlobais.filter(s => s.status === 'concluido').forEach(s => {
-                container.innerHTML += `
-                    <div class="flex items-center justify-between p-5 bg-app-card rounded-[28px] border border-app-green/20 shadow-float relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-app-green"></div>
-                        <div class="flex items-center gap-5 flex-1 overflow-hidden">
-                            <div class="w-12 h-12 rounded-2xl bg-app-green/10 flex items-center justify-center text-app-green"><i class="ph-fill ph-check-circle text-2xl"></i></div>
-                            <p class="text-white font-[900] truncate tracking-tight text-lg">${s.nome}</p>
-                        </div>
-                        <div class="text-right ml-4">
-                           <p class="font-[900] text-app-green leading-none text-lg">${formatarMoeda(s.custo)}</p>
-                           <p class="text-[8px] font-black text-app-sub uppercase tracking-widest mt-1">Valor Final</p>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // --- MODAL DETALHES ---
-        function abrirDetalhesProjeto(id) {
-            const s = sonhosGlobais.find(x => x.id === id);
-            if(!s) return;
-            document.getElementById('modal-title-header').innerText = s.nome;
-            
-            let htmlInner = `
-                <div class="bg-[#151515] p-6 rounded-[32px] border border-app-border text-center mb-8 shadow-inner-soft">
-                    <p class="text-[10px] font-black text-app-sub uppercase tracking-[3px] mb-2">Custo de Implementação</p>
-                    <h3 class="text-4xl font-[900] text-white tracking-tighter">${formatarMoeda(s.custo)}</h3>
-                </div>`;
-
-            if(s.complexidade === 'Composto' && s.itens_compostos) {
-                htmlInner += `<div class="flex items-center gap-3 mb-5 ml-2"><i class="ph-fill ph-list-numbers text-app-blue text-lg"></i><h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Estrutura de Custos</h4></div><div class="space-y-3">`;
-                s.itens_compostos.forEach((item, idx) => {
-                    htmlInner += `
-                        <div class="flex items-center justify-between p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.97] transition-all" onclick="toggleItemLista('${s.id}', ${idx})">
-                            <div class="flex items-center gap-4">
-                                <div class="custom-check ${item.comprado ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
-                                <span class="font-bold ${item.comprado ? 'text-app-sub line-through opacity-40' : 'text-white'} text-[15px]">${item.nome}</span>
-                            </div>
-                            <span class="font-[900] ${item.comprado ? 'text-app-sub' : 'text-app-blue'} tracking-tight">${formatarMoeda(item.custo)}</span>
-                        </div>`;
-                });
-                htmlInner += `</div>`;
-            }
-
-            const totalEfetivo = (parseFloat(s.valor_guardado)||0) + (s.itens_compostos || []).filter(i => i.comprado).reduce((a,b)=>a+(parseFloat(b.custo)||0), 0);
-            if(totalEfetivo >= s.custo) {
-                htmlInner += `<button onclick="finalizarProjeto('${s.id}')" class="w-full bg-app-green text-black font-[900] py-6 rounded-[32px] mt-10 shadow-float active:scale-[0.97] transition-all uppercase tracking-widest">Finalizar & Arquivar Conquista</button>`;
+            const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
+            if(concluidos.length === 0) {
+                container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><p class="text-app-sub font-medium text-[15px]">Sem conquistas.</p></div>';
             } else {
-                htmlInner += `<div class="mt-8 p-5 bg-app-blue/5 rounded-2xl border border-app-blue/10 text-center"><p class="text-[11px] text-app-blue font-black uppercase tracking-widest">Faltam ${formatarMoeda(s.custo - totalEfetivo)} para concluir</p></div>`;
-            }
-
-            document.getElementById('modal-body').innerHTML = htmlInner;
-            abrirModalGenerico('modal-detalhes', 'modal-backdrop', 'modal-content');
-        }
-
-        async function toggleItemLista(projId, itemIdx) {
-            const s = sonhosGlobais.find(x => x.id === projId);
-            s.itens_compostos[itemIdx].comprado = !s.itens_compostos[itemIdx].comprado;
-            const { error } = await supabaseClient.from('sonhos').update({ itens_compostos: s.itens_compostos }).eq('id', projId);
-            if(!error) {
-                abrirDetalhesProjeto(projId);
-                buscarSonhos();
-            }
-        }
-
-        async function finalizarProjeto(id) {
-            const { error } = await supabaseClient.from('sonhos').update({ status: 'concluido' }).eq('id', id);
-            if(!error) {
-                fecharModal('modal-detalhes');
-                buscarSonhos();
-            }
-        }
-
-        // --- AJUSTE DE MÊS (TIMELINE) ---
-        function abrirEdicaoMes(id) {
-            const m = dadosTimeline.find(x => x.id === id);
-            if(!m) return;
-            
-            document.getElementById('display-mes-nome').innerText = m.mes;
-            document.getElementById('edit-mes-id').value = m.id;
-            document.getElementById('edit-mes-saldo-inicial').value = m.saldo_inicial || '';
-            document.getElementById('edit-mes-entradas').value = m.entradas;
-            document.getElementById('edit-mes-fixos').value = m.fixos;
-            document.getElementById('edit-mes-parcela').value = m.parcela;
-            
-            extrasTemp = JSON.parse(JSON.stringify(m.extras || []));
-            
-            renderizarStatusBase(m);
-            renderizarExtrasModal();
-            abrirModalGenerico('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
-        }
-
-        function renderizarStatusBase(m) {
-            const cont = document.getElementById('modal-mes-status-container');
-            cont.innerHTML = `
-                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'entradas')">
-                    <div class="flex items-center gap-4">
-                        <div class="custom-check ${m.base_ok.entradas ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
-                        <span class="font-bold text-white ${m.base_ok.entradas ? 'opacity-30 line-through' : ''}">Recebimentos do Mês</span>
-                    </div>
-                    <span class="font-black text-app-green">${formatarMoeda(m.entradas)}</span>
-                </div>
-                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'fixos')">
-                    <div class="flex items-center gap-4">
-                        <div class="custom-check ${m.base_ok.fixos ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
-                        <span class="font-bold text-white ${m.base_ok.fixos ? 'opacity-30 line-through' : ''}">Gastos Fixos Mensais</span>
-                    </div>
-                    <span class="font-black text-app-red">${formatarMoeda(m.fixos)}</span>
-                </div>
-                ${m.parcela > 0 ? `
-                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'parcela')">
-                    <div class="flex items-center gap-4">
-                        <div class="custom-check ${m.base_ok.parcela ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
-                        <span class="font-bold text-white ${m.base_ok.parcela ? 'opacity-30 line-through' : ''}">Parcela Empréstimo</span>
-                    </div>
-                    <span class="font-black text-app-orange">${formatarMoeda(m.parcela)}</span>
-                </div>` : ''}`;
-        }
-
-        async function toggleCheckBase(id, campo) {
-            const m = dadosTimeline.find(x => x.id === id);
-            m.base_ok[campo] = !m.base_ok[campo];
-            renderizarStatusBase(m);
-            renderizarTimelineUI(); // Atualiza UI da timeline em fundo para efeito imediato
-            await salvarAlteracoesMesDB(m);
-        }
-
-        function renderizarExtrasModal() {
-            const cont = document.getElementById('lista-extras-mes');
-            cont.innerHTML = '';
-            extrasTemp.forEach((e, idx) => {
-                cont.innerHTML += `
-                    <div class="flex items-center p-4 bg-[#151515] rounded-[28px] border border-app-border gap-4 shadow-inner-soft group">
-                        <button onclick="extrasTemp[${idx}].realizado = !extrasTemp[${idx}].realizado; renderizarExtrasModal()" class="active:scale-90 transition-transform">
-                            <div class="custom-check ${e.realizado ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
-                        </button>
-                        <input type="text" value="${e.descricao}" onchange="extrasTemp[${idx}].descricao = this.value" class="flex-1 bg-transparent text-white font-bold outline-none text-[15px] placeholder:opacity-20" placeholder="Descrição...">
-                        <div class="flex items-center bg-[#1C1C1E] px-3 py-1.5 rounded-xl border border-app-border">
-                            <span class="text-app-sub font-black text-xs mr-2">R$</span>
-                            <input type="number" value="${e.valor}" onchange="extrasTemp[${idx}].valor = parseFloat(this.value)||0" class="w-16 bg-transparent text-right font-[900] text-[15px] outline-none ${e.tipo === 'receita' ? 'text-app-green' : 'text-app-red'}">
+                concluidos.forEach(sonho => {
+                    let total = sonho.custo;
+                    if(sonho.complexidade === 'Composto') {
+                        let sub = 0;
+                        if(sonho.itens_compostos) sonho.itens_compostos.forEach(i => sub += parseFloat(i.custo)||0);
+                        total = sub + (parseFloat(sonho.preco_servico)||0);
+                    }
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between p-4 bg-app-card rounded-[20px] border border-app-green/20 w-full mb-3";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden flex-1 min-w-0 pr-2">
+                            <div class="w-12 h-12 rounded-full bg-app-green/10 flex items-center justify-center shrink-0 text-[24px] text-app-green">
+                                <i class="ph-fill ph-check-circle"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[15px] font-bold text-app-text truncate">${sonho.nome}</p>
+                                <p class="text-[12px] font-medium text-app-sub mt-0.5 truncate">Concluído</p>
+                            </div>
                         </div>
-                        <button onclick="extrasTemp.splice(${idx}, 1); renderizarExtrasModal()" class="text-app-sub opacity-20 hover:opacity-100 transition-opacity"><i class="ph-bold ph-trash"></i></button>
-                    </div>`;
+                        <div class="text-right shrink-0">
+                            <p class="text-[15px] font-bold text-app-green">${formatarMoeda(total)}</p>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+        }
+
+        function abrirModalDetalhesSonho(sonhoId) {
+            const sonho = sonhosGlobais.find(s => s.id === sonhoId);
+            if(!sonho) return;
+            document.getElementById('modal-title-header').innerText = sonho.nome;
+            let custoSubItens = 0;
+            let valorItensComprados = 0;
+            let qtdComprada = 0;
+            let HTMLPartes = '';
+            if(sonho.complexidade === 'Composto' && sonho.itens_compostos) {
+                sonho.itens_compostos.forEach((p, index) => {
+                    let val = parseFloat(p.custo) || 0;
+                    custoSubItens += val;
+                    if(p.comprado) { valorItemsComprados += val; qtdComprada++; }
+                    HTMLPartes += `
+                        <div class="flex justify-between items-center px-4 py-3 bg-app-card w-full border-b border-app-border last:border-0 cursor-pointer active:bg-[#2C2C2E] check-transition" 
+                             onclick="toggleItemComprado('${sonho.id}', ${index}, ${!p.comprado})">
+                            <div class="flex items-center gap-3 min-w-0 flex-1">
+                                <div class="w-6 h-6 rounded-full border-[1.5px] flex items-center justify-center shrink-0 check-transition ${p.comprado ? 'bg-app-green border-app-green text-[#000000] shadow-sm' : 'border-[#38383A] text-transparent bg-[#151515]'}">
+                                    <i class="ph-bold ph-check text-xs"></i>
+                                </div>
+                                <span class="text-[15px] truncate pr-2 check-transition ${p.comprado ? 'line-through text-app-sub' : 'text-app-text font-medium'}">${p.nome}</span>
+                            </div>
+                            <span class="text-[15px] font-bold shrink-0 check-transition ${p.comprado ? 'text-app-sub opacity-50' : 'text-app-text'}">${formatarMoeda(val)}</span>
+                        </div>
+                    `;
+                });
+                HTMLPartes = `<div class="w-full mt-4"><div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">${HTMLPartes}</div></div>`;
+            }
+            let maoDeObra = parseFloat(sonho.preco_servico) || 0;
+            let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
+            let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
+            let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
+            let falta = custoTotalProjeto - progressoFinanceiroReal;
+            if(falta < 0) falta = 0;
+            const percent = custoTotalProjeto > 0 ? Math.min(100, Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100)) : 0;
+            let htmlBotaoConquista = percent >= 100 ? `<div class="mt-6 w-full"><button onclick="finalizarConquista('${sonho.id}')" class="w-full bg-app-green text-black font-black py-4 rounded-[20px] shadow-float text-[16px]">Finalizar Conquista</button></div>` : '';
+            document.getElementById('modal-body').innerHTML = `
+                <div class="bg-gradient-to-br from-[#2C2C2E] to-[#1C1C1E] rounded-[24px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full relative">
+                    <div class="absolute top-0 right-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percent}%"></div></div>
+                    <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
+                        <span class="font-medium text-app-sub">Custo Total</span>
+                        <span class="font-black text-[18px] text-app-text">${formatarMoeda(custoTotalProjeto)}</span>
+                    </div>
+                </div>
+                ${HTMLPartes}
+                ${htmlBotaoConquista}
+            `;
+            abrirModal('modal-detalhes', 'modal-backdrop', 'modal-content');
+        }
+
+        async function toggleItemComprado(sonhoId, itemIndex, novoStatus) {
+            const sonho = sonhosGlobais.find(s => s.id === sonhoId);
+            if(!sonho || !sonho.itens_compostos) return;
+            const custoDoItem = parseFloat(sonho.itens_compostos[itemIndex].custo) || 0;
+            let caixaAtual = parseFloat(sonho.valor_guardado) || 0;
+            if (novoStatus === true) caixaAtual = Math.max(0, caixaAtual - custoDoItem); else caixaAtual += custoDoItem;
+            sonho.valor_guardado = caixaAtual;
+            sonho.itens_compostos[itemIndex].comprado = novoStatus;
+            abrirModalDetalhesSonho(sonhoId);
+            renderizarUIEcossistema();
+            await clienteSupabase.from('sonhos').update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual }).eq('id', sonhoId);
+        }
+
+        async function finalizarConquista(sonhoId) {
+            fecharModal('modal-detalhes');
+            await clienteSupabase.from('sonhos').update({ status: 'concluido' }).eq('id', sonhoId);
+            buscarSonhos();
+        }
+
+        const formSonho = document.getElementById('form-sonho');
+        formSonho.onsubmit = async (e) => {
+            e.preventDefault();
+            if(!idUtilizadorAtual) return;
+            let itensComp = null;
+            if(complexidadeSelect.value === 'Composto'){
+                itensComp = [];
+                document.querySelectorAll('#lista-partes > div').forEach(l => {
+                    itensComp.push({ nome: l.querySelector('.nome-parte').value, custo: parseFloat(l.querySelector('.custo-parte').value) || 0, comprado: false });
+                });
+            }
+            const dados = {
+                user_id: idUtilizadorAtual,
+                nome: document.getElementById('input-nome').value,
+                custo: calcularTotalFormulario(),
+                valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
+                categoria: document.getElementById('val-categoria').value,
+                viabilidade: document.getElementById('val-viabilidade').value,
+                prioridade: document.getElementById('val-prioridade').value,
+                complexidade: document.getElementById('val-complexidade').value,
+                preco_servico: parseFloat(precoServico.value) || 0,
+                tempo_servico: document.getElementById('input-tempo-servico').value,
+                itens_compostos: itensComp
+            };
+            await clienteSupabase.from('sonhos').insert([dados]);
+            formSonho.reset(); buscarSonhos(); mudarAba('saldos');
+        };
+
+        const formRapido = document.getElementById('form-rapido');
+        formRapido.onsubmit = async (e) => {
+            e.preventDefault();
+            if(!idUtilizadorAtual) return;
+            const mesAlvo = document.getElementById('val-mes-rapido').value;
+            const tipo = document.getElementById('val-tipo-rapido').value;
+            const valor = parseFloat(document.getElementById('input-valor-rapido').value);
+            const desc = document.getElementById('input-desc-rapido').value;
+            const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
+            if (index !== -1) {
+                const mesData = dadosTimeline[index];
+                const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: false };
+                let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
+                const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
+                const payload = { user_id: idUtilizadorAtual, mes_id: mesAlvo, entradas: mesData.entradas, fixos: mesData.fixos, parcela: mesData.parcela, observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }), saldo_inicial: mesData.saldo_inicial, extras: novosExtras };
+                await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+                dadosTimeline[index].extras = novosExtras; renderizarTimelineUI(); 
+                formRapido.reset(); mudarAba('previsoes');
+            }
+        }
+
+        const templateMeses = [
+            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Início.', extras: [
+                { id: 'ab1', tipo: 'receita', descricao: 'Venda', valor: 2500, realizado: false },
+                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200, realizado: false }
+            ]},
+            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Foco.', extras: []},
+            { id: '2026-06', mes: 'Junho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Empréstimo.', extras: []},
+            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Foco.', extras: []},
+            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção.', extras: []},
+            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Alívio.', extras: []},
+            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Disciplina.', extras: []},
+            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', parcela: 520, entradas: 2580, fixos: 530, obs: '13º.', extras: []},
+            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2580, fixos: 530, parcela: 0, obs: 'Festa.', extras: []}
+        ];
+
+        async function inicializarTimeline() {
+            if(!idUtilizadorAtual) return;
+            const { data } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
+            dadosTimeline = templateMeses.map(temp => {
+                const mesBD = data?.find(d => d.mes_id === temp.id);
+                if(mesBD) {
+                    let obsTexto = mesBD.observacoes || '';
+                    let baseOk = { entradas: false, fixos: false, parcela: false };
+                    try { const p = JSON.parse(obsTexto); obsTexto = p.texto || ''; baseOk = p.base_ok || baseOk; } catch(e){}
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: mesBD.saldo_inicial, extras: mesBD.extras || [], base_ok: baseOk };
+                }
+                return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
             });
+            const selectRapido = document.getElementById('val-mes-rapido');
+            selectRapido.innerHTML = '';
+            dadosTimeline.forEach(m => selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
+            renderizarTimelineUI();
+        }
+
+        async function toggleRealizado(mesId, tipo, extraId = null) {
+            const index = dadosTimeline.findIndex(m => m.id === mesId);
+            if(index === -1) return;
+            const mes = dadosTimeline[index];
+            if(tipo === 'entradas') mes.base_ok.entradas = !mes.base_ok.entradas;
+            else if(tipo === 'fixos') mes.base_ok.fixos = !mes.base_ok.fixos;
+            else if(tipo === 'parcela') mes.base_ok.parcela = !mes.base_ok.parcela;
+            else if(tipo === 'extra' && extraId) {
+                const ext = mes.extras.find(e => e.id === extraId);
+                if(ext) ext.realizado = !ext.realizado;
+            }
+            renderizarTimelineUI();
+            const payload = { user_id: idUtilizadorAtual, mes_id: mes.id, entradas: mes.entradas, fixos: mes.fixos, parcela: mes.parcela, observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial, extras: mes.extras };
+            await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+        }
+
+        function mudarMesResumo(dir) {
+            mesResumoIndex += dir;
+            if(mesResumoIndex < 0) mesResumoIndex = 0;
+            if(mesResumoIndex >= dadosTimeline.length) mesResumoIndex = dadosTimeline.length - 1;
+            atualizarCardResumo();
+        }
+
+        function atualizarCardResumo() {
+            const prev = dadosTimeline[mesResumoIndex];
+            if(!prev) return;
+            document.getElementById('resumo-mes-titulo').innerText = prev.mes;
+            document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
+            document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
+            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
+        }
+
+        function renderizarTimelineUI() {
+            const resumoContainer = document.getElementById('resumo-timeline-container');
+            resumoContainer.innerHTML = `
+                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
+                    <div class="flex justify-between items-center mb-6 relative z-10">
+                        <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-left"></i></button>
+                        <h3 class="font-bold text-[18px]" id="resumo-mes-titulo">Mês</h3>
+                        <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-right"></i></button>
+                    </div>
+                    <div class="flex justify-between items-end relative z-10 pb-2">
+                        <div class="text-left flex-1"><p class="text-[10px] uppercase opacity-70">Inicial Real</p><p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p></div>
+                        <div class="text-center flex-[1.5]"><p class="text-[12px] font-bold">Saldo Carteira</p><p class="font-black text-[22px]" id="resumo-val-atual">R$ 0</p></div>
+                        <div class="text-right flex-1"><p class="text-[10px] uppercase opacity-70">Previsto Fim</p><p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p></div>
+                    </div>
+                </div>
+            `;
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '';
+            let saldoAtualAnterior = 0; 
+            let saldoPrevistoAnterior = 0;
+            dadosTimeline.forEach((prev, index) => {
+                let htmlExtras = '';
+                let totalEntradasMes = prev.entradas;
+                let totalSaidasMes = prev.fixos + prev.parcela;
+                let somaRealizada = 0;
+                if (prev.base_ok.entradas) somaRealizada += prev.entradas;
+                if (prev.base_ok.fixos) somaRealizada -= prev.fixos;
+                if (prev.parcela > 0 && prev.base_ok.parcela) somaRealizada -= prev.parcela;
+                if(prev.extras && prev.extras.length > 0) {
+                    prev.extras.forEach(ext => {
+                        const val = parseFloat(ext.valor) || 0;
+                        if (ext.tipo === 'receita') totalEntradasMes += val; else totalSaidasMes += val;
+                        if (ext.realizado) ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
+                        htmlExtras += `
+                            <div class="flex justify-between items-center mt-2 group text-[13px]">
+                                <div class="flex items-center gap-2 flex-1 pr-2">
+                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="transition-colors ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                    <span class="${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">${ext.descricao}</span>
+                                </div>
+                                <span class="font-bold ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                            </div>
+                        `;
+                    });
+                }
+                let saldoStartAtual = saldoAtualAnterior;
+                let saldoStartPrevisto = saldoPrevistoAnterior;
+                if (index === 0 && prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
+                    saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
+                    saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
+                }
+                let saldoAtual = saldoStartAtual + somaRealizada;
+                let saldoPrevistoFinal = saldoStartPrevisto + totalEntradasMes - totalSaidasMes; 
+                saldoAtualAnterior = saldoAtual;
+                saldoPrevistoAnterior = saldoPrevistoFinal;
+                prev._calcStart = saldoStartAtual;
+                prev._calcAtual = saldoAtual; 
+                prev._calcPrevisto = saldoPrevistoFinal;
+                const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase font-bold ${prev.risco ? 'text-app-red bg-app-red/20' : ''}">${prev.badge}</span>` : '';
+                const card = document.createElement('div');
+                card.className = "relative pl-6 w-full";
+                card.innerHTML = `
+                    <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black"></span>
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
+                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded">Ajustar</button>
+                    </div>
+                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full">
+                        <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5">
+                            <h5 class="text-[10px] uppercase tracking-widest font-bold text-app-blue mb-2">Fluxo do Mês (Projeção)</h5>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-sub">Saldo Anterior:</span><span class="font-bold">${formatarMoeda(saldoStartPrevisto)}</span></div>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-green">Entradas (+):</span><span class="font-bold text-app-green">+${formatarMoeda(totalEntradasMes)}</span></div>
+                            <div class="flex justify-between text-[13px]"><span class="text-app-red">Saídas (-):</span><span class="font-bold text-app-red">-${formatarMoeda(totalSaidasMes)}</span></div>
+                            <div class="flex justify-between text-[14px] pt-1.5 border-t border-white/10 font-bold"><span class="text-app-text">Saldo Final (=):</span><span class="text-app-blue">${formatarMoeda(saldoPrevistoFinal)}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Entradas Base</span>
+                            </div>
+                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Fixos Base</span>
+                            </div>
+                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                        </div>
+                        ${prev.parcela > 0 ? `
+                        <div class="flex justify-between items-center mb-2 text-[13px]">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Empréstimo</span>
+                            </div>
+                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                        </div>` : ''}
+                        ${htmlExtras}
+                        <div class="bg-[#151515] rounded-xl p-3 mt-4 flex justify-between items-center">
+                            <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Real Carteira</span>
+                            <span class="font-black text-[15px] ${saldoAtual >= 0 ? 'text-white' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                        </div>
+                    </div>`;
+                container.appendChild(card);
+            });
+            atualizarCardResumo(); 
+        }
+
+        let extrasTemp = [];
+        function abrirEdicaoMes(idMes) {
+            const prev = dadosTimeline.find(m => m.id === idMes);
+            if(!prev) return;
+            document.getElementById('display-mes-nome').innerText = prev.mes;
+            document.getElementById('edit-mes-id').value = prev.id;
+            document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial || '';
+            document.getElementById('edit-mes-entradas').value = prev.entradas;
+            document.getElementById('edit-mes-fixos').value = prev.fixos;
+            document.getElementById('edit-mes-parcela').value = prev.parcela;
+            document.getElementById('edit-mes-obs').value = prev.obs;
+            extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
+            renderizarExtrasEditUI();
+            abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
         }
 
         function adicionarExtraMes(tipo) {
-            extrasTemp.push({ id: Date.now().toString(), tipo, descricao: '', valor: 0, realizado: false });
-            renderizarExtrasModal();
+            extrasTemp.push({ id: Date.now().toString(), tipo: tipo, descricao: '', valor: 0, realizado: false });
+            renderizarExtrasEditUI();
+        }
+
+        function removerExtraMes(idExtra) { extrasTemp = extrasTemp.filter(e => e.id !== idExtra); renderizarExtrasEditUI(); }
+
+        function renderizarExtrasEditUI() {
+            const list = document.getElementById('lista-extras-mes');
+            list.innerHTML = '';
+            extrasTemp.forEach((ext, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center px-4 py-3 bg-app-card border-b border-app-border gap-2";
+                div.innerHTML = `<button onclick="removerExtraMes('${ext.id}')" class="text-app-red"><i class="ph-fill ph-minus-circle text-[22px]"></i></button><input type="text" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[15px] bg-transparent outline-none"><input type="number" value="${ext.valor || ''}" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 text-right text-[15px] font-bold bg-transparent outline-none">`;
+                list.appendChild(div);
+            });
         }
 
         async function guardarEdicaoMes() {
             const id = document.getElementById('edit-mes-id').value;
-            const m = dadosTimeline.find(x => x.id === id);
-            
-            m.entradas = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
-            m.fixos = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
-            m.parcela = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
-            m.saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
-            m.extras = extrasTemp;
-            
-            await salvarAlteracoesMesDB(m);
-            inicializarTimeline(); // Recarrega tudo para garantir cascata correta
+            const index = dadosTimeline.findIndex(m => m.id === id);
+            if(index !== -1) {
+                const dados = { user_id: idUtilizadorAtual, mes_id: id, entradas: parseFloat(document.getElementById('edit-mes-entradas').value), fixos: parseFloat(document.getElementById('edit-mes-fixos').value), parcela: parseFloat(document.getElementById('edit-mes-parcela').value), observacoes: JSON.stringify({ texto: document.getElementById('edit-mes-obs').value, base_ok: dadosTimeline[index].base_ok }), saldo_inicial: parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null, extras: extrasTemp };
+                await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
+                inicializarTimeline(); 
+            }
             fecharModal('modal-editar-mes');
         }
 
-        async function salvarAlteracoesMesDB(m) {
-            const config = { base_ok: m.base_ok };
-            const { error } = await supabaseClient.from('fluxo_caixa').upsert({
-                user_id: idUtilizadorAtual, 
-                mes_id: m.id, 
-                entradas: m.entradas,
-                fixos: m.fixos, 
-                parcela: m.parcela, 
-                extras: m.extras,
-                observacoes: JSON.stringify(config), 
-                saldo_inicial: m.saldo_inicial
-            }, { onConflict: 'user_id, mes_id' });
-            if(error) console.error("Erro ao gravar:", error);
-        }
-
-        // --- INTERFACE HELPERS ---
-        function abrirModalGenerico(id, back, cont) {
-            document.getElementById(id).classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById(back).classList.add('opacity-100');
-                document.getElementById(cont).classList.remove('translate-y-full');
-            }, 10);
-        }
-
-        function fecharModal(id) {
-            const cont = document.getElementById(id).querySelector('[id$="-content"]');
-            const back = document.getElementById(id).querySelector('[id$="-backdrop"]');
-            cont.classList.add('translate-y-full');
-            back.classList.remove('opacity-100');
-            setTimeout(() => document.getElementById(id).classList.add('hidden'), 500);
-        }
-
-        function mudarAba(idAba, b) {
-            document.querySelectorAll('section').forEach(s => s.className = 'aba-oculta');
-            document.getElementById(`aba-${idAba}`).className = 'aba-ativa pt-8 pb-12 w-full';
+        const abas = ['previsoes', 'saldos', 'sonhos', 'historico', 'perfil'];
+        function mudarAba(idAba, botaoClicado) {
+            abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
+            document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
             
-            // UI Nav Desktop
+            // --- ATUALIZAÇÃO VISUAL DA NAVEGAÇÃO DESKTOP ---
             document.querySelectorAll('.desktop-tab').forEach(btn => {
-                btn.classList.remove('segment-active', 'text-app-blue');
-                btn.classList.add('text-app-sub');
+                btn.classList.remove('text-app-blue', 'font-semibold');
+                btn.classList.add('text-app-sub', 'font-medium');
             });
-            const dBtn = Array.from(document.querySelectorAll('.desktop-tab')).find(btn => btn.onclick.toString().includes(idAba));
-            if(dBtn) { dBtn.classList.add('segment-active', 'text-app-blue'); dBtn.classList.remove('text-app-sub'); }
+            const btnDesktop = Array.from(document.querySelectorAll('.desktop-tab')).find(b => b.getAttribute('onclick').includes(`'${idAba}'`));
+            if (btnDesktop) {
+                btnDesktop.classList.remove('text-app-sub', 'font-medium');
+                btnDesktop.classList.add('text-app-blue', 'font-semibold');
+            }
 
-            // UI Nav Mobile
-            document.querySelectorAll('#mobile-nav button').forEach(btn => {
+            // --- ATUALIZAÇÃO VISUAL DA NAVEGAÇÃO MOBILE ---
+            document.querySelectorAll('#mobile-nav .nav-item button').forEach(btn => {
                 btn.classList.remove('text-app-blue');
                 btn.classList.add('text-app-sub');
             });
-            const mLi = Array.from(document.querySelectorAll('#mobile-nav li')).find(li => li.onclick.toString().includes(idAba));
-            if(mLi) mLi.querySelector('button').classList.replace('text-app-sub', 'text-app-blue');
+            const liMobile = Array.from(document.querySelectorAll('#mobile-nav .nav-item')).find(li => li.getAttribute('onclick').includes(`'${idAba}'`));
+            if (liMobile) {
+                const btnMobile = liMobile.querySelector('button');
+                if (btnMobile) {
+                    btnMobile.classList.remove('text-app-sub');
+                    btnMobile.classList.add('text-app-blue');
+                }
+            }
 
             if(idAba === 'saldos') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
-        function mudarTipoRegisto(tipo) {
-            const isObra = tipo === 'obra';
-            document.getElementById('btn-tab-obra').className = isObra ? 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active' : 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive';
-            document.getElementById('btn-tab-rapido').className = !isObra ? 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active' : 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive';
-            document.getElementById('form-sonho').classList.toggle('hidden', !isObra);
-            document.getElementById('form-rapido').classList.toggle('hidden', isObra);
+        function abrirModal(idModal, idBackdrop, idContent) {
+            document.body.style.overflow = 'hidden'; // Bloqueia o scroll de fundo
+            document.getElementById(idModal).classList.remove('hidden');
+            setTimeout(() => { document.getElementById(idBackdrop).classList.add('opacity-100'); document.getElementById(idContent).classList.add('bottom-sheet-up'); }, 10);
         }
 
-        function atualizarCorRapido() {
-            const t = document.getElementById('val-tipo-rapido').value;
-            const input = document.getElementById('input-valor-rapido');
-            input.classList.remove('text-app-red', 'text-app-green');
-            input.classList.add(t === 'gasto' ? 'text-app-red' : 'text-app-green');
+        function fecharModal(idModal) {
+            document.body.style.overflow = ''; // Liberta o scroll de fundo
+            document.getElementById(idModal).querySelector('[id$="-content"]').classList.remove('bottom-sheet-up');
+            setTimeout(() => { document.getElementById(idModal).classList.add('hidden'); }, 300);
         }
 
-        // --- DATA SUBMISSION ---
-        document.getElementById('form-sonho').onsubmit = async (e) => {
-            e.preventDefault();
-            const comp = document.getElementById('val-complexidade').value;
-            let itens = null;
-            if(comp === 'Composto') {
-                itens = Array.from(document.querySelectorAll('#lista-partes > div')).map(d => ({
-                    nome: d.querySelector('.nome-parte').value,
-                    custo: parseFloat(d.querySelector('.custo-parte').value) || 0,
-                    comprado: false
-                }));
-            }
-            const payload = {
-                user_id: idUtilizadorAtual,
-                nome: document.getElementById('input-nome').value,
-                categoria: document.getElementById('val-categoria').value,
-                complexidade: comp,
-                custo: calcularTotalFormulario(),
-                valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
-                itens_compostos: itens,
-                status: 'ativo'
-            };
-            const { error } = await supabaseClient.from('sonhos').insert([payload]);
-            if(!error) {
-                document.getElementById('form-sonho').reset();
-                document.getElementById('lista-partes').innerHTML = '';
-                mudarAba('saldos');
-            }
+        window.onload = async () => {
+            const { data: { session } } = await clienteSupabase.auth.getSession();
+            if (!session) return irParaLogin();
+            idUtilizadorAtual = session.user.id;
+            inicializarTimeline(); buscarSonhos(); 
         };
-
-        document.getElementById('form-rapido').onsubmit = async (e) => {
-            e.preventDefault();
-            const mesId = document.getElementById('val-mes-rapido').value;
-            const m = dadosTimeline.find(x => x.id === mesId);
-            if(m) {
-                const novoExtra = { 
-                    id: Date.now().toString(), 
-                    tipo: document.getElementById('val-tipo-rapido').value, 
-                    descricao: document.getElementById('input-desc-rapido').value, 
-                    valor: parseFloat(document.getElementById('input-valor-rapido').value), 
-                    realizado: false 
-                };
-                m.extras = [...(m.extras || []), novoExtra];
-                await salvarAlteracoesMesDB(m);
-                document.getElementById('form-rapido').reset();
-                mudarAba('previsoes');
-            }
-        };
-
-        async function limparHistoricoConfirmacao() {
-            if (confirm("Tens a certeza absoluta que desejas apagar TODAS as tuas conquistas? Esta ação é irreversível.")) {
-                const { error } = await supabaseClient.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
-                if (!error) buscarSonhos();
-                else alert("Erro ao limpar: " + error.message);
-            }
-        }
-
-        window.onload = verificarSessao;
     </script>
 </body>
 </html>
