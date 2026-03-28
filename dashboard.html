@@ -6,10 +6,10 @@
     <meta name="color-scheme" content="dark">
     <title>Gestor de Sonhos - App Premium</title>
     
-    <!-- Fontes e Ícones -->
+    <!-- Fontes e Dependências -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -21,11 +21,27 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        app: { bg: '#000000', card: '#1C1C1E', text: '#FFFFFF', sub: '#8E8E93', border: '#2C2C2E', blue: '#0A84FF', green: '#30D158', orange: '#FF9F0A', red: '#FF453A', purple: '#BF5AF2' }
+                        app: { 
+                            bg: '#000000', 
+                            card: '#1C1C1E', 
+                            cardLight: '#2C2C2E',
+                            text: '#FFFFFF', 
+                            sub: '#8E8E93', 
+                            border: '#2C2C2E', 
+                            blue: '#0A84FF', 
+                            green: '#30D158', 
+                            orange: '#FF9F0A', 
+                            red: '#FF453A', 
+                            purple: '#BF5AF2' 
+                        }
                     },
                     boxShadow: {
-                        'float': '0 4px 20px rgba(0, 0, 0, 0.4)',
-                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.6)'
+                        'float': '0 8px 30px rgba(0, 0, 0, 0.5)',
+                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.7)',
+                        'inner-soft': 'inset 0 2px 4px rgba(255, 255, 255, 0.05)'
+                    },
+                    borderRadius: {
+                        'app': '28px'
                     }
                 }
             }
@@ -33,28 +49,48 @@
     </script>
 
     <style>
+        /* Estilos Globais e Otimizações Mobile */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        * { -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
+        
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none !important; 
+            box-sizing: border-box; 
+            -webkit-font-smoothing: antialiased;
+        }
 
-        body { background-color: #000000; overscroll-behavior-y: none; overflow-x: hidden; color: #FFFFFF; }
+        body { 
+            background-color: #000000; 
+            overscroll-behavior-y: none; 
+            overflow-x: hidden; 
+            color: #FFFFFF;
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
+        /* Animações de Transição de Abas */
+        @keyframes slideInUp { 
+            from { opacity: 0; transform: translateY(12px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .aba-ativa { display: block; animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .aba-oculta { display: none; }
 
         .bottom-sheet-up { transform: translateY(0%); }
         .bottom-sheet-down { transform: translateY(100%); }
 
         .glass-nav { 
-            background: rgba(28, 28, 30, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
+            background: rgba(28, 28, 30, 0.8); 
+            backdrop-filter: blur(25px) saturate(180%); 
+            -webkit-backdrop-filter: blur(25px) saturate(180%); 
         }
         
-        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Inputs Customizados */
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
-        input::placeholder, textarea::placeholder { color: #8E8E93; }
+        input::placeholder { color: rgba(142, 142, 147, 0.5); }
         
         select {
             -webkit-appearance: none;
@@ -63,372 +99,488 @@
             text-align: right;
             direction: rtl; 
             color: #8E8E93;
+            background: transparent;
         }
         select option { direction: ltr; background-color: #1C1C1E; color: #FFFFFF; } 
         
-        .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .segment-active { background-color: #38383A; color: #FFFFFF; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .segment-inactive { color: #8E8E93; font-weight: 500; }
 
-        .btn-check-active { background-color: rgba(48, 209, 88, 0.1); border-color: rgba(48, 209, 88, 0.3); }
+        .gradient-border {
+            position: relative;
+            background: #1C1C1E;
+            border-radius: 28px;
+            z-index: 0;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 29px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* Checkbox Premium */
+        .custom-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #38383A;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-check.checked {
+            background-color: #30D158;
+            border-color: #30D158;
+        }
+        .custom-check.checked i {
+            display: block;
+            color: black;
+            font-weight: bold;
+        }
+        .custom-check i { display: none; }
     </style>
 </head>
-<body class="min-h-screen w-full">
+<body class="min-h-screen w-full selection:bg-app-blue selection:text-white">
 
-    <!-- ECRÃ DE AUTENTICAÇÃO -->
-    <div id="auth-screen" class="fixed inset-0 z-[200] bg-black flex items-center justify-center p-6 hidden">
-        <div class="w-full max-w-sm space-y-8">
-            <div class="text-center space-y-2">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-app-blue/20 text-app-blue mb-4">
-                    <i class="ph-fill ph-planet text-5xl"></i>
+    <!-- LOGIN SCREEN -->
+    <div id="auth-screen" class="fixed inset-0 z-[300] bg-black flex items-center justify-center p-6 hidden">
+        <div class="w-full max-w-sm space-y-10">
+            <div class="text-center space-y-4">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-[32px] bg-app-blue/15 text-app-blue shadow-float">
+                    <i class="ph-fill ph-planet text-6xl"></i>
                 </div>
-                <h1 class="text-3xl font-black tracking-tight text-white">Gestor<span class="text-app-blue">Pessoal</span></h1>
-                <p class="text-app-sub font-medium">Controlo total do seu futuro.</p>
+                <div class="space-y-1">
+                    <h1 class="text-4xl font-black tracking-tighter text-white italic">Gestor<span class="text-app-blue not-italic">Pessoal</span></h1>
+                    <p class="text-app-sub font-semibold tracking-tight uppercase text-[10px]">Arquitetura de Sucesso Financeiro</p>
+                </div>
             </div>
 
-            <div class="bg-app-card border border-app-border rounded-[32px] p-6 shadow-float space-y-4">
-                <div class="space-y-1">
-                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-1">E-mail</label>
-                    <input type="email" id="auth-email" placeholder="nome@exemplo.com" class="w-full bg-[#151515] border border-app-border rounded-xl px-4 py-3.5 outline-none focus:border-app-blue transition-colors font-medium text-white">
+            <div class="bg-app-card border border-app-border rounded-[40px] p-8 shadow-float space-y-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-app-blue/50 to-transparent"></div>
+                
+                <div class="space-y-2">
+                    <label class="text-[11px] font-black text-app-sub uppercase tracking-[2px] ml-1">Acesso Seguro</label>
+                    <div class="space-y-3">
+                        <div class="relative group">
+                            <i class="ph-bold ph-envelope absolute left-4 top-1/2 -translate-y-1/2 text-app-sub group-focus-within:text-app-blue transition-colors"></i>
+                            <input type="email" id="auth-email" placeholder="E-mail" class="w-full bg-[#151515] border border-app-border rounded-2xl pl-12 pr-4 py-4 outline-none focus:border-app-blue transition-all font-medium text-white placeholder:opacity-30">
+                        </div>
+                        <div class="relative group">
+                            <i class="ph-bold ph-lock absolute left-4 top-1/2 -translate-y-1/2 text-app-sub group-focus-within:text-app-blue transition-colors"></i>
+                            <input type="password" id="auth-password" placeholder="Palavra-passe" class="w-full bg-[#151515] border border-app-border rounded-2xl pl-12 pr-4 py-4 outline-none focus:border-app-blue transition-all font-medium text-white placeholder:opacity-30">
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-1">Palavra-passe</label>
-                    <input type="password" id="auth-password" placeholder="••••••••" class="w-full bg-[#151515] border border-app-border rounded-xl px-4 py-3.5 outline-none focus:border-app-blue transition-colors font-medium text-white">
-                </div>
-                <button onclick="fazerLogin()" class="w-full bg-app-blue text-white font-bold py-4 rounded-xl shadow-float active:opacity-60 transition-opacity mt-2">Entrar</button>
-                <button onclick="fazerRegisto()" class="w-full bg-transparent text-app-sub font-semibold py-2 text-sm hover:text-white transition-colors">Ainda não tens conta? Criar conta</button>
+
+                <button onclick="fazerLogin()" class="w-full bg-app-blue text-white font-black py-5 rounded-2xl shadow-float active:scale-[0.98] transition-all text-lg hover:shadow-[0_0_20px_rgba(10,132,255,0.3)]">
+                    Entrar no Sistema
+                </button>
+                <button onclick="fazerRegisto()" class="w-full bg-transparent text-app-sub font-bold py-2 text-sm hover:text-white transition-colors">
+                    Solicitar Novo Acesso
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- APP PRINCIPAL -->
-    <div id="app-content" class="pb-[100px] md:pb-0 w-full hidden">
+    <!-- MAIN APP CONTENT -->
+    <div id="app-content" class="pb-[110px] md:pb-0 w-full hidden">
         
-        <!-- NAVEGAÇÃO SUPERIOR (DESKTOP) -->
-        <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
-            <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
-                <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
-                <span class="text-white">Gestor</span><span class="text-app-blue">Pessoal</span>
+        <!-- DESKTOP TOP BAR -->
+        <nav class="hidden md:flex glass-nav shadow-float px-10 py-5 justify-between items-center sticky top-0 z-50 border-b border-app-border w-full">
+            <div class="flex items-center gap-3 font-black text-2xl tracking-tighter italic">
+                <i class="ph-fill ph-planet text-app-blue text-3xl not-italic"></i>
+                Gestor<span class="text-app-blue not-italic">Pessoal</span>
             </div>
             
-            <div class="flex gap-4">
-                <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors flex items-center gap-2">
-                    <i class="ph-bold ph-calendar-check"></i> Timeline
-                </button>
-                <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors flex items-center gap-2">
-                    <i class="ph-bold ph-wallet"></i> Obras
-                </button>
-                <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors flex items-center gap-2">
-                    <i class="ph-bold ph-plus"></i> Inserir
-                </button>
-                <button onclick="mudarAba('historico', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors flex items-center gap-2">
-                    <i class="ph-bold ph-medal"></i> Conquistas
-                </button>
-                <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors flex items-center gap-2">
-                    <i class="ph-bold ph-user"></i> Perfil
-                </button>
+            <div class="flex gap-2 bg-[#151515] p-1.5 rounded-2xl border border-app-border">
+                <button onclick="mudarAba('previsoes', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-blue font-bold text-sm segment-active transition-all"><i class="ph-bold ph-chart-line-up"></i> Timeline</button>
+                <button onclick="mudarAba('saldos', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-squares-four"></i> Obras</button>
+                <button onclick="mudarAba('sonhos', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-plus-circle"></i> Inserir</button>
+                <button onclick="mudarAba('historico', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-medal"></i> Conquistas</button>
+                <button onclick="mudarAba('perfil', this)" class="desktop-tab flex items-center gap-2 px-5 py-2.5 rounded-xl text-app-sub font-bold text-sm transition-all"><i class="ph-bold ph-user-circle"></i> Perfil</button>
             </div>
         </nav>
 
-        <!-- NAVEGAÇÃO INFERIOR (MOBILE) -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe w-full">
-            <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
+        <!-- MOBILE BOTTOM TAB BAR -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-50 pb-safe w-full">
+            <ul class="flex justify-around items-center px-2 py-3" id="mobile-nav">
                 <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-blue transition-colors">
-                        <i class="ph-fill ph-chart-line-up text-[22px]"></i>
-                        <span class="text-[9px] font-medium mt-0.5">Timeline</span>
+                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-blue transition-all active:scale-90">
+                        <i class="ph-fill ph-chart-line-up text-2xl"></i>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Timeline</span>
                     </button>
                 </li>
                 <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                        <i class="ph-fill ph-squares-four text-[22px]"></i>
-                        <span class="text-[9px] font-medium mt-0.5">Obras</span>
+                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
+                        <i class="ph-fill ph-squares-four text-2xl"></i>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Obras</span>
                     </button>
                 </li>
                 <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                        <i class="ph-fill ph-plus-circle text-[22px]"></i>
-                        <span class="text-[9px] font-medium mt-0.5">Inserir</span>
+                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
+                        <i class="ph-fill ph-plus-circle text-2xl"></i>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Inserir</span>
                     </button>
                 </li>
                 <li class="nav-item flex-1" onclick="mudarAba('historico', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                        <i class="ph-fill ph-medal text-[22px]"></i>
-                        <span class="text-[9px] font-medium mt-0.5">Conquistas</span>
+                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
+                        <i class="ph-fill ph-medal text-2xl"></i>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Conquistas</span>
                     </button>
                 </li>
                 <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
-                    <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
-                        <i class="ph-fill ph-user text-[22px]"></i>
-                        <span class="text-[9px] font-medium mt-0.5">Perfil</span>
+                    <button class="w-full flex flex-col items-center justify-center gap-1 text-app-sub transition-all active:scale-90">
+                        <i class="ph-fill ph-user-circle text-2xl"></i>
+                        <span class="text-[10px] font-black uppercase tracking-tighter">Perfil</span>
                     </button>
                 </li>
             </ul>
         </nav>
 
-        <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
+        <main class="max-w-xl mx-auto w-full px-4" id="conteudo-principal">
             
             <!-- SECTION 1: TIMELINE (FLUXO DE CAIXA) -->
-            <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
-                <div class="mb-6 px-1 w-full flex justify-between items-end">
+            <section id="aba-previsoes" class="aba-ativa pt-8 pb-12 w-full">
+                <div class="mb-8 flex justify-between items-end">
                     <div>
-                        <h2 class="text-2xl font-bold tracking-tight text-white">Timeline 2026</h2>
-                        <p class="text-[13px] font-medium text-app-sub mt-0.5">Gestão de saldos e pagamentos mensais.</p>
+                        <h2 class="text-3xl font-black tracking-tight text-white italic">Timeline<span class="text-app-blue not-italic">2026</span></h2>
+                        <p class="text-[13px] font-bold text-app-sub mt-1">Clique no mês para detalhar pagamentos.</p>
                     </div>
                 </div>
                 
-                <div id="resumo-timeline-container" class="w-full mb-8">
-                    <!-- Gerado via JS: Card de Resumo do Mês Selecionado -->
+                <div id="resumo-timeline-container" class="w-full mb-10 transition-all duration-500">
+                    <!-- Dinâmico: Card do Mês em Foco -->
                 </div>
                 
-                <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-12" id="timeline-container">
-                    <!-- Gerado via JS: Lista de Meses -->
+                <div class="relative border-l-[3px] border-app-border ml-5 space-y-12 pb-20" id="timeline-container">
+                    <!-- Dinâmico: Lista de Meses Cascata -->
                 </div>
             </section>
 
-            <!-- SECTION 2: OBRAS E PROJETOS -->
-            <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-                <div class="flex justify-between items-center mb-5 px-1 w-full">
-                    <h2 class="text-2xl font-bold tracking-tight text-white">Meus Projetos</h2>
-                    <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60">
-                        <i class="ph-bold ph-arrows-clockwise text-lg"></i>
+            <!-- SECTION 2: OBRAS & PROJETOS -->
+            <section id="aba-saldos" class="aba-oculta pt-8 pb-12 w-full">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-black tracking-tight text-white italic">Portfólio<span class="text-app-blue not-italic">Ativo</span></h2>
+                    <button onclick="buscarSonhos()" class="w-10 h-10 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-blue active:rotate-180 transition-transform duration-500">
+                        <i class="ph-bold ph-arrows-clockwise text-xl"></i>
                     </button>
                 </div>
 
-                <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-float text-white w-full border border-[#38383A]">
-                    <div class="flex justify-between items-start mb-1">
-                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Total em Projetos</p>
-                        <span class="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase border border-white/10">Global</span>
+                <!-- Painel de Saldos Global -->
+                <div class="gradient-border p-7 shadow-float mb-10 relative overflow-hidden group">
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-app-blue/10 rounded-full blur-[80px] group-hover:bg-app-blue/20 transition-all duration-700"></div>
+                    
+                    <div class="flex justify-between items-start mb-2 relative z-10">
+                        <p class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Capital Projetado</p>
+                        <i class="ph-fill ph-chart-pie text-app-blue text-xl opacity-50"></i>
                     </div>
-                    <h2 class="text-[36px] font-black tracking-tight mb-5" id="saldos-total-geral">R$ 0,00</h2>
-                    <div class="flex gap-4 border-t border-white/10 pt-5">
-                        <div class="flex-1">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Já Investido</p>
-                            <p class="font-bold text-[18px] text-app-green" id="saldos-guardado">R$ 0,00</p>
+                    <h2 class="text-[44px] font-[900] tracking-tighter mb-6 relative z-10 leading-none" id="saldos-total-geral">R$ 0,00</h2>
+                    
+                    <div class="grid grid-cols-2 gap-6 border-t border-app-border pt-6 relative z-10">
+                        <div>
+                            <p class="text-[10px] font-black text-app-sub uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-app-green"></span> Já Investido
+                            </p>
+                            <p class="font-black text-2xl text-app-green tracking-tight" id="saldos-guardado">R$ 0,00</p>
                         </div>
-                        <div class="flex-1 pl-4 border-l border-white/10">
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Em Aberto</p>
-                            <p class="font-bold text-[18px] text-white" id="saldos-falta">R$ 0,00</p>
+                        <div class="pl-6 border-l border-app-border">
+                            <p class="text-[10px] font-black text-app-sub uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-app-red"></span> Em Aberto
+                            </p>
+                            <p class="font-black text-2xl text-white tracking-tight" id="saldos-falta">R$ 0,00</p>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Lista de Ativos</h3>
-                <div id="lista-sonhos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"></div>
+                <div class="space-y-4" id="lista-sonhos-container">
+                    <!-- Dinâmico: Cards de Obras -->
+                </div>
             </section>
 
-            <!-- SECTION 3: INSERIR (NOVOS LANÇAMENTOS) -->
-            <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-                <div class="mb-6 px-1 text-center">
-                    <h2 class="text-[22px] font-bold tracking-tight text-white">Novo Registo</h2>
-                    <p class="text-[13px] font-medium text-app-sub mt-1">Planeia uma obra ou lança um gasto rápido.</p>
+            <!-- SECTION 3: LANÇAMENTOS -->
+            <section id="aba-sonhos" class="aba-oculta pt-8 pb-12 w-full">
+                <div class="mb-8 text-center">
+                    <h2 class="text-3xl font-black tracking-tight text-white italic">Centro de<span class="text-app-blue not-italic">Lançamentos</span></h2>
                 </div>
 
-                <div class="bg-app-card p-1 rounded-xl flex mb-6 w-full border border-app-border">
-                    <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-2.5 text-[13px] rounded-lg segment-active transition-all">🏗️ Obra / Projeto</button>
-                    <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-2.5 text-[13px] rounded-lg segment-inactive transition-all">⚡ Gasto / Receita</button>
+                <div class="bg-app-card p-1.5 rounded-[22px] border border-app-border flex mb-8 w-full shadow-inner-soft">
+                    <button onclick="mudarTipoRegisto('obra')" id="btn-tab-obra" class="flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active transition-all duration-300">🏗️ Obra / Projeto</button>
+                    <button onclick="mudarTipoRegisto('rapido')" id="btn-tab-rapido" class="flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive transition-all duration-300">⚡ Movimento Rápido</button>
                 </div>
 
-                <!-- FORMULÁRIO DE PROJETO/OBRA -->
-                <form id="form-sonho" class="space-y-6 w-full">
-                    <div class="bg-app-card rounded-[24px] border border-app-border overflow-hidden shadow-float">
-                        <div class="flex items-center px-4 py-4 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-medium text-[15px] text-white">Nome</label>
-                            <input type="text" id="input-nome" required placeholder="Ex: Reforma Cozinha" class="flex-1 bg-transparent text-right text-[15px] text-app-blue font-bold outline-none">
-                        </div>
-                        <div class="flex items-center px-4 py-4 border-b border-app-border">
-                            <label class="w-28 shrink-0 font-medium text-[15px] text-white">Categoria</label>
-                            <select id="val-categoria" class="flex-1 bg-transparent text-[15px] text-app-sub outline-none text-right font-bold">
-                                <option value="Casa (Obra)">🏠 Obra / Casa</option>
-                                <option value="Reserva">💰 Poupança</option>
-                                <option value="Lazer">🍺 Lazer / Viagem</option>
-                                <option value="Dívida">💳 Pagamento</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center px-4 py-4">
-                            <label class="w-32 shrink-0 font-medium text-[15px] text-white">Estrutura</label>
-                            <select id="val-complexidade" onchange="verificarComplexidade()" class="flex-1 bg-transparent text-[15px] text-app-sub outline-none text-right font-bold">
-                                <option value="Simples">📦 Compra Única</option>
-                                <option value="Composto">🏗️ Lista de Itens</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Div de Valor Simples -->
-                    <div id="div-simples" class="w-full">
-                        <div class="bg-app-card rounded-[24px] border border-app-border p-5 flex items-center justify-between shadow-float">
-                            <label class="font-bold text-white">Valor Total</label>
-                            <div class="flex items-center">
-                                <span class="text-app-sub mr-1">R$</span>
-                                <input type="number" id="input-preco-unit" step="0.01" placeholder="0,00" class="bg-transparent text-right font-black text-app-blue text-2xl outline-none w-32" oninput="calcularTotalFormulario()">
+                <!-- FORM: OBRA/PROJETO -->
+                <form id="form-sonho" class="space-y-8 w-full">
+                    <div class="space-y-1.5">
+                        <span class="text-[10px] font-black text-app-sub uppercase tracking-[2px] ml-4 block">Identificação do Ativo</span>
+                        <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
+                            <div class="flex items-center px-6 py-5 border-b border-app-border group">
+                                <label class="w-24 shrink-0 font-bold text-[15px] text-white">Nome</label>
+                                <input type="text" id="input-nome" required placeholder="Ex: Telhado Cozinha" class="flex-1 bg-transparent text-right text-[15px] text-app-blue font-black outline-none placeholder:opacity-20">
+                            </div>
+                            <div class="flex items-center px-6 py-5 border-b border-app-border relative">
+                                <label class="w-32 shrink-0 font-bold text-[15px] text-white">Categoria</label>
+                                <div class="flex-1 flex justify-end">
+                                    <select id="val-categoria" class="bg-transparent text-[15px] text-app-sub outline-none font-bold cursor-pointer">
+                                        <option value="Casa (Obra)">🏠 Obra Residente</option>
+                                        <option value="Reserva">💰 Fundo de Reserva</option>
+                                        <option value="Lazer">🍺 Lazer & Estilo</option>
+                                        <option value="Dívida">💳 Quitação Débito</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex items-center px-6 py-5 relative">
+                                <label class="w-32 shrink-0 font-bold text-[15px] text-white">Estrutura</label>
+                                <div class="flex-1 flex justify-end">
+                                    <select id="val-complexidade" onchange="verificarComplexidade()" class="bg-transparent text-[15px] text-app-sub outline-none font-bold cursor-pointer">
+                                        <option value="Simples">📦 Pagamento Único</option>
+                                        <option value="Composto">🏗️ Lista de Itens</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Div de Itens Compostos -->
+                    <div id="div-simples">
+                        <div class="bg-app-card rounded-[32px] border border-app-border p-6 flex items-center justify-between shadow-float">
+                            <label class="font-black text-white text-[15px]">Investimento Total</label>
+                            <div class="flex items-center">
+                                <span class="text-app-sub font-black mr-1.5">R$</span>
+                                <input type="number" id="input-preco-unit" step="0.01" placeholder="0,00" class="bg-transparent text-right font-[900] text-app-blue text-3xl outline-none w-40 placeholder:opacity-10" oninput="calcularTotalFormulario()">
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="div-composto" class="hidden space-y-4">
-                        <div class="flex justify-between items-center px-2">
-                            <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Itens da Lista</span>
-                            <button type="button" onclick="adicionarParte()" class="text-app-blue text-[11px] font-bold bg-app-blue/10 px-3 py-1.5 rounded-lg flex items-center gap-1 active:opacity-50">
+                        <div class="flex justify-between items-center px-4">
+                            <h4 class="text-[10px] font-black text-app-sub uppercase tracking-[2px]">Detalhamento de Custos</h4>
+                            <button type="button" onclick="adicionarParte()" class="text-app-blue text-[11px] font-black bg-app-blue/10 px-4 py-2 rounded-xl flex items-center gap-2 active:scale-95 transition-all">
                                 <i class="ph-bold ph-plus"></i> Novo Item
                             </button>
                         </div>
-                        <div id="lista-partes" class="space-y-2"></div>
+                        <div id="lista-partes" class="space-y-3"></div>
                     </div>
 
-                    <!-- Resumo Final do Form -->
-                    <div class="bg-gradient-to-r from-app-blue/10 to-app-blue/20 rounded-[24px] border border-app-blue/20 p-5 shadow-float">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="font-bold text-app-blue">Estimativa do Projeto</span>
-                            <span class="font-black text-2xl text-app-blue" id="display-total">R$ 0,00</span>
+                    <div class="gradient-border p-6 shadow-float border-2 border-app-blue/20">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="font-black text-app-blue tracking-tight">Total Consolidado</span>
+                            <span class="font-[900] text-3xl text-app-blue tracking-tighter" id="display-total">R$ 0,00</span>
                         </div>
-                        <div class="flex items-center justify-between pt-4 border-t border-app-blue/20">
+                        <div class="flex items-center justify-between pt-6 border-t border-app-blue/15">
                             <div>
-                                <label class="font-bold text-white text-sm block">Já em Caixa</label>
-                                <p class="text-[10px] text-app-sub">Valor reservado para este fim.</p>
+                                <label class="font-black text-white text-sm block tracking-tight">Já em Carteira</label>
+                                <p class="text-[11px] text-app-sub font-medium">Liquidez disponível para este projeto.</p>
                             </div>
-                            <div class="flex items-center">
-                                <span class="text-app-sub mr-1">R$</span>
-                                <input type="number" id="input-guardado" value="0" step="0.01" class="bg-transparent text-right font-black text-app-green text-xl outline-none w-24">
+                            <div class="flex items-center bg-[#151515] px-4 py-2 rounded-xl border border-app-border">
+                                <span class="text-app-sub font-black text-xs mr-2">R$</span>
+                                <input type="number" id="input-guardado" value="0" step="0.01" class="bg-transparent text-right font-black text-app-green text-xl outline-none w-28">
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-app-blue text-white font-black py-5 rounded-[24px] shadow-float active:opacity-60 text-[17px]">
-                        Gravar Projeto
+                    <button type="submit" class="w-full bg-app-blue text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.97] transition-all text-[18px] uppercase tracking-wider">
+                        Efetivar Registo
                     </button>
                 </form>
 
-                <!-- FORMULÁRIO RÁPIDO -->
-                <form id="form-rapido" class="space-y-6 w-full hidden">
-                    <div class="bg-app-card rounded-[24px] border border-app-border overflow-hidden shadow-float">
-                        <div class="flex items-center px-4 py-4 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-medium text-[15px] text-white">Tipo</label>
-                            <select id="val-tipo-rapido" onchange="atualizarCorRapido()" class="flex-1 bg-transparent text-[15px] text-app-sub outline-none text-right font-black">
-                                <option value="gasto">🔴 Gasto</option>
-                                <option value="receita">🟢 Receita</option>
-                            </select>
+                <!-- FORM: RÁPIDO (TIMELINE) -->
+                <form id="form-rapido" class="space-y-8 w-full hidden">
+                    <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
+                        <div class="flex items-center px-6 py-5 border-b border-app-border">
+                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Natureza</label>
+                            <div class="flex-1 flex justify-end">
+                                <select id="val-tipo-rapido" onchange="atualizarCorRapido()" class="bg-transparent text-[15px] text-white outline-none font-[900] cursor-pointer">
+                                    <option value="gasto">🔴 Débito / Gasto</option>
+                                    <option value="receita">🟢 Crédito / Receita</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="flex items-center px-4 py-6 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-medium text-[15px] text-white">Valor</label>
-                            <span class="text-app-sub mr-1">R$</span>
-                            <input type="number" id="input-valor-rapido" required placeholder="0,00" step="0.01" class="flex-1 bg-transparent text-right text-app-red font-black text-3xl outline-none">
+                        <div class="flex items-center px-6 py-8 border-b border-app-border bg-[#151515]/30">
+                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Montante</label>
+                            <div class="flex-1 flex items-center justify-end">
+                                <span class="text-app-sub font-[900] text-lg mr-2">R$</span>
+                                <input type="number" id="input-valor-rapido" required placeholder="0,00" step="0.01" class="bg-transparent text-right text-app-red font-[900] text-4xl outline-none w-full placeholder:opacity-5">
+                            </div>
                         </div>
-                        <div class="flex items-center px-4 py-4 border-b border-app-border">
-                            <label class="w-24 shrink-0 font-medium text-[15px] text-white">Descrição</label>
-                            <input type="text" id="input-desc-rapido" required placeholder="Ex: Farmácia" class="flex-1 bg-transparent text-right text-white font-medium outline-none">
+                        <div class="flex items-center px-6 py-5 border-b border-app-border">
+                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Referência</label>
+                            <input type="text" id="input-desc-rapido" required placeholder="Ex: Manutenção Carro" class="flex-1 bg-transparent text-right text-white font-semibold outline-none placeholder:opacity-20">
                         </div>
-                        <div class="flex items-center px-4 py-4">
-                            <label class="w-24 shrink-0 font-medium text-[15px] text-white">Mês</label>
-                            <select id="val-mes-rapido" class="flex-1 bg-transparent text-[15px] text-app-blue outline-none text-right font-bold"></select>
+                        <div class="flex items-center px-6 py-5">
+                            <label class="w-24 shrink-0 font-bold text-[15px] text-white">Período</label>
+                            <div class="flex-1 flex justify-end">
+                                <select id="val-mes-rapido" class="bg-transparent text-[15px] text-app-blue outline-none font-black cursor-pointer"></select>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-app-blue text-white font-black py-5 rounded-[24px] shadow-float active:opacity-60 text-[17px]">
+                    <button type="submit" class="w-full bg-app-blue text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.97] transition-all text-[18px] uppercase tracking-wider">
                         Lançar na Timeline
                     </button>
                 </form>
             </section>
 
-            <!-- SECTION 4: CONQUISTAS (HISTÓRICO) -->
-            <section id="aba-historico" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-                <div class="text-center mb-10">
-                    <div class="w-20 h-20 bg-app-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="ph-fill ph-trophy text-5xl text-app-green"></i>
+            <!-- SECTION 4: CONQUISTAS -->
+            <section id="aba-historico" class="aba-oculta pt-8 pb-12 w-full">
+                <div class="text-center mb-12">
+                    <div class="w-24 h-24 bg-app-green/10 rounded-[40px] flex items-center justify-center mx-auto mb-5 shadow-float border border-app-green/20">
+                        <i class="ph-fill ph-trophy text-6xl text-app-green"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-white">Conquistas</h2>
-                    <p class="text-app-sub text-sm">Projetos finalizados com sucesso.</p>
+                    <h2 class="text-3xl font-black text-white italic">Mural de<span class="text-app-green not-italic">Honra</span></h2>
+                    <p class="text-app-sub text-sm font-bold mt-2">Património construído e metas realizadas.</p>
                 </div>
-                <div id="lista-conquistas-container" class="space-y-4 w-full"></div>
+                <div id="lista-conquistas-container" class="space-y-4 w-full">
+                    <!-- Dinâmico: Conquistas -->
+                </div>
             </section>
 
-            <!-- SECTION 5: PERFIL E CONFIGS -->
-            <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
-                <div class="text-center mb-10">
-                    <div class="w-24 h-24 bg-app-card rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-app-border">
-                        <i class="ph-fill ph-user text-5xl text-app-sub"></i>
+            <!-- SECTION 5: PERFIL -->
+            <section id="aba-perfil" class="aba-oculta pt-8 pb-12 w-full">
+                <div class="text-center mb-12">
+                    <div class="w-28 h-28 bg-app-card rounded-full flex items-center justify-center mx-auto mb-5 border-[3px] border-app-blue shadow-float relative group">
+                        <div class="absolute inset-2 border-2 border-dashed border-app-sub/20 rounded-full animate-spin-slow"></div>
+                        <i class="ph-fill ph-user-circle text-6xl text-app-blue"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-white" id="display-user-nome">Perfil</h2>
-                    <p class="text-app-sub" id="display-user-email">...</p>
+                    <h2 class="text-3xl font-[900] text-white" id="display-user-nome">Investidor Alpha</h2>
+                    <p class="text-app-sub font-bold tracking-tight" id="display-user-email">...</p>
                 </div>
 
-                <div class="bg-app-card rounded-[24px] border border-app-border overflow-hidden mb-6">
-                    <button onclick="limparHistoricoConfirmacao()" class="w-full flex items-center justify-between p-5 active:bg-white/5 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <i class="ph-bold ph-trash text-app-red text-xl"></i>
-                            <span class="font-bold text-app-red">Limpar Histórico de Conquistas</span>
-                        </div>
-                        <i class="ph-bold ph-caret-right text-app-sub"></i>
+                <div class="grid grid-cols-3 gap-3 mb-10">
+                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
+                        <p class="text-[22px] font-[900] text-app-blue" id="stats-projetos">0</p>
+                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Obras</p>
+                    </div>
+                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
+                        <p class="text-[22px] font-[900] text-app-green" id="stats-conquistas">0</p>
+                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Metas</p>
+                    </div>
+                    <div class="bg-app-card rounded-[24px] p-4 border border-app-border text-center shadow-float">
+                        <p class="text-[22px] font-[900] text-app-orange">2026</p>
+                        <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Foco</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px] ml-4">Gestão de Dados</h4>
+                    <div class="bg-app-card rounded-[32px] border border-app-border overflow-hidden shadow-float">
+                        <button onclick="limparHistoricoConfirmacao()" class="w-full flex items-center justify-between p-6 active:bg-app-red/5 transition-all group">
+                            <div class="flex items-center gap-5">
+                                <div class="w-10 h-10 rounded-xl bg-app-red/10 flex items-center justify-center text-app-red group-hover:scale-110 transition-transform">
+                                    <i class="ph-bold ph-trash text-xl"></i>
+                                </div>
+                                <div class="text-left">
+                                    <span class="font-black text-app-red block text-sm">Resetar Conquistas</span>
+                                    <span class="text-[10px] text-app-sub font-bold uppercase">Ação Irreversível</span>
+                                </div>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-app-sub"></i>
+                        </button>
+                    </div>
+
+                    <button onclick="logoutSupabase()" class="w-full bg-[#1C1C1E] border border-app-border text-white font-[900] py-6 rounded-[32px] shadow-float active:scale-[0.98] transition-all flex justify-center items-center gap-3 mt-10">
+                        <i class="ph-bold ph-sign-out text-xl"></i> Terminar Sessão
                     </button>
                 </div>
-
-                <button onclick="logoutSupabase()" class="w-full bg-app-card border border-app-border text-white font-black py-5 rounded-[24px] shadow-float active:bg-white/5">
-                    Terminar Sessão
-                </button>
             </section>
         </main>
     </div>
 
-    <!-- MODAL DETALHES DE PROJETO -->
+    <!-- MODAL: DETALHES DE PROJETO -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="fecharModal('modal-detalhes')"></div>
-        <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] h-[90vh] transform translate-y-full transition-transform duration-300 flex flex-col border-t border-app-border">
-            <div class="p-5 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[32px]">
-                <button onclick="fecharModal('modal-detalhes')" class="text-app-sub font-medium">Fechar</button>
-                <h3 id="modal-title-header" class="text-white font-black truncate max-w-[200px]">Detalhes</h3>
-                <div class="w-10"></div>
+        <div class="absolute inset-0 bg-black/85 backdrop-blur-xl transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
+        <div id="modal-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[44px] h-[90vh] transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col border-t border-white/5 shadow-modal">
+            <div class="p-6 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[44px]">
+                <button onclick="fecharModal('modal-detalhes')" class="w-12 h-12 rounded-full bg-[#151515] flex items-center justify-center text-app-sub"><i class="ph-bold ph-x"></i></button>
+                <h3 id="modal-title-header" class="text-white font-[900] tracking-tight text-lg max-w-[200px] truncate uppercase tracking-[1px]">Detalhes</h3>
+                <div class="w-12"></div>
             </div>
-            <div id="modal-body" class="p-6 overflow-y-auto no-scrollbar flex-1 pb-24"></div>
+            <div id="modal-body" class="p-8 overflow-y-auto no-scrollbar flex-1 pb-32">
+                <!-- Dinâmico -->
+            </div>
         </div>
     </div>
 
-    <!-- MODAL EDIÇÃO DO MÊS (TIMELINE) -->
+    <!-- MODAL: AJUSTAR MÊS (O QUE VOCÊ PEDIU) -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="fecharModal('modal-editar-mes')"></div>
-        <div id="modal-mes-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] h-[85vh] transform translate-y-full transition-transform duration-300 flex flex-col border-t border-app-border">
-            <div class="p-5 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[32px]">
-                <button onclick="fecharModal('modal-editar-mes')" class="text-app-sub font-medium">Sair</button>
-                <h3 id="display-mes-nome" class="text-white font-black">Ajustar Mês</h3>
-                <button onclick="guardarEdicaoMes()" class="text-app-blue font-black">Gravar</button>
+        <div class="absolute inset-0 bg-black/85 backdrop-blur-xl transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
+        <div id="modal-mes-content" class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[44px] h-[88vh] transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex flex-col border-t border-white/5 shadow-modal">
+            <div class="p-6 border-b border-app-border flex justify-between items-center bg-app-card shrink-0 rounded-t-[44px]">
+                <button onclick="fecharModal('modal-editar-mes')" class="text-app-sub font-black text-sm uppercase">Cancelar</button>
+                <h3 id="display-mes-nome" class="text-white font-[900] tracking-tighter text-xl italic uppercase">Ajustar Mês</h3>
+                <button onclick="guardarEdicaoMes()" class="text-app-blue font-[900] text-sm uppercase">Gravar</button>
             </div>
-            <div class="p-6 overflow-y-auto no-scrollbar flex-1 pb-20">
+            
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1 pb-32 space-y-10">
                 <input type="hidden" id="edit-mes-id">
                 
-                <!-- CHECKLIST DE REALIZAÇÃO (CRÍTICO) -->
-                <div class="mb-10">
-                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-4 ml-1">Estado de Pagamento</h4>
-                    <div id="modal-mes-status-container" class="space-y-3"></div>
-                </div>
+                <!-- TOP: REALIZADO (CHECKBOXES) -->
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 ml-2">
+                        <i class="ph-fill ph-check-square text-app-green text-xl"></i>
+                        <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Consolidação Real</h4>
+                    </div>
+                    
+                    <div id="modal-mes-status-container" class="space-y-3">
+                        <!-- Gerado dinamicamente: Checkboxes das bases -->
+                    </div>
 
-                <!-- LANÇAMENTOS ADICIONAIS -->
-                <div class="mb-10">
-                    <div class="flex justify-between items-center mb-4 px-1">
-                        <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Movimentos Extras</h4>
-                        <div class="flex gap-2">
-                            <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[10px] font-bold bg-app-green/10 px-2.5 py-1.5 rounded-lg active:opacity-50">+ Receita</button>
-                            <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[10px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-lg active:opacity-50">+ Gasto</button>
+                    <!-- EXTRAS COM CHECKBOX -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center px-2">
+                            <span class="text-[10px] font-black text-app-sub uppercase tracking-[2px]">Movimentos Avulsos</span>
+                            <div class="flex gap-2">
+                                <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[9px] font-black bg-app-green/10 px-3 py-2 rounded-lg border border-app-green/10 uppercase tracking-widest">+ Receita</button>
+                                <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[9px] font-black bg-app-red/10 px-3 py-2 rounded-lg border border-app-red/10 uppercase tracking-widest">+ Gasto</button>
+                            </div>
+                        </div>
+                        <div id="lista-extras-mes" class="space-y-3">
+                            <!-- Gerado dinamicamente -->
                         </div>
                     </div>
-                    <div id="lista-extras-mes" class="space-y-3"></div>
                 </div>
 
-                <!-- VALORES DE BASE -->
-                <div class="pt-8 border-t border-app-border">
-                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-4 ml-1">Configuração de Base</h4>
-                    <div class="bg-[#151515] rounded-[24px] border border-app-border overflow-hidden">
-                        <div class="p-4 border-b border-app-border flex justify-between items-center">
-                            <label class="text-sm text-app-sub">Saldo Inicial</label>
-                            <input type="number" id="edit-mes-saldo-inicial" class="bg-transparent text-right font-black text-white outline-none w-28" placeholder="Auto">
+                <!-- BOTTOM: PLANEADO (INPUTS) -->
+                <div class="pt-10 border-t border-app-border space-y-6">
+                    <div class="flex items-center gap-3 ml-2">
+                        <i class="ph-fill ph-pencil-circle text-app-blue text-xl"></i>
+                        <h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Parâmetros de Planeamento</h4>
+                    </div>
+                    
+                    <div class="bg-[#151515] rounded-[32px] border border-app-border overflow-hidden divide-y divide-app-border shadow-inner-soft">
+                        <div class="p-5 flex justify-between items-center bg-[#1C1C1E]">
+                            <label class="text-sm font-bold text-white">Saldo de Abertura</label>
+                            <div class="flex items-center">
+                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
+                                <input type="number" id="edit-mes-saldo-inicial" class="bg-transparent text-right font-[900] text-app-blue outline-none w-32" placeholder="Automático">
+                            </div>
                         </div>
-                        <div class="p-4 border-b border-app-border flex justify-between items-center">
-                            <label class="text-sm text-app-sub">Entradas Base</label>
-                            <input type="number" id="edit-mes-entradas" class="bg-transparent text-right font-black text-app-green outline-none w-28">
+                        <div class="p-5 flex justify-between items-center">
+                            <label class="text-sm font-bold text-app-sub">Entradas Base</label>
+                            <div class="flex items-center">
+                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
+                                <input type="number" id="edit-mes-entradas" class="bg-transparent text-right font-black text-app-green outline-none w-32">
+                            </div>
                         </div>
-                        <div class="p-4 border-b border-app-border flex justify-between items-center">
-                            <label class="text-sm text-app-sub">Gastos Fixos</label>
-                            <input type="number" id="edit-mes-fixos" class="bg-transparent text-right font-black text-app-red outline-none w-28">
+                        <div class="p-5 flex justify-between items-center">
+                            <label class="text-sm font-bold text-app-sub">Gastos Fixos</label>
+                            <div class="flex items-center">
+                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
+                                <input type="number" id="edit-mes-fixos" class="bg-transparent text-right font-black text-app-red outline-none w-32">
+                            </div>
                         </div>
-                        <div class="p-4 flex justify-between items-center">
-                            <label class="text-sm text-app-sub">Empréstimos</label>
-                            <input type="number" id="edit-mes-parcela" class="bg-transparent text-right font-black text-app-orange outline-none w-28">
+                        <div class="p-5 flex justify-between items-center">
+                            <label class="text-sm font-bold text-app-sub">Empréstimo (Parcela)</label>
+                            <div class="flex items-center">
+                                <span class="text-app-sub font-bold text-xs mr-2">R$</span>
+                                <input type="number" id="edit-mes-parcela" class="bg-transparent text-right font-black text-app-orange outline-none w-32">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -437,22 +589,23 @@
     </div>
 
     <script>
-        const URL_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
-        const KEY_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
+        // CONFIGURAÇÕES SUPABASE
+        const SUPABASE_URL = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Cliente Supabase instanciado com nome único para evitar conflitos
-        const supabaseClient = window.supabase.createClient(URL_SUPABASE, KEY_SUPABASE);
-        
+        // ESTADO GLOBAL
         let idUtilizadorAtual = null;
         let sonhosGlobais = []; 
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         let extrasTemp = [];
 
+        // AUXILIARES
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
         const formatarMoedaSimples = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v);
 
-        // --- AUTENTICAÇÃO INTEGRADA ---
+        // --- AUTHENTICATION ---
         async function verificarSessao() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
@@ -460,6 +613,7 @@
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
                 document.getElementById('display-user-email').innerText = session.user.email;
+                document.getElementById('display-user-nome').innerText = session.user.email.split('@')[0];
                 inicializarTimeline();
                 buscarSonhos();
             } else {
@@ -471,6 +625,7 @@
         async function fazerLogin() {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
+            if(!email || !password) return;
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) alert("Erro: " + error.message);
             else verificarSessao();
@@ -479,9 +634,10 @@
         async function fazerRegisto() {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
+            if(!email || !password) return;
             const { error } = await supabaseClient.auth.signUp({ email, password });
             if (error) alert("Erro: " + error.message);
-            else alert("Sucesso! Verifica o teu e-mail.");
+            else alert("Acesso solicitado. Verifique o seu e-mail!");
         }
 
         async function logoutSupabase() {
@@ -489,7 +645,7 @@
             verificarSessao();
         }
 
-        // --- GESTÃO DE TIMELINE ---
+        // --- TIMELINE CORE ---
         const templateMeses = [
             { id: '2026-04', mes: 'Abril', cor: 'app-blue', entradas: 2500, fixos: 800, parcela: 0, extras: [] },
             { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2500, fixos: 800, parcela: 0, extras: [] },
@@ -509,14 +665,22 @@
             dadosTimeline = templateMeses.map(t => {
                 const db = data?.find(x => x.mes_id === t.id);
                 if(db) {
-                    let config = { texto: '', base_ok: { entradas: false, fixos: false, parcela: false } };
+                    let config = { base_ok: { entradas: false, fixos: false, parcela: false } };
                     try { config = JSON.parse(db.observacoes); } catch(e){}
-                    return { ...t, entradas: db.entradas, fixos: db.fixos, parcela: db.parcela, saldo_inicial: db.saldo_inicial, extras: db.extras || [], base_ok: config.base_ok };
+                    return { 
+                        ...t, 
+                        entradas: db.entradas, 
+                        fixos: db.fixos, 
+                        parcela: db.parcela, 
+                        saldo_inicial: db.saldo_inicial, 
+                        extras: db.extras || [], 
+                        base_ok: config.base_ok 
+                    };
                 }
                 return { ...t, base_ok: { entradas: false, fixos: false, parcela: false }, saldo_inicial: null };
             });
 
-            // Atualiza o select de lançamentos rápidos
+            // Popula select do form rápido
             const sel = document.getElementById('val-mes-rapido');
             sel.innerHTML = '';
             dadosTimeline.forEach(m => sel.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
@@ -530,47 +694,59 @@
             let sRealAnterior = 0, sPrevAnterior = 0;
 
             dadosTimeline.forEach((m, idx) => {
+                // Cascata: Saldo Inicial é o Final do mês anterior ou o Saldo de Abertura definido
                 let startReal = idx === 0 && m.saldo_inicial !== null ? m.saldo_inicial : sRealAnterior;
                 let startPrev = idx === 0 && m.saldo_inicial !== null ? m.saldo_inicial : sPrevAnterior;
 
-                // Cálculo Previsto (Plano ideal)
-                let extrasRec = (m.extras || []).filter(e => e.tipo === 'receita').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-                let extrasGas = (m.extras || []).filter(e => e.tipo === 'gasto').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
-                let finalPrev = startPrev + m.entradas + extrasRec - (m.fixos + m.parcela + extrasGas);
+                // CÁLCULO PREVISTO (O que deve acontecer)
+                let extRecTotal = (m.extras || []).filter(e => e.tipo === 'receita').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
+                let extGasTotal = (m.extras || []).filter(e => e.tipo === 'gasto').reduce((a, b) => a + (parseFloat(b.valor)||0), 0);
+                let totalPlaneadoMes = m.entradas + extRecTotal - (m.fixos + m.parcela + extGasTotal);
+                let finalPrev = startPrev + totalPlaneadoMes;
 
-                // Cálculo Real (O que está em carteira)
+                // CÁLCULO REAL (O que já está no bolso)
                 let somaReal = 0;
                 if(m.base_ok.entradas) somaReal += m.entradas;
                 if(m.base_ok.fixos) somaReal -= m.fixos;
                 if(m.base_ok.parcela) somaReal -= m.parcela;
+                
                 (m.extras || []).forEach(e => {
-                    if(e.realizado) e.tipo === 'receita' ? somaReal += (parseFloat(e.valor)||0) : somaReal -= (parseFloat(e.valor)||0);
+                    if(e.realizado) {
+                        e.tipo === 'receita' ? somaReal += (parseFloat(e.valor)||0) : somaReal -= (parseFloat(e.valor)||0);
+                    }
                 });
                 let finalReal = startReal + somaReal;
 
+                // Armazena cálculos no objeto para o resumo de topo
                 m._calcReal = finalReal;
                 m._calcPrev = finalPrev;
                 sRealAnterior = finalReal;
                 sPrevAnterior = finalPrev;
 
-                container.innerHTML += `
-                    <div class="relative pl-7 w-full cursor-pointer group" onclick="abrirEdicaoMes('${m.id}')">
-                        <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${m.cor} ring-4 ring-black group-active:scale-125 transition-transform"></span>
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 class="text-[17px] font-bold text-white">${m.mes}</h4>
-                            <i class="ph ph-caret-right text-app-sub text-xs"></i>
+                // Renderiza Card na Cascata
+                const div = document.createElement('div');
+                div.className = "relative pl-8 w-full group cursor-pointer active:scale-[0.98] transition-all";
+                div.onclick = () => abrirEdicaoMes(m.id);
+                div.innerHTML = `
+                    <span class="absolute -left-[11px] top-2 w-5 h-5 rounded-full bg-${m.cor} ring-4 ring-black shadow-float group-hover:scale-125 transition-all"></span>
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-xl font-[900] text-white italic">${m.mes}</h4>
+                        <div class="px-2 py-1 bg-${m.cor}/10 border border-${m.cor}/20 rounded-md">
+                           <i class="ph-bold ph-caret-right text-xs text-app-sub"></i>
                         </div>
-                        <div class="bg-app-card border border-app-border rounded-[24px] p-4 shadow-float">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[11px] text-app-sub font-bold uppercase tracking-wider">Carteira</span>
-                                <span class="text-white font-black text-[16px]">${formatarMoeda(m._calcReal)}</span>
-                            </div>
-                            <div class="flex justify-between items-center opacity-40">
-                                <span class="text-[9px] font-bold uppercase">Previsão</span>
-                                <span class="text-[11px] font-bold">${formatarMoeda(m._calcPrev)}</span>
-                            </div>
+                    </div>
+                    <div class="bg-app-card border border-app-border rounded-[28px] p-5 shadow-float relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                        <div class="flex justify-between items-center mb-2 relative z-10">
+                            <span class="text-[10px] text-app-sub font-black uppercase tracking-widest">Saldo Real (Em Carteira)</span>
+                            <span class="text-white font-[900] text-lg tracking-tighter">${formatarMoeda(m._calcReal)}</span>
+                        </div>
+                        <div class="flex justify-between items-center opacity-40 relative z-10">
+                            <span class="text-[9px] font-bold uppercase tracking-widest">Previsão Fim de Mês</span>
+                            <span class="text-[12px] font-black">${formatarMoeda(m._calcPrev)}</span>
                         </div>
                     </div>`;
+                container.appendChild(div);
             });
             atualizarResumoTopo();
         }
@@ -579,16 +755,26 @@
             const m = dadosTimeline[mesResumoIndex];
             const cont = document.getElementById('resumo-timeline-container');
             if(!m) return;
+            
             cont.innerHTML = `
-                <div class="bg-app-blue rounded-[28px] p-6 shadow-float text-white">
-                    <div class="flex justify-between items-center mb-6">
-                        <button onclick="mudarMesNav(-1)" class="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-left"></i></button>
-                        <h3 class="font-black text-[20px]">${m.mes}</h3>
-                        <button onclick="mudarMesNav(1)" class="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-right"></i></button>
+                <div class="gradient-border p-7 shadow-float text-white border-2 border-app-blue/20">
+                    <div class="flex justify-between items-center mb-8">
+                        <button onclick="mudarMesNav(-1)" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-all border border-white/5"><i class="ph-bold ph-caret-left"></i></button>
+                        <div class="text-center">
+                            <h3 class="font-[900] text-2xl uppercase tracking-[2px]">${m.mes}</h3>
+                            <p class="text-[9px] font-black text-app-sub uppercase tracking-widest mt-1">Análise de Período</p>
+                        </div>
+                        <button onclick="mudarMesNav(1)" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full active:scale-90 transition-all border border-white/5"><i class="ph-bold ph-caret-right"></i></button>
                     </div>
-                    <div class="flex justify-between items-center text-center">
-                        <div class="flex-1 border-r border-white/20"><p class="text-[10px] uppercase font-bold opacity-70 mb-1">Saldo Real</p><p class="text-[22px] font-black">${formatarMoedaSimples(m._calcReal)}</p></div>
-                        <div class="flex-1"><p class="text-[10px] uppercase font-bold opacity-70 mb-1">Planeado</p><p class="text-[22px] font-black">${formatarMoedaSimples(m._calcPrev)}</p></div>
+                    <div class="grid grid-cols-2 gap-6 text-center border-t border-white/5 pt-8">
+                        <div class="border-r border-white/5">
+                            <p class="text-[10px] uppercase font-black text-app-sub tracking-widest mb-2">Liquidez Real</p>
+                            <p class="text-3xl font-[900] text-white tracking-tighter leading-none">${formatarMoedaSimples(m._calcReal)}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-black text-app-sub tracking-widest mb-2">Plano Teórico</p>
+                            <p class="text-3xl font-[900] text-app-blue tracking-tighter leading-none">${formatarMoedaSimples(m._calcPrev)}</p>
+                        </div>
                     </div>
                 </div>`;
         }
@@ -598,7 +784,7 @@
             atualizarResumoTopo();
         }
 
-        // --- GESTÃO DE OBRAS E SONHOS ---
+        // --- GESTÃO DE OBRAS ---
         function verificarComplexidade() {
             const comp = document.getElementById('val-complexidade').value;
             document.getElementById('div-composto').classList.toggle('hidden', comp !== 'Composto');
@@ -609,11 +795,14 @@
 
         function adicionarParte() {
             const div = document.createElement('div');
-            div.className = "flex items-center p-4 bg-app-card rounded-[18px] border border-app-border gap-3 shadow-sm";
+            div.className = "flex items-center p-4 bg-app-card rounded-[22px] border border-app-border gap-4 shadow-inner-soft group";
             div.innerHTML = `
-                <button type="button" onclick="this.parentElement.remove(); calcularTotalFormulario()" class="text-app-red"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
-                <input type="text" placeholder="Item..." required class="nome-parte flex-1 bg-transparent text-white font-medium outline-none">
-                <input type="number" placeholder="0,00" required oninput="calcularTotalFormulario()" class="custo-parte w-20 bg-transparent text-right font-black text-app-blue outline-none">`;
+                <button type="button" onclick="this.parentElement.remove(); calcularTotalFormulario()" class="text-app-red active:scale-90 transition-transform"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
+                <input type="text" placeholder="Designação do Item" required class="nome-parte flex-1 bg-transparent text-white font-bold outline-none text-[15px] placeholder:opacity-10">
+                <div class="flex items-center bg-[#151515] px-3 py-1.5 rounded-xl border border-app-border">
+                   <span class="text-app-sub font-black text-xs mr-2">R$</span>
+                   <input type="number" placeholder="0,00" required oninput="calcularTotalFormulario()" class="custo-parte w-20 bg-transparent text-right font-[900] text-app-blue outline-none text-[15px]">
+                </div>`;
             document.getElementById('lista-partes').appendChild(div);
         }
 
@@ -632,13 +821,16 @@
         async function buscarSonhos() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('lista-sonhos-container');
-            container.innerHTML = '<div class="col-span-full text-center py-10 opacity-30">A carregar...</div>';
+            container.innerHTML = '<div class="col-span-full text-center py-20 opacity-20"><i class="ph-bold ph-circle-notch animate-spin text-4xl"></i></div>';
             
             const { data } = await supabaseClient.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
             sonhosGlobais = data || [];
             
             renderizarUIProjetos();
             renderizarUIConquistas();
+            
+            document.getElementById('stats-projetos').innerText = sonhosGlobais.filter(s => s.status !== 'concluido').length;
+            document.getElementById('stats-conquistas').innerText = sonhosGlobais.filter(s => s.status === 'concluido').length;
         }
 
         function renderizarUIProjetos() {
@@ -647,32 +839,41 @@
             let tPlan = 0, tInv = 0;
 
             sonhosGlobais.filter(s => s.status !== 'concluido').forEach(s => {
-                let custo = s.custo || 0;
+                let custoTotal = s.custo || 0;
                 let investido = parseFloat(s.valor_guardado) || 0;
                 
-                // Cálculo para itens compostos
                 if(s.complexidade === 'Composto' && s.itens_compostos) {
-                    const comprados = s.itens_compostos.filter(i => i.comprado).reduce((a, b) => a + (parseFloat(b.custo)||0), 0);
-                    investido += comprados;
+                    const jaComprados = s.itens_compostos.filter(i => i.comprado).reduce((acc, curr) => acc + (parseFloat(curr.custo)||0), 0);
+                    investido += jaComprados;
                 }
 
-                tPlan += custo; tInv += Math.min(custo, investido);
-                let perc = custo > 0 ? Math.round((investido / custo) * 100) : 0;
+                tPlan += custoTotal;
+                let realEfetivo = Math.min(custoTotal, investido);
+                tInv += realEfetivo;
+                
+                let perc = custoTotal > 0 ? Math.round((realEfetivo / custoTotal) * 100) : 0;
                 if(perc > 100) perc = 100;
 
-                container.innerHTML += `
-                    <div class="bg-app-card rounded-[24px] p-5 border border-app-border relative overflow-hidden flex flex-col justify-between min-h-[140px] shadow-float" onclick="abrirDetalhesProjeto('${s.id}')">
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-white/5"><div class="h-full bg-app-blue transition-all duration-700" style="width: ${perc}%"></div></div>
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-black text-app-sub bg-white/5 px-2 py-1 rounded-md uppercase tracking-widest">${s.categoria}</span>
-                            <span class="text-[11px] font-black text-app-green">${perc}%</span>
-                        </div>
-                        <p class="text-white font-black text-[15px] truncate mb-2">${s.nome}</p>
-                        <div class="flex justify-between items-end">
-                            <div><p class="text-[13px] font-bold text-white">${formatarMoeda(Math.max(0, custo - investido))}</p><p class="text-[9px] uppercase font-bold text-app-sub">Em falta</p></div>
-                            <i class="ph ph-arrow-up-right text-app-sub"></i>
+                const div = document.createElement('div');
+                div.className = "bg-app-card rounded-[32px] p-6 border border-app-border relative overflow-hidden flex flex-col justify-between min-h-[160px] shadow-float cursor-pointer active:scale-[0.98] transition-all group";
+                div.onclick = () => abrirDetalhesProjeto(s.id);
+                div.innerHTML = `
+                    <div class="absolute bottom-0 left-0 w-full h-1.5 bg-white/5"><div class="h-full bg-app-blue shadow-[0_0_15px_rgba(10,132,255,0.5)] transition-all duration-1000 ease-out" style="width: ${perc}%"></div></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 rounded-[18px] bg-[#151515] flex items-center justify-center border border-app-border text-2xl group-hover:rotate-6 transition-transform">📌</div>
+                        <span class="text-[10px] font-black text-app-sub bg-[#151515] px-3 py-1.5 rounded-full border border-app-border uppercase tracking-widest">${s.categoria}</span>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-[900] text-white tracking-tight truncate group-hover:text-app-blue transition-colors">${s.nome}</h4>
+                        <div class="flex justify-between items-end mt-2">
+                            <div>
+                                <p class="text-[15px] font-[900] text-white leading-none">${formatarMoeda(Math.max(0, custoTotal - investido))}</p>
+                                <p class="text-[9px] uppercase font-black text-app-sub tracking-widest mt-1">Capital em Falta</p>
+                            </div>
+                            <span class="text-[12px] text-app-green font-black tracking-tighter bg-app-green/10 px-2 py-0.5 rounded-md">${perc}%</span>
                         </div>
                     </div>`;
+                container.appendChild(div);
             });
 
             document.getElementById('saldos-total-geral').innerText = formatarMoeda(tPlan);
@@ -685,97 +886,118 @@
             container.innerHTML = '';
             sonhosGlobais.filter(s => s.status === 'concluido').forEach(s => {
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-4 bg-app-card rounded-[22px] border border-app-green/20 shadow-float">
-                        <div class="flex items-center gap-4 flex-1 overflow-hidden">
-                            <div class="w-10 h-10 rounded-full bg-app-green/10 flex items-center justify-center text-app-green"><i class="ph-fill ph-check-circle text-xl"></i></div>
-                            <p class="text-white font-bold truncate">${s.nome}</p>
+                    <div class="flex items-center justify-between p-5 bg-app-card rounded-[28px] border border-app-green/20 shadow-float relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-app-green"></div>
+                        <div class="flex items-center gap-5 flex-1 overflow-hidden">
+                            <div class="w-12 h-12 rounded-2xl bg-app-green/10 flex items-center justify-center text-app-green"><i class="ph-fill ph-check-circle text-2xl"></i></div>
+                            <p class="text-white font-[900] truncate tracking-tight text-lg">${s.nome}</p>
                         </div>
-                        <p class="font-black text-app-green ml-2">${formatarMoeda(s.custo)}</p>
+                        <div class="text-right ml-4">
+                           <p class="font-[900] text-app-green leading-none text-lg">${formatarMoeda(s.custo)}</p>
+                           <p class="text-[8px] font-black text-app-sub uppercase tracking-widest mt-1">Valor Final</p>
+                        </div>
                     </div>`;
             });
         }
 
-        // --- DETALHES E MODAIS ---
+        // --- MODAL DETALHES ---
         function abrirDetalhesProjeto(id) {
             const s = sonhosGlobais.find(x => x.id === id);
             if(!s) return;
             document.getElementById('modal-title-header').innerText = s.nome;
             
             let htmlInner = `
-                <div class="bg-[#151515] p-5 rounded-2xl border border-app-border text-center mb-6">
-                    <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">Custo do Projeto</p>
-                    <h3 class="text-2xl font-black text-white">${formatarMoeda(s.custo)}</h3>
+                <div class="bg-[#151515] p-6 rounded-[32px] border border-app-border text-center mb-8 shadow-inner-soft">
+                    <p class="text-[10px] font-black text-app-sub uppercase tracking-[3px] mb-2">Custo de Implementação</p>
+                    <h3 class="text-4xl font-[900] text-white tracking-tighter">${formatarMoeda(s.custo)}</h3>
                 </div>`;
 
             if(s.complexidade === 'Composto' && s.itens_compostos) {
-                htmlInner += `<h4 class="text-[11px] font-black text-app-sub uppercase mb-4 ml-1">Lista de Itens</h4><div class="space-y-3">`;
+                htmlInner += `<div class="flex items-center gap-3 mb-5 ml-2"><i class="ph-fill ph-list-numbers text-app-blue text-lg"></i><h4 class="text-[11px] font-black text-app-sub uppercase tracking-[3px]">Estrutura de Custos</h4></div><div class="space-y-3">`;
                 s.itens_compostos.forEach((item, idx) => {
                     htmlInner += `
-                        <div class="flex items-center justify-between p-4 bg-[#151515] rounded-2xl border border-app-border" onclick="toggleItemLista('${s.id}', ${idx})">
-                            <div class="flex items-center gap-3">
-                                <i class="ph-fill ${item.comprado ? 'ph-check-circle text-app-green' : 'ph-circle text-app-sub'} text-2xl"></i>
-                                <span class="font-bold ${item.comprado ? 'text-app-sub line-through' : 'text-white'}">${item.nome}</span>
+                        <div class="flex items-center justify-between p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.97] transition-all" onclick="toggleItemLista('${s.id}', ${idx})">
+                            <div class="flex items-center gap-4">
+                                <div class="custom-check ${item.comprado ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
+                                <span class="font-bold ${item.comprado ? 'text-app-sub line-through opacity-40' : 'text-white'} text-[15px]">${item.nome}</span>
                             </div>
-                            <span class="font-bold ${item.comprado ? 'text-app-sub' : 'text-app-blue'}">${formatarMoeda(item.custo)}</span>
+                            <span class="font-[900] ${item.comprado ? 'text-app-sub' : 'text-app-blue'} tracking-tight">${formatarMoeda(item.custo)}</span>
                         </div>`;
                 });
                 htmlInner += `</div>`;
             }
 
-            const totalInv = (parseFloat(s.valor_guardado)||0) + (s.itens_compostos || []).filter(i => i.comprado).reduce((a,b)=>a+b.custo, 0);
-            if(totalInv >= s.custo) {
-                htmlInner += `<button onclick="finalizarProjeto('${s.id}')" class="w-full bg-app-green text-black font-black py-5 rounded-[22px] mt-8">Finalizar e Arquivar</button>`;
+            const totalEfetivo = (parseFloat(s.valor_guardado)||0) + (s.itens_compostos || []).filter(i => i.comprado).reduce((a,b)=>a+(parseFloat(b.custo)||0), 0);
+            if(totalEfetivo >= s.custo) {
+                htmlInner += `<button onclick="finalizarProjeto('${s.id}')" class="w-full bg-app-green text-black font-[900] py-6 rounded-[32px] mt-10 shadow-float active:scale-[0.97] transition-all uppercase tracking-widest">Finalizar & Arquivar Conquista</button>`;
+            } else {
+                htmlInner += `<div class="mt-8 p-5 bg-app-blue/5 rounded-2xl border border-app-blue/10 text-center"><p class="text-[11px] text-app-blue font-black uppercase tracking-widest">Faltam ${formatarMoeda(s.custo - totalEfetivo)} para concluir</p></div>`;
             }
 
             document.getElementById('modal-body').innerHTML = htmlInner;
-            abrirModalGenerico('modal-detalhes');
+            abrirModalGenerico('modal-detalhes', 'modal-backdrop', 'modal-content');
         }
 
         async function toggleItemLista(projId, itemIdx) {
             const s = sonhosGlobais.find(x => x.id === projId);
             s.itens_compostos[itemIdx].comprado = !s.itens_compostos[itemIdx].comprado;
-            await supabaseClient.from('sonhos').update({ itens_compostos: s.itens_compostos }).eq('id', projId);
-            abrirDetalhesProjeto(projId);
-            buscarSonhos();
+            const { error } = await supabaseClient.from('sonhos').update({ itens_compostos: s.itens_compostos }).eq('id', projId);
+            if(!error) {
+                abrirDetalhesProjeto(projId);
+                buscarSonhos();
+            }
         }
 
         async function finalizarProjeto(id) {
-            await supabaseClient.from('sonhos').update({ status: 'concluido' }).eq('id', id);
-            fecharModal('modal-detalhes');
-            buscarSonhos();
+            const { error } = await supabaseClient.from('sonhos').update({ status: 'concluido' }).eq('id', id);
+            if(!error) {
+                fecharModal('modal-detalhes');
+                buscarSonhos();
+            }
         }
 
-        // --- TIMELINE: MODAL DE EDIÇÃO ---
+        // --- AJUSTE DE MÊS (TIMELINE) ---
         function abrirEdicaoMes(id) {
             const m = dadosTimeline.find(x => x.id === id);
             if(!m) return;
+            
             document.getElementById('display-mes-nome').innerText = m.mes;
             document.getElementById('edit-mes-id').value = m.id;
             document.getElementById('edit-mes-saldo-inicial').value = m.saldo_inicial || '';
             document.getElementById('edit-mes-entradas').value = m.entradas;
             document.getElementById('edit-mes-fixos').value = m.fixos;
             document.getElementById('edit-mes-parcela').value = m.parcela;
+            
             extrasTemp = JSON.parse(JSON.stringify(m.extras || []));
             
             renderizarStatusBase(m);
             renderizarExtrasModal();
-            abrirModalGenerico('modal-editar-mes');
+            abrirModalGenerico('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
         }
 
         function renderizarStatusBase(m) {
             const cont = document.getElementById('modal-mes-status-container');
             cont.innerHTML = `
-                <div class="flex justify-between items-center p-4 bg-[#151515] rounded-2xl border border-app-border" onclick="toggleCheckBase('${m.id}', 'entradas')">
-                    <div class="flex items-center gap-3"><i class="ph-fill ${m.base_ok.entradas ? 'ph-check-circle text-app-green' : 'ph-circle text-app-sub'} text-2xl"></i><span class="font-bold text-white ${m.base_ok.entradas ? 'opacity-30 line-through' : ''}">Recebimentos</span></div>
+                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'entradas')">
+                    <div class="flex items-center gap-4">
+                        <div class="custom-check ${m.base_ok.entradas ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
+                        <span class="font-bold text-white ${m.base_ok.entradas ? 'opacity-30 line-through' : ''}">Recebimentos do Mês</span>
+                    </div>
                     <span class="font-black text-app-green">${formatarMoeda(m.entradas)}</span>
                 </div>
-                <div class="flex justify-between items-center p-4 bg-[#151515] rounded-2xl border border-app-border" onclick="toggleCheckBase('${m.id}', 'fixos')">
-                    <div class="flex items-center gap-3"><i class="ph-fill ${m.base_ok.fixos ? 'ph-check-circle text-app-green' : 'ph-circle text-app-sub'} text-2xl"></i><span class="font-bold text-white ${m.base_ok.fixos ? 'opacity-30 line-through' : ''}">Gastos Fixos</span></div>
+                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'fixos')">
+                    <div class="flex items-center gap-4">
+                        <div class="custom-check ${m.base_ok.fixos ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
+                        <span class="font-bold text-white ${m.base_ok.fixos ? 'opacity-30 line-through' : ''}">Gastos Fixos Mensais</span>
+                    </div>
                     <span class="font-black text-app-red">${formatarMoeda(m.fixos)}</span>
                 </div>
                 ${m.parcela > 0 ? `
-                <div class="flex justify-between items-center p-4 bg-[#151515] rounded-2xl border border-app-border" onclick="toggleCheckBase('${m.id}', 'parcela')">
-                    <div class="flex items-center gap-3"><i class="ph-fill ${m.base_ok.parcela ? 'ph-check-circle text-app-orange' : 'ph-circle text-app-sub'} text-2xl"></i><span class="font-bold text-white ${m.base_ok.parcela ? 'opacity-30 line-through' : ''}">Empréstimo</span></div>
+                <div class="flex justify-between items-center p-5 bg-[#151515] rounded-3xl border border-app-border active:scale-[0.98] transition-all" onclick="toggleCheckBase('${m.id}', 'parcela')">
+                    <div class="flex items-center gap-4">
+                        <div class="custom-check ${m.base_ok.parcela ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
+                        <span class="font-bold text-white ${m.base_ok.parcela ? 'opacity-30 line-through' : ''}">Parcela Empréstimo</span>
+                    </div>
                     <span class="font-black text-app-orange">${formatarMoeda(m.parcela)}</span>
                 </div>` : ''}`;
         }
@@ -784,8 +1006,8 @@
             const m = dadosTimeline.find(x => x.id === id);
             m.base_ok[campo] = !m.base_ok[campo];
             renderizarStatusBase(m);
-            renderizarTimelineUI();
-            await guardarBaseDB(m);
+            renderizarTimelineUI(); // Atualiza UI da timeline em fundo para efeito imediato
+            await salvarAlteracoesMesDB(m);
         }
 
         function renderizarExtrasModal() {
@@ -793,11 +1015,16 @@
             cont.innerHTML = '';
             extrasTemp.forEach((e, idx) => {
                 cont.innerHTML += `
-                    <div class="flex items-center p-3 bg-[#151515] rounded-2xl border border-app-border gap-3">
-                        <button onclick="extrasTemp[${idx}].realizado = !extrasTemp[${idx}].realizado; renderizarExtrasModal()" class="${e.realizado ? 'text-app-green' : 'text-app-sub'} active:scale-90"><i class="ph-fill ${e.realizado ? 'ph-check-circle' : 'ph-circle'} text-2xl"></i></button>
-                        <input type="text" value="${e.descricao}" onchange="extrasTemp[${idx}].descricao = this.value" class="flex-1 bg-transparent text-white font-medium outline-none text-sm" placeholder="Nome do movimento...">
-                        <input type="number" value="${e.valor}" onchange="extrasTemp[${idx}].valor = parseFloat(this.value)||0" class="w-16 bg-transparent text-right font-black text-sm ${e.tipo === 'receita' ? 'text-app-green' : 'text-app-red'}">
-                        <button onclick="extrasTemp.splice(${idx}, 1); renderizarExtrasModal()" class="text-app-sub opacity-20"><i class="ph-bold ph-trash"></i></button>
+                    <div class="flex items-center p-4 bg-[#151515] rounded-[28px] border border-app-border gap-4 shadow-inner-soft group">
+                        <button onclick="extrasTemp[${idx}].realizado = !extrasTemp[${idx}].realizado; renderizarExtrasModal()" class="active:scale-90 transition-transform">
+                            <div class="custom-check ${e.realizado ? 'checked' : ''}"><i class="ph-bold ph-check text-xs"></i></div>
+                        </button>
+                        <input type="text" value="${e.descricao}" onchange="extrasTemp[${idx}].descricao = this.value" class="flex-1 bg-transparent text-white font-bold outline-none text-[15px] placeholder:opacity-20" placeholder="Descrição...">
+                        <div class="flex items-center bg-[#1C1C1E] px-3 py-1.5 rounded-xl border border-app-border">
+                            <span class="text-app-sub font-black text-xs mr-2">R$</span>
+                            <input type="number" value="${e.valor}" onchange="extrasTemp[${idx}].valor = parseFloat(this.value)||0" class="w-16 bg-transparent text-right font-[900] text-[15px] outline-none ${e.tipo === 'receita' ? 'text-app-green' : 'text-app-red'}">
+                        </div>
+                        <button onclick="extrasTemp.splice(${idx}, 1); renderizarExtrasModal()" class="text-app-sub opacity-20 hover:opacity-100 transition-opacity"><i class="ph-bold ph-trash"></i></button>
                     </div>`;
             });
         }
@@ -810,72 +1037,96 @@
         async function guardarEdicaoMes() {
             const id = document.getElementById('edit-mes-id').value;
             const m = dadosTimeline.find(x => x.id === id);
+            
             m.entradas = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
             m.fixos = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
             m.parcela = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
             m.saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
             m.extras = extrasTemp;
-            await guardarBaseDB(m);
-            inicializarTimeline();
+            
+            await salvarAlteracoesMesDB(m);
+            inicializarTimeline(); // Recarrega tudo para garantir cascata correta
             fecharModal('modal-editar-mes');
         }
 
-        async function guardarBaseDB(m) {
-            const config = { texto: '', base_ok: m.base_ok };
-            await supabaseClient.from('fluxo_caixa').upsert({
-                user_id: idUtilizadorAtual, mes_id: m.id, entradas: m.entradas,
-                fixos: m.fixos, parcela: m.parcela, extras: m.extras,
-                observacoes: JSON.stringify(config), saldo_inicial: m.saldo_inicial
+        async function salvarAlteracoesMesDB(m) {
+            const config = { base_ok: m.base_ok };
+            const { error } = await supabaseClient.from('fluxo_caixa').upsert({
+                user_id: idUtilizadorAtual, 
+                mes_id: m.id, 
+                entradas: m.entradas,
+                fixos: m.fixos, 
+                parcela: m.parcela, 
+                extras: m.extras,
+                observacoes: JSON.stringify(config), 
+                saldo_inicial: m.saldo_inicial
             }, { onConflict: 'user_id, mes_id' });
+            if(error) console.error("Erro ao gravar:", error);
         }
 
-        // --- HELPERS DE INTERFACE ---
-        function abrirModalGenerico(id) {
+        // --- INTERFACE HELPERS ---
+        function abrirModalGenerico(id, back, cont) {
             document.getElementById(id).classList.remove('hidden');
             setTimeout(() => {
-                const cont = document.getElementById(id).querySelector('[id$="-content"]');
-                cont.classList.remove('translate-y-full');
+                document.getElementById(back).classList.add('opacity-100');
+                document.getElementById(cont).classList.remove('translate-y-full');
             }, 10);
         }
 
         function fecharModal(id) {
             const cont = document.getElementById(id).querySelector('[id$="-content"]');
+            const back = document.getElementById(id).querySelector('[id$="-backdrop"]');
             cont.classList.add('translate-y-full');
-            setTimeout(() => document.getElementById(id).classList.add('hidden'), 300);
+            back.classList.remove('opacity-100');
+            setTimeout(() => document.getElementById(id).classList.add('hidden'), 500);
         }
 
-        function mudarAba(idAba, botao) {
+        function mudarAba(idAba, b) {
             document.querySelectorAll('section').forEach(s => s.className = 'aba-oculta');
-            document.getElementById(`aba-${idAba}`).className = 'aba-ativa px-4 pt-6 pb-8 md:p-8 w-full';
+            document.getElementById(`aba-${idAba}`).className = 'aba-ativa pt-8 pb-12 w-full';
             
-            // Estilo nav
-            document.querySelectorAll('.desktop-tab').forEach(b => b.classList.replace('text-app-blue', 'text-app-sub'));
-            document.querySelectorAll('#mobile-nav button').forEach(b => b.classList.replace('text-app-blue', 'text-app-sub'));
-            
+            // UI Nav Desktop
+            document.querySelectorAll('.desktop-tab').forEach(btn => {
+                btn.classList.remove('segment-active', 'text-app-blue');
+                btn.classList.add('text-app-sub');
+            });
+            const dBtn = Array.from(document.querySelectorAll('.desktop-tab')).find(btn => btn.onclick.toString().includes(idAba));
+            if(dBtn) { dBtn.classList.add('segment-active', 'text-app-blue'); dBtn.classList.remove('text-app-sub'); }
+
+            // UI Nav Mobile
+            document.querySelectorAll('#mobile-nav button').forEach(btn => {
+                btn.classList.remove('text-app-blue');
+                btn.classList.add('text-app-sub');
+            });
+            const mLi = Array.from(document.querySelectorAll('#mobile-nav li')).find(li => li.onclick.toString().includes(idAba));
+            if(mLi) mLi.querySelector('button').classList.replace('text-app-sub', 'text-app-blue');
+
             if(idAba === 'saldos') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
         function mudarTipoRegisto(tipo) {
             const isObra = tipo === 'obra';
-            document.getElementById('btn-tab-obra').className = isObra ? 'flex-1 py-2.5 text-[13px] rounded-lg segment-active' : 'flex-1 py-2.5 text-[13px] rounded-lg segment-inactive';
-            document.getElementById('btn-tab-rapido').className = !isObra ? 'flex-1 py-2.5 text-[13px] rounded-lg segment-active' : 'flex-1 py-2.5 text-[13px] rounded-lg segment-inactive';
+            document.getElementById('btn-tab-obra').className = isObra ? 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active' : 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive';
+            document.getElementById('btn-tab-rapido').className = !isObra ? 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-active' : 'flex-1 py-3.5 text-[12px] font-black uppercase tracking-wider rounded-2xl segment-inactive';
             document.getElementById('form-sonho').classList.toggle('hidden', !isObra);
             document.getElementById('form-rapido').classList.toggle('hidden', isObra);
         }
 
         function atualizarCorRapido() {
             const t = document.getElementById('val-tipo-rapido').value;
-            document.getElementById('input-valor-rapido').className = t === 'gasto' ? 'flex-1 bg-transparent text-right text-app-red font-black text-3xl outline-none' : 'flex-1 bg-transparent text-right text-app-green font-black text-3xl outline-none';
+            const input = document.getElementById('input-valor-rapido');
+            input.classList.remove('text-app-red', 'text-app-green');
+            input.classList.add(t === 'gasto' ? 'text-app-red' : 'text-app-green');
         }
 
-        // --- SUBMITS ---
+        // --- DATA SUBMISSION ---
         document.getElementById('form-sonho').onsubmit = async (e) => {
             e.preventDefault();
             const comp = document.getElementById('val-complexidade').value;
-            let items = null;
+            let itens = null;
             if(comp === 'Composto') {
-                items = Array.from(document.querySelectorAll('#lista-partes > div')).map(d => ({
+                itens = Array.from(document.querySelectorAll('#lista-partes > div')).map(d => ({
                     nome: d.querySelector('.nome-parte').value,
                     custo: parseFloat(d.querySelector('.custo-parte').value) || 0,
                     comprado: false
@@ -888,11 +1139,15 @@
                 complexidade: comp,
                 custo: calcularTotalFormulario(),
                 valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
-                itens_compostos: items
+                itens_compostos: itens,
+                status: 'ativo'
             };
-            await supabaseClient.from('sonhos').insert([payload]);
-            document.getElementById('form-sonho').reset();
-            mudarAba('saldos');
+            const { error } = await supabaseClient.from('sonhos').insert([payload]);
+            if(!error) {
+                document.getElementById('form-sonho').reset();
+                document.getElementById('lista-partes').innerHTML = '';
+                mudarAba('saldos');
+            }
         };
 
         document.getElementById('form-rapido').onsubmit = async (e) => {
@@ -908,16 +1163,17 @@
                     realizado: false 
                 };
                 m.extras = [...(m.extras || []), novoExtra];
-                await guardarBaseDB(m);
+                await salvarAlteracoesMesDB(m);
                 document.getElementById('form-rapido').reset();
                 mudarAba('previsoes');
             }
         };
 
         async function limparHistoricoConfirmacao() {
-            if (confirm("Tens a certeza que desejas apagar todos os projetos finalizados?")) {
-                await supabaseClient.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
-                buscarSonhos();
+            if (confirm("Tens a certeza absoluta que desejas apagar TODAS as tuas conquistas? Esta ação é irreversível.")) {
+                const { error } = await supabaseClient.from('sonhos').delete().eq('user_id', idUtilizadorAtual).eq('status', 'concluido');
+                if (!error) buscarSonhos();
+                else alert("Erro ao limpar: " + error.message);
             }
         }
 
