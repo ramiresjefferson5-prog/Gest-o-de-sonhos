@@ -306,6 +306,10 @@
                 <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-0.5">Adapta o teu fluxo aos imprevistos.</p>
             </div>
+            
+            <!-- RESUMO GERAL DINÂMICO (INJETADO VIA JS) -->
+            <div id="resumo-timeline-container" class="mb-8 w-full"></div>
+
             <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
         </section>
 
@@ -355,7 +359,6 @@
             <div class="px-5 py-6 overflow-y-auto no-scrollbar w-full" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
                 
-                <!-- O CABEÇALHO DO MÊS ESTAVA EM FALTA! -->
                 <div class="text-center mb-6">
                     <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-app-blue/20 text-app-blue mb-3">
                         <i class="ph-fill ph-calendar-blank text-3xl"></i>
@@ -363,7 +366,6 @@
                     <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-mes-nome">Mês</h2>
                     <p class="text-sm text-app-sub mt-0.5">Edita a tua base financeira e ajusta os fixos.</p>
                 </div>
-                <!-- FIM CABEÇALHO -->
 
                 <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Estrutura Base</h4>
                 <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
@@ -810,8 +812,58 @@
         }
 
         function renderizarTimelineUI() {
+            // 1. CÁLCULO GERAL DA TIMELINE (O CÉREBRO DE PREVISÃO)
+            let totalAcumuladoGeral = 0;
+            let totalEntradasGerais = 0;
+
+            dadosTimeline.forEach(prev => {
+                let somaExtrasLocal = 0;
+                if(prev.extras && prev.extras.length > 0) {
+                    prev.extras.forEach(ext => {
+                        const val = parseFloat(ext.valor) || 0;
+                        if(ext.tipo === 'receita') somaExtrasLocal += val;
+                        else somaExtrasLocal -= val;
+                    });
+                }
+                totalAcumuladoGeral += (prev.entradas - prev.fixos - prev.parcela + somaExtrasLocal);
+                
+                // Soma para calcular a % de saúde
+                let receitasExtras = prev.extras?.filter(e=>e.tipo==='receita').reduce((acc,curr)=>acc+(parseFloat(curr.valor)||0),0) || 0;
+                totalEntradasGerais += (prev.entradas + receitasExtras);
+            });
+
+            let taxaPoupanca = totalEntradasGerais > 0 ? Math.round((totalAcumuladoGeral / totalEntradasGerais) * 100) : 0;
+            let corSaude = taxaPoupanca >= 20 ? 'text-app-green' : (taxaPoupanca >= 10 ? 'text-app-orange' : 'text-app-red');
+            let bgSaude = taxaPoupanca >= 20 ? 'bg-app-green/20' : (taxaPoupanca >= 10 ? 'bg-app-orange/20' : 'bg-app-red/20');
+            let txtSaude = taxaPoupanca >= 20 ? 'Excelente' : (taxaPoupanca >= 10 ? 'Boa' : 'Atenção');
+
+            // 2. INJETAR RESUMO NO TOPO DA ABA PREVISÕES
+            const resumoContainer = document.getElementById('resumo-timeline-container');
+            resumoContainer.innerHTML = `
+                <div class="bg-gradient-to-br from-[#1C1C1E] to-[#151515] rounded-[24px] p-6 shadow-[0_15px_30px_rgba(0,0,0,0.5)] border border-[#38383A] w-full relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-app-blue/10 rounded-full blur-3xl"></div>
+                    
+                    <div class="flex justify-between items-center mb-4 relative z-10">
+                        <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Acumulado Previsto (Fim de Ano)</span>
+                        <span class="${bgSaude} ${corSaude} text-[9px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">Saúde: ${txtSaude} (${taxaPoupanca}%)</span>
+                    </div>
+                    
+                    <h3 class="text-[36px] font-black text-white mb-1 relative z-10 ${totalAcumuladoGeral < 0 ? 'text-app-red' : ''}">${formatarMoeda(totalAcumuladoGeral)}</h3>
+                    <p class="text-[12px] font-medium text-app-sub mb-5 relative z-10">Total livre no teu bolso se seguires este plano à risca sem gastar mais nada.</p>
+                    
+                    <div class="flex gap-3 relative z-10 border-t border-white/5 pt-4">
+                        <div class="flex-1 bg-[#1A1A1C] rounded-xl p-3 border border-white/5">
+                            <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">Média Livre p/ Mês</p>
+                            <p class="font-bold text-[16px] text-white">${formatarMoeda(totalAcumuladoGeral / Math.max(1, dadosTimeline.length))}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 3. RENDERIZAR MESES DA TIMELINE
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
+            
             dadosTimeline.forEach(prev => {
                 let somaExtras = 0; let htmlExtras = '';
                 if(prev.extras && prev.extras.length > 0) {
