@@ -1019,13 +1019,18 @@
                     document.getElementById('input-desc-rapido').value = '';
                 } else {
                     console.error("Erro Supabase:", error);
-                    msg.innerHTML = "Erro: " + error.message; 
+                    // Deteção inteligente do erro do 'extras'
+                    if (error.message && error.message.includes('extras')) {
+                        msg.innerHTML = "Falta a coluna 'extras' na base de dados! Lê o aviso do ecrã para resolver."; 
+                    } else {
+                        msg.innerHTML = "Erro: " + error.message; 
+                    }
                     msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
                 }
             }
 
             btn.innerText = `Lançar no Ecossistema`; btn.disabled = false; btn.classList.remove('opacity-50');
-            setTimeout(() => { msg.classList.add('hidden'); }, 3000);
+            setTimeout(() => { msg.classList.add('hidden'); }, 4000);
         }
 
 
@@ -1071,7 +1076,10 @@
                         obsTexto = obsTexto.texto || '';
                     }
                     
-                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: mesBD.extras || [] };
+                    // Garante que o extras é sempre um array para não crashar o JS
+                    const arrayExtras = Array.isArray(mesBD.extras) ? mesBD.extras : (mesBD.extras ? [mesBD.extras] : []);
+                    
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: arrayExtras };
                 }
                 return { ...temp, extras: [], saldo_inicial: null };
             });
@@ -1272,7 +1280,14 @@
                     renderizarTimelineUI(); 
                 } else {
                     console.error("Erro detalhado do Supabase:", error);
-                    alert(`Ocorreu um erro a gravar no Supabase!\n\nErro: ${error.message}\n\nDICA: Se o erro for "column saldo_inicial does not exist", significa que a API do Supabase ainda tem a cache antiga presa. Aguarda uns 2 minutos ou vai a Settings > API > e clica em "Reload Schema Cache".`);
+                    // Deteção inteligente do erro do 'extras' (Para a página dos ajustes rápidos também dar o aviso correto)
+                    if (error.message && error.message.includes('extras')) {
+                        alert(`Falta a coluna 'extras' na base de dados!\n\nPor favor, corre este comando no SQL do Supabase:\nALTER TABLE fluxo_caixa ADD COLUMN extras JSONB DEFAULT '[]'::jsonb;`);
+                    } else if (error.message && error.message.includes('saldo_inicial')) {
+                        alert(`A cache do Supabase ainda está presa!\n\nVai a Settings > API > e clica em "Reload Schema Cache" ou aguarda uns minutos.`);
+                    } else {
+                        alert(`Erro ao gravar:\n${error.message}`);
+                    }
                 }
             }
             btn.innerText = textOrig; btn.classList.remove('opacity-50', 'pointer-events-none');
