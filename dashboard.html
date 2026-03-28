@@ -22,7 +22,7 @@
     <!-- Área principal onde vamos construir o sistema depois -->
     <main class="p-8 max-w-4xl mx-auto hidden" id="conteudo-principal">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Bem-vindo ao teu centro de controlo!</h2>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2" id="mensagem-boas-vindas">Bem-vindo ao teu centro de controlo!</h2>
             <p class="text-slate-600">O login funcionou perfeitamente. Em breve, vamos colocar aqui a lista do que precisas e o balanço do teu orçamento vs. os teus sonhos.</p>
         </div>
     </main>
@@ -64,6 +64,10 @@
             } else {
                 // Tem sessão? Mostra o conteúdo da página
                 document.getElementById('conteudo-principal').classList.remove('hidden');
+                
+                // Vamos personalizar a mensagem de boas-vindas com o email da pessoa
+                const emailDoUtilizador = session.user.email;
+                document.getElementById('mensagem-boas-vindas').innerText = `Bem-vindo(a), ${emailDoUtilizador}!`;
             }
         }
 
