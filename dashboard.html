@@ -10,74 +10,206 @@
 <body class="bg-slate-50 min-h-screen font-sans">
 
     <!-- Barra de Navegação no topo -->
-    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-slate-800">Meus Sonhos & Gastos</h1>
+    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+        <div class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h1 class="text-xl font-bold text-slate-800">Meus Sonhos & Gastos</h1>
+        </div>
         
-        <!-- Botão de Sair -->
-        <button id="btn-sair" class="text-sm font-medium text-red-600 hover:text-red-800 transition-colors">
-            Sair da Conta
-        </button>
+        <div class="flex items-center gap-4">
+            <span id="mensagem-boas-vindas" class="text-sm text-slate-500 hidden md:block"></span>
+            <button id="btn-sair" class="text-sm font-medium text-red-600 hover:text-red-800 transition-colors px-3 py-1 rounded-md hover:bg-red-50">
+                Sair
+            </button>
+        </div>
     </nav>
 
-    <!-- Área principal onde vamos construir o sistema depois -->
-    <main class="p-8 max-w-4xl mx-auto hidden" id="conteudo-principal">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-bold text-slate-800 mb-2" id="mensagem-boas-vindas">Bem-vindo ao teu centro de controlo!</h2>
-            <p class="text-slate-600">O login funcionou perfeitamente. Em breve, vamos colocar aqui a lista do que precisas e o balanço do teu orçamento vs. os teus sonhos.</p>
+    <!-- Área principal -->
+    <main class="p-4 md:p-8 max-w-6xl mx-auto hidden" id="conteudo-principal">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- COLUNA ESQUERDA: Formulário para adicionar um sonho -->
+            <div class="lg:col-span-1">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">🎯 Registar Novo Sonho</h2>
+                    
+                    <form id="form-sonho" class="space-y-4">
+                        <!-- O que? -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">O que é o sonho? (Nome/Item)</label>
+                            <input type="text" id="input-nome" required placeholder="Ex: Computador Novo" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Quantos? -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Quantidade</label>
+                                <input type="number" id="input-quantidade" min="1" value="1" required class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <!-- Categoria -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
+                                <select id="input-categoria" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                    <option value="Tecnologia">Tecnologia</option>
+                                    <option value="Viagem">Viagem</option>
+                                    <option value="Casa">Casa</option>
+                                    <option value="Veículo">Veículo</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Quanto custa? -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Custo Total (R$)</label>
+                                <input type="number" id="input-custo" min="0" step="0.01" required placeholder="0.00" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <!-- Valor guardado agora -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Já tens algum valor?</label>
+                                <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Consigo fazer? -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Consigo fazer? (Viabilidade)</label>
+                            <select id="input-viabilidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                <option value="Fácil e rápido">Fácil e rápido</option>
+                                <option value="Requer planeamento">Requer planeamento médio</option>
+                                <option value="Desafio longo prazo">Desafio de longo prazo</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Prioridade -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Prioridade</label>
+                                <select id="input-prioridade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                    <option value="Alta">🔴 Alta</option>
+                                    <option value="Média" selected>🟡 Média</option>
+                                    <option value="Baixa">🟢 Baixa</option>
+                                </select>
+                            </div>
+                            <!-- Complexidade -->
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Complexidade</label>
+                                <select id="input-complexidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                    <option value="Simples">Simples (Comprar de uma vez)</option>
+                                    <option value="Composto">Composto (Comprar por partes)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Mensagem de Feedback -->
+                        <div id="msg-form" class="text-sm font-medium hidden mt-2"></div>
+
+                        <button type="submit" id="btn-guardar" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors mt-4">
+                            Guardar Sonho no Cofre
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA: Onde vamos mostrar a lista no futuro -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Cartão de Resumo Temporário -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-lg">
+                    <h2 class="text-xl font-bold mb-2">A preparar o teu Império...</h2>
+                    <p class="text-slate-300">Regista o teu primeiro sonho no formulário ao lado. Depois de o guardarmos com sucesso, vamos transformar este espaço da direita no teu ecrã de progresso!</p>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <script>
-        // Precisamos sempre das chaves para falar com o cofre, mesmo nesta página!
+        // CONFIGURAÇÕES SUPABASE
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
-
         const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
+        
+        let idUtilizadorAtual = null;
 
-        // Função para lidar com o redirecionamento de forma segura
+        // REDIRECIONAMENTO E SEGURANÇA
         function irParaLogin() {
-            try {
-                // Tenta redirecionar para a página inicial (funciona no GitHub e no teu computador)
-                window.location.href = 'index.html';
-            } catch (erro) {
-                // Se falhar (ex: no ambiente de pré-visualização onde as hiperligações são bloqueadas),
-                // substituímos o ecrã por uma mensagem amigável de erro.
-                document.body.innerHTML = `
-                    <div class="h-screen flex items-center justify-center bg-slate-50 font-sans p-4">
-                        <div class="bg-white p-8 rounded-xl shadow-lg text-center max-w-sm w-full border border-slate-200">
-                            <h2 class="text-xl font-bold text-red-600 mb-3">Acesso Necessário</h2>
-                            <p class="text-slate-600 mb-2">Não tens sessão iniciada ou terminaste a sessão.</p>
-                            <p class="text-slate-500 text-sm">Por favor, abre o ficheiro <strong>index.html</strong> no teu computador para fazeres o login.</p>
-                        </div>
-                    </div>
-                `;
+            try { window.location.href = 'index.html'; } catch (erro) {
+                document.body.innerHTML = `<div class="h-screen flex items-center justify-center bg-slate-50 p-4"><div class="bg-white p-8 rounded-xl shadow-lg text-center"><h2 class="text-xl font-bold text-red-600">Acesso Necessário</h2><p>Por favor, abre o index.html no teu computador.</p></div></div>`;
             }
         }
 
-        // Função crucial: Verificar se o utilizador está MESMO logado.
         async function protegerPagina() {
             const { data: { session } } = await clienteSupabase.auth.getSession();
-            
             if (!session) {
-                // Não tem sessão? Volta para a página de login!
                 irParaLogin();
             } else {
-                // Tem sessão? Mostra o conteúdo da página
                 document.getElementById('conteudo-principal').classList.remove('hidden');
-                
-                // Vamos personalizar a mensagem de boas-vindas com o email da pessoa
-                const emailDoUtilizador = session.user.email;
-                document.getElementById('mensagem-boas-vindas').innerText = `Bem-vindo(a), ${emailDoUtilizador}!`;
+                document.getElementById('mensagem-boas-vindas').innerText = session.user.email;
+                idUtilizadorAtual = session.user.id; // Guardamos a ID do utilizador para gravar os dados no cofre!
             }
         }
 
-        // Dizer ao botão "Sair da Conta" o que fazer
         document.getElementById('btn-sair').addEventListener('click', async function() {
-            await clienteSupabase.auth.signOut(); // Apaga a sessão
-            irParaLogin(); // Volta para o início
+            await clienteSupabase.auth.signOut();
+            irParaLogin();
         });
 
-        // Corremos a proteção assim que a página abre
+        // --------------------------------------------------------
+        // LÓGICA DO FORMULÁRIO (GUARDAR DADOS)
+        // --------------------------------------------------------
+        const formSonho = document.getElementById('form-sonho');
+        const btnGuardar = document.getElementById('btn-guardar');
+        const msgForm = document.getElementById('msg-form');
+
+        formSonho.addEventListener('submit', async function(evento) {
+            evento.preventDefault(); // Impede a página de recarregar
+            
+            if(!idUtilizadorAtual) return; // Segurança extra
+
+            // 1. Mostrar estado de carregamento
+            btnGuardar.innerText = "A guardar...";
+            btnGuardar.disabled = true;
+
+            // 2. Recolher todos os valores preenchidos
+            const dadosDoSonho = {
+                user_id: idUtilizadorAtual,
+                nome: document.getElementById('input-nome').value,
+                quantidade: parseInt(document.getElementById('input-quantidade').value),
+                custo: parseFloat(document.getElementById('input-custo').value),
+                valor_guardado: parseFloat(document.getElementById('input-guardado').value),
+                viabilidade: document.getElementById('input-viabilidade').value,
+                prioridade: document.getElementById('input-prioridade').value,
+                complexidade: document.getElementById('input-complexidade').value,
+                categoria: document.getElementById('input-categoria').value
+            };
+
+            // 3. Enviar para a tabela 'sonhos' no Supabase
+            const { data, error } = await clienteSupabase
+                .from('sonhos')
+                .insert([dadosDoSonho]);
+
+            // 4. Lidar com o resultado
+            if (error) {
+                console.error("Erro do Supabase:", error);
+                msgForm.innerText = "Erro ao guardar: " + error.message;
+                msgForm.className = "text-sm font-medium mt-2 text-red-600 block";
+            } else {
+                msgForm.innerText = "🎉 Sonho guardado com sucesso!";
+                msgForm.className = "text-sm font-medium mt-2 text-green-600 block";
+                formSonho.reset(); // Limpa o formulário para o próximo
+            }
+
+            // Restaurar o botão
+            btnGuardar.innerText = "Guardar Sonho no Cofre";
+            btnGuardar.disabled = false;
+            
+            // Esconde a mensagem de sucesso após 4 segundos
+            setTimeout(() => { msgForm.classList.add('hidden'); }, 4000);
+        });
+
+        // Iniciar
         protegerPagina();
     </script>
 </body>
