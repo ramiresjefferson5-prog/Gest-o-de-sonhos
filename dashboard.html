@@ -2,13 +2,12 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestor de Sonhos - App Premium</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gestor de Sonhos - App</title>
     
-    <!-- Fonte Premium (Plus Jakarta Sans) para aspeto Nativo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,11 +17,9 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-                    boxShadow: {
-                        'app': '0 10px 40px -10px rgba(0,0,0,0.08)',
-                        'app-sm': '0 4px 20px -5px rgba(0,0,0,0.05)',
-                        'float': '0 20px 40px -10px rgba(79,70,229,0.3)',
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        app: { bg: '#F2F2F7', card: '#FFFFFF', text: '#1C1C1E', sub: '#8E8E93', border: '#E5E5EA', blue: '#007AFF' }
                     }
                 }
             }
@@ -30,314 +27,285 @@
     </script>
 
     <style>
-        /* Ocultar scrollbar, mas permitir scroll nativo horizontal/vertical */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
         * { -webkit-tap-highlight-color: transparent; outline: none !important; }
 
-        body { background-color: #F8F9FB; } /* Cor de fundo premium iOS-like */
+        body { background-color: #F2F2F7; }
 
-        /* Animações Nativas Suaves */
-        @keyframes fadeScaleIn {
-            from { opacity: 0; transform: scale(0.98) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .aba-ativa { display: block; animation: fadeScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        /* Animações Nativas */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .aba-ativa { display: block; animation: fadeIn 0.2s ease-out forwards; }
         .aba-oculta { display: none; }
 
-        /* Modal "Bottom Sheet" nativo iOS Style */
         .bottom-sheet-up { transform: translateY(0%); }
         .bottom-sheet-down { transform: translateY(100%); }
 
-        /* Efeito de Vidro Ultra-Realista */
+        /* Blur Nav */
         .glass-nav { 
-            background: rgba(255, 255, 255, 0.75); 
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px); 
-            border-top: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
         }
 
-        /* Esconder setas de input number */
+        /* Grouped List Border Hacks */
+        .grouped-list > div:not(:last-child) { border-bottom: 1px solid #E5E5EA; }
+        
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
+        
+        /* Ajuste para inputs nativos */
+        input::placeholder, textarea::placeholder { color: #C7C7CC; }
     </style>
 </head>
-<body class="min-h-screen text-slate-800 pb-28 md:pb-0 overflow-x-hidden selection:bg-indigo-100 selection:text-indigo-900">
+<body class="min-h-screen text-app-text pb-[88px] md:pb-0 overflow-x-hidden">
 
     <!-- DESKTOP NAV -->
-    <nav class="hidden md:flex glass-nav shadow-sm px-8 py-4 justify-between items-center sticky top-0 z-40">
-        <div class="flex items-center gap-2">
-            <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-float"><i class="ph-bold ph-planet text-xl"></i></div>
-            <h1 class="text-xl font-extrabold tracking-tight">Gestor<span class="text-indigo-600">Sonhos</span></h1>
+    <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border">
+        <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
+            <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
+            GestorSonhos
         </div>
         
-        <div class="flex bg-slate-200/50 p-1.5 rounded-2xl gap-1">
-            <button onclick="mudarAba('sonhos', this)" class="desktop-tab bg-white text-indigo-600 shadow-app-sm flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all"><i class="ph-fill ph-plus-circle"></i> Criar</button>
-            <button onclick="mudarAba('saldos', this)" class="desktop-tab text-slate-500 hover:text-slate-800 flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all"><i class="ph-fill ph-wallet"></i> Portfólio</button>
-            <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-slate-500 hover:text-slate-800 flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all"><i class="ph-fill ph-trend-up"></i> Previsões</button>
-            <button onclick="mudarAba('perfil', this)" class="desktop-tab text-slate-500 hover:text-slate-800 flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-bold transition-all"><i class="ph-fill ph-user-circle"></i> Perfil</button>
-        </div>
-
-        <div class="flex items-center gap-2 bg-white shadow-app-sm px-4 py-2 rounded-full">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-            <span id="boas-vindas-desktop" class="text-sm font-bold text-slate-700"></span>
+        <div class="flex gap-4">
+            <button onclick="mudarAba('sonhos', this)" class="desktop-tab text-app-blue font-semibold text-sm transition-colors"><i class="ph-bold ph-plus"></i> Novo Plano</button>
+            <button onclick="mudarAba('saldos', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-wallet"></i> Portfólio</button>
+            <button onclick="mudarAba('previsoes', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-chart-line-up"></i> Previsões</button>
+            <button onclick="mudarAba('perfil', this)" class="desktop-tab text-app-sub hover:text-app-text font-medium text-sm transition-colors"><i class="ph-bold ph-user"></i> Perfil</button>
         </div>
     </nav>
 
-    <!-- MOBILE NAV (Doca Flutuante Premium) -->
-    <nav class="md:hidden fixed bottom-6 left-5 right-5 glass-nav rounded-[2rem] shadow-app border border-white/80 z-40 p-1.5">
-        <ul class="flex justify-between items-center" id="mobile-nav">
+    <!-- MOBILE NAV (Full width, iOS style) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-safe">
+        <ul class="flex justify-around items-center px-2 py-2" id="mobile-nav">
             <li class="nav-item flex-1" onclick="mudarAba('sonhos', this)">
-                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-[1.5rem] bg-indigo-600 text-white shadow-float transition-all">
-                    <i class="ph-fill ph-plus-circle text-[22px] nav-icon text-white"></i>
-                    <span class="text-[10px] font-extrabold text-white">Criar</span>
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-blue transition-colors">
+                    <i class="ph-fill ph-plus-circle text-2xl nav-icon"></i>
+                    <span class="text-[10px] font-medium">Novo</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('saldos', this)">
-                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-[1.5rem] bg-transparent text-slate-400 transition-all">
-                    <i class="ph-fill ph-wallet text-[22px] nav-icon"></i>
-                    <span class="text-[10px] font-bold">Portfólio</span>
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-wallet text-2xl nav-icon"></i>
+                    <span class="text-[10px] font-medium">Portfólio</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
-                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-[1.5rem] bg-transparent text-slate-400 transition-all">
-                    <i class="ph-fill ph-trend-up text-[22px] nav-icon"></i>
-                    <span class="text-[10px] font-bold">Previsões</span>
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-chart-line-up text-2xl nav-icon"></i>
+                    <span class="text-[10px] font-medium">Previsões</span>
                 </button>
             </li>
             <li class="nav-item flex-1" onclick="mudarAba('perfil', this)">
-                <button class="w-full flex flex-col items-center justify-center gap-1 py-2.5 rounded-[1.5rem] bg-transparent text-slate-400 transition-all">
-                    <i class="ph-fill ph-user-circle text-[22px] nav-icon"></i>
-                    <span class="text-[10px] font-bold">Perfil</span>
+                <button class="w-full flex flex-col items-center justify-center gap-0.5 text-app-sub transition-colors">
+                    <i class="ph-fill ph-user-circle text-2xl nav-icon"></i>
+                    <span class="text-[10px] font-medium">Perfil</span>
                 </button>
             </li>
         </ul>
     </nav>
 
-    <main class="max-w-3xl mx-auto" id="conteudo-principal">
+    <main class="max-w-2xl mx-auto w-full" id="conteudo-principal">
         
         <!-- ========================================== -->
-        <!-- ABA 1: CRIAR SONHOS (App Native Form) -->
+        <!-- ABA 1: CRIAR SONHOS -->
         <!-- ========================================== -->
-        <section id="aba-sonhos" class="aba-ativa p-5 md:p-8">
-            <div class="mb-6 pt-2">
-                <h2 class="text-[28px] font-extrabold text-slate-900 tracking-tight leading-tight">Novo Plano</h2>
-                <p class="text-sm font-medium text-slate-500 mt-1">Desenha o teu próximo objetivo.</p>
-            </div>
+        <section id="aba-sonhos" class="aba-ativa px-4 pt-6 pb-8 md:p-8">
+            <h2 class="text-2xl font-bold tracking-tight mb-4 px-1">Novo Plano</h2>
 
-            <form id="form-sonho" class="space-y-6">
+            <form id="form-sonho" class="space-y-5">
                 
-                <!-- Nome (Clean & Big) -->
-                <div class="bg-white rounded-[24px] p-2 shadow-app-sm">
-                    <input type="text" id="input-nome" required placeholder="Ex: Macbook Pro M3" class="w-full px-5 py-4 bg-transparent text-xl font-extrabold text-slate-900 placeholder-slate-300">
-                </div>
-
-                <!-- Categoria (Chips Horizontais) -->
-                <div>
-                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-2">Categoria</label>
-                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-2 px-1" id="chips-categoria"></div>
-                    <input type="hidden" id="val-categoria" value="Tecnologia">
-                </div>
-
-                <!-- Execução e Viabilidade -->
-                <div>
-                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-2">Como vais executar?</label>
-                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-2 px-1" id="chips-viabilidade"></div>
-                    <input type="hidden" id="val-viabilidade" value="Fácil e rápido">
-                </div>
-
-                <!-- CARTÃO DE SERVIÇO (Mostra se clicar em Contratar) -->
-                <div id="div-servico" class="hidden bg-indigo-50/60 rounded-[24px] p-5 border border-indigo-100/50">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="ph-fill ph-users-three text-indigo-500 text-xl"></i>
-                        <p class="text-xs font-extrabold text-indigo-800 uppercase tracking-widest">Detalhes da Contratação</p>
+                <!-- Informações Básicas (Grouped List) -->
+                <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px]">
+                    <div class="flex items-center px-4 py-3 bg-white">
+                        <label class="w-24 shrink-0 font-medium">Nome</label>
+                        <input type="text" id="input-nome" required placeholder="Ex: Macbook Pro" class="flex-1 bg-transparent text-right">
                     </div>
+                    <div class="flex items-center px-4 py-3 bg-white">
+                        <label class="w-24 shrink-0 font-medium">Preço (R$)</label>
+                        <input type="number" id="input-preco-unit" min="0" step="0.01" placeholder="0,00" class="flex-1 bg-transparent text-right text-app-blue font-semibold">
+                    </div>
+                    <div class="flex items-center px-4 py-3 bg-white">
+                        <label class="w-24 shrink-0 font-medium">Quantidade</label>
+                        <input type="number" id="input-quantidade" min="1" value="1" required class="flex-1 bg-transparent text-right">
+                    </div>
+                </div>
+
+                <!-- Detalhes Financeiros -->
+                <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px]">
+                    <div class="flex items-center justify-between px-4 py-3 bg-white">
+                        <label class="font-medium text-app-sub">Custo Total Calculado</label>
+                        <span class="font-bold text-lg" id="display-total">R$ 0,00</span>
+                    </div>
+                    <div class="flex items-center px-4 py-3 bg-white">
+                        <label class="flex-1 font-medium">Valor já guardado</label>
+                        <span class="text-app-sub mr-1">R$</span>
+                        <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-24 bg-transparent text-right font-medium">
+                    </div>
+                </div>
+
+                <!-- Seleções Rápidas (Scrollable Chips Pequenos) -->
+                <div class="space-y-3 px-1">
+                    <div>
+                        <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-1">Categoria</span>
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar" id="chips-categoria"></div>
+                        <input type="hidden" id="val-categoria" value="Tecnologia">
+                    </div>
+                    
+                    <div>
+                        <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-1">Execução</span>
+                        <div class="flex gap-2 overflow-x-auto no-scrollbar" id="chips-viabilidade"></div>
+                        <input type="hidden" id="val-viabilidade" value="Fácil e rápido">
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl p-3 shadow-sm">
-                            <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Custo Serviço (R$)</label>
-                            <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-full bg-transparent text-lg font-bold text-slate-800">
-                        </div>
-                        <div class="bg-white rounded-2xl p-3 shadow-sm">
-                            <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Tempo Previsto</label>
-                            <input type="text" id="input-tempo-servico" placeholder="Ex: 2 semanas" class="w-full bg-transparent text-lg font-bold text-slate-800">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Valores Base: Unitário e Quantidade -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white rounded-[24px] p-5 shadow-app-sm">
-                        <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Preço Unitário</label>
-                        <div class="flex items-center border-b-2 border-slate-100 pb-1 focus-within:border-indigo-500 transition-colors">
-                            <span class="text-slate-400 font-black mr-1 text-lg">R$</span>
-                            <input type="number" id="input-preco-unit" min="0" step="0.01" required placeholder="0.00" class="w-full bg-transparent text-2xl font-black text-slate-900">
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-[24px] p-5 shadow-app-sm">
-                        <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Quantidade</label>
-                        <div class="flex items-center border-b-2 border-slate-100 pb-1 focus-within:border-indigo-500 transition-colors">
-                            <input type="number" id="input-quantidade" min="1" value="1" required class="w-full bg-transparent text-2xl font-black text-slate-900 text-center">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Prioridade e Complexidade -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-2">Prioridade</label>
-                        <div class="flex flex-col gap-2.5 px-1" id="chips-prioridade"></div>
-                        <input type="hidden" id="val-prioridade" value="Média">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3 ml-2">Estrutura</label>
-                        <div class="flex flex-col gap-2.5 px-1" id="chips-complexidade"></div>
-                        <input type="hidden" id="val-complexidade" value="Simples">
-                    </div>
-                </div>
-
-                <!-- Itens Compostos -->
-                <div id="div-composto" class="hidden bg-slate-900 p-5 rounded-[24px] shadow-float text-white">
-                    <div class="flex justify-between items-center mb-4">
-                        <label class="block text-xs font-extrabold text-slate-300 uppercase tracking-widest">Partes do Item</label>
-                        <button type="button" id="btn-add-parte" class="bg-indigo-500/20 text-indigo-300 px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1 hover:bg-indigo-500/40 transition-colors"><i class="ph-bold ph-plus"></i> Adicionar</button>
-                    </div>
-                    <div id="lista-partes" class="space-y-3"></div>
-                </div>
-
-                <!-- Observações e Meios de Execução -->
-                <div class="bg-white rounded-[24px] p-5 shadow-app-sm">
-                    <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">Meios de Execução / Notas</label>
-                    <textarea id="input-observacoes" placeholder="Como vais fazer isto? Links de lojas, ideias, passos..." class="w-full bg-slate-50/50 rounded-2xl p-4 text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-100 min-h-[100px] resize-none"></textarea>
-                </div>
-
-                <!-- Ecrã Digital de Totais -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-[24px] shadow-float text-white flex flex-col gap-4">
-                    <div class="flex justify-between items-end">
                         <div>
-                            <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Custo Total Calculado</p>
-                            <p class="text-3xl font-black tracking-tight text-white" id="display-total">R$ 0,00</p>
+                            <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-1">Prioridade</span>
+                            <div class="flex flex-col gap-1.5" id="chips-prioridade"></div>
+                            <input type="hidden" id="val-prioridade" value="Média">
                         </div>
-                        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-indigo-400">
-                            <i class="ph-fill ph-sigma text-2xl"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="w-full h-px bg-white/10"></div>
-                    
-                    <div class="flex justify-between items-center">
-                        <label class="block text-[11px] font-extrabold text-slate-300 uppercase tracking-widest">Já Guardado?</label>
-                        <div class="flex items-center bg-white/10 rounded-xl px-3 py-2 border border-white/5 w-32 focus-within:border-indigo-400 transition-colors">
-                            <span class="text-slate-400 text-sm font-black mr-1">R$</span>
-                            <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full bg-transparent text-base font-black text-white text-right placeholder-slate-500">
+                        <div>
+                            <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-1">Estrutura</span>
+                            <div class="flex flex-col gap-1.5" id="chips-complexidade"></div>
+                            <input type="hidden" id="val-complexidade" value="Simples">
                         </div>
                     </div>
                 </div>
 
-                <div id="msg-form" class="hidden text-sm font-bold text-center py-4 rounded-2xl"></div>
+                <!-- Secção de Serviço (Dinâmica) -->
+                <div id="div-servico" class="hidden">
+                    <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-2">Custos de Contratação</span>
+                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px]">
+                        <div class="flex items-center px-4 py-3">
+                            <label class="w-28 shrink-0 font-medium">Mão de Obra</label>
+                            <span class="text-app-sub mr-1">R$</span>
+                            <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="flex-1 bg-transparent text-right font-medium text-app-blue">
+                        </div>
+                        <div class="flex items-center px-4 py-3">
+                            <label class="w-28 shrink-0 font-medium">Tempo</label>
+                            <input type="text" id="input-tempo-servico" placeholder="Ex: 2 semanas" class="flex-1 bg-transparent text-right">
+                        </div>
+                    </div>
+                </div>
 
-                <button type="submit" id="btn-guardar" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black py-5 rounded-[24px] shadow-float transition-all duration-300 flex justify-center items-center gap-2 text-lg">
-                    <i class="ph-bold ph-check-circle text-2xl"></i> Finalizar Registo
+                <!-- Secção de Sub-itens (Dinâmica) -->
+                <div id="div-composto" class="hidden">
+                    <div class="flex justify-between items-end mb-1.5 px-2">
+                        <span class="text-xs font-semibold text-app-sub uppercase tracking-wider">Sub-itens do Projeto</span>
+                        <button type="button" id="btn-add-parte" class="text-app-blue text-sm font-medium">Adicionar</button>
+                    </div>
+                    <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list" id="lista-partes">
+                        <!-- Itens inseridos via JS -->
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div>
+                    <span class="text-xs font-semibold text-app-sub uppercase tracking-wider mb-1.5 block ml-2">Notas e Meios</span>
+                    <textarea id="input-observacoes" placeholder="Lojas, links ou notas importantes..." class="w-full bg-app-card border border-app-border rounded-xl p-3 text-[15px] min-h-[80px] resize-none"></textarea>
+                </div>
+
+                <div id="msg-form" class="hidden text-sm text-center py-2 px-3 rounded-lg font-medium"></div>
+
+                <button type="submit" id="btn-guardar" class="w-full bg-app-blue text-white font-semibold py-3.5 rounded-xl transition-opacity active:opacity-70 text-[15px]">
+                    Gravar Plano
                 </button>
             </form>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 2: PORTFÓLIO (Saldos e Lista) -->
+        <!-- ABA 2: PORTFÓLIO -->
         <!-- ========================================== -->
-        <section id="aba-saldos" class="aba-oculta p-5 md:p-8">
+        <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
+            <div class="flex justify-between items-center mb-4 px-1">
+                <h2 class="text-2xl font-bold tracking-tight">Portfólio</h2>
+                <button onclick="carregarSonhos()" class="text-app-blue font-medium text-sm">Atualizar</button>
+            </div>
+
+            <!-- Resumo Financeiro Compacto -->
+            <div class="bg-app-card border border-app-border rounded-2xl p-5 mb-6 shadow-sm">
+                <p class="text-[11px] font-semibold text-app-sub uppercase tracking-wider mb-0.5">Capital Alvo Geral</p>
+                <h2 class="text-3xl font-bold tracking-tight text-app-text mb-4" id="saldos-total-geral">R$ 0,00</h2>
+                
+                <div class="flex gap-4 border-t border-app-border pt-4">
+                    <div class="flex-1">
+                        <p class="text-[10px] font-semibold text-app-sub uppercase tracking-wider">Poupado</p>
+                        <p class="font-semibold text-sm text-emerald-600" id="saldos-guardado">R$ 0,00</p>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[10px] font-semibold text-app-sub uppercase tracking-wider">Falta</p>
+                        <p class="font-semibold text-sm text-app-text" id="saldos-falta">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-[11px] font-semibold text-app-sub uppercase tracking-wider mb-2 ml-1">Planos Ativos</h3>
             
-            <div class="flex justify-between items-end mb-6 pt-2">
-                <div>
-                    <h2 class="text-[28px] font-extrabold text-slate-900 tracking-tight leading-tight">Portfólio</h2>
-                    <p class="text-sm font-medium text-slate-500 mt-1">O teu capital focado.</p>
-                </div>
-                <button onclick="carregarSonhos()" class="w-10 h-10 rounded-full bg-white shadow-app-sm flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-colors"><i class="ph-bold ph-arrows-clockwise text-lg"></i></button>
-            </div>
-
-            <!-- Apple-Card Style Header -->
-            <div class="bg-gradient-to-tr from-slate-900 via-indigo-900 to-slate-900 rounded-[32px] p-8 text-white shadow-float mb-8 relative overflow-hidden">
-                <!-- Efeitos de Brilho -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-screen filter blur-[60px] opacity-40 -mt-20 -mr-20"></div>
-                
-                <p class="text-indigo-200 text-[10px] font-black uppercase tracking-widest mb-2 relative z-10">Capital Alvo Total</p>
-                <h2 class="text-[40px] font-black tracking-tighter flex items-baseline gap-1 relative z-10" id="saldos-total-geral">
-                    <span class="text-xl text-indigo-300">R$</span>0,00
-                </h2>
-                
-                <div class="mt-8 flex gap-4 relative z-10">
-                    <div class="bg-white/10 backdrop-blur-md rounded-[20px] px-5 py-4 flex-1 border border-white/10">
-                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Poupado</p>
-                        <p class="font-extrabold text-lg" id="saldos-guardado">R$ 0,00</p>
-                    </div>
-                    <div class="bg-white/10 backdrop-blur-md rounded-[20px] px-5 py-4 flex-1 border border-white/10">
-                        <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Em Falta</p>
-                        <p class="font-extrabold text-lg text-amber-300" id="saldos-falta">R$ 0,00</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lista de Sonhos -->
-            <div>
-                <h3 class="text-[13px] font-extrabold text-slate-400 uppercase tracking-widest mb-4 ml-2">Planos Ativos</h3>
-                
-                <!-- Container da Lista -->
-                <div id="lista-sonhos-container" class="space-y-4 pb-10">
-                    <div class="flex flex-col items-center justify-center py-12">
-                        <i class="ph-bold ph-spinner animate-spin text-3xl text-indigo-500 mb-3"></i>
-                        <p class="text-slate-400 text-sm font-bold">A sincronizar cofre...</p>
-                    </div>
-                </div>
+            <div id="lista-sonhos-container" class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list">
+                <div class="p-6 text-center text-app-sub text-sm">A carregar...</div>
             </div>
         </section>
 
         <!-- ========================================== -->
         <!-- ABA: PREVISÕES & PERFIL -->
         <!-- ========================================== -->
-        <section id="aba-previsoes" class="aba-oculta p-5 md:p-8">
-            <h2 class="text-[28px] font-extrabold text-slate-900 mb-6 pt-2">Previsões</h2>
-            <div class="bg-white p-10 rounded-[32px] shadow-app-sm text-center flex flex-col items-center">
-                <div class="w-20 h-20 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-4xl mb-5"><i class="ph-fill ph-chart-line-up"></i></div>
-                <h3 class="text-xl font-extrabold text-slate-800 mb-2">Linha do Tempo</h3>
-                <p class="text-sm font-medium text-slate-500 max-w-[250px]">Gráficos preditivos com o tempo estimado de alcance estão a caminho.</p>
+        <section id="aba-previsoes" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
+            <h2 class="text-2xl font-bold tracking-tight mb-4 px-1">Previsões</h2>
+            <div class="bg-app-card border border-app-border p-8 rounded-2xl text-center">
+                <i class="ph-fill ph-chart-polar text-4xl text-app-sub mb-3"></i>
+                <h3 class="font-semibold text-app-text mb-1">Análise de Tempo</h3>
+                <p class="text-sm text-app-sub">Módulo preditivo em desenvolvimento.</p>
             </div>
         </section>
 
-        <section id="aba-perfil" class="aba-oculta p-5 md:p-8">
-            <h2 class="text-[28px] font-extrabold text-slate-900 mb-6 pt-2">O teu Perfil</h2>
-            <div class="bg-white p-8 rounded-[32px] shadow-app-sm text-center flex flex-col items-center">
-                <div class="w-24 h-24 bg-slate-50 border-4 border-white shadow-lg rounded-full flex items-center justify-center text-slate-300 text-5xl mb-4"><i class="ph-fill ph-user"></i></div>
-                <h3 class="text-lg font-extrabold text-slate-900" id="perfil-email">A carregar...</h3>
-                <div class="bg-emerald-50 text-emerald-600 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full mt-2">Conta Ativa</div>
-                
-                <button id="btn-sair" class="mt-8 w-full bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 transition-colors font-bold py-4 rounded-[20px] flex items-center justify-center gap-2"><i class="ph-bold ph-sign-out text-lg"></i> Terminar Sessão</button>
+        <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
+            <h2 class="text-2xl font-bold tracking-tight mb-4 px-1">Perfil</h2>
+            <div class="bg-app-card border border-app-border rounded-2xl p-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-app-sub text-2xl">
+                        <i class="ph-fill ph-user"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-app-text" id="perfil-email">A carregar...</h3>
+                        <p class="text-xs text-emerald-600 font-medium mt-0.5">Sessão Ativa</p>
+                    </div>
+                </div>
+                <button id="btn-sair" class="w-full bg-red-50 text-red-500 font-medium py-3 rounded-xl transition-colors active:bg-red-100 text-sm">
+                    Terminar Sessão
+                </button>
             </div>
         </section>
 
     </main>
 
     <!-- ========================================== -->
-    <!-- MODAL NATIVO BOTTOM SHEET (Detalhes) -->
+    <!-- MODAL BOTTOM SHEET (ESTILO IOS) -->
     <!-- ========================================== -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal()"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-[#F8F9FB] rounded-t-[32px] shadow-[0_-20px_40px_rgba(0,0,0,0.1)] transform transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] bottom-sheet-down max-h-[90vh] flex flex-col" id="modal-content">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal()"></div>
+        
+        <!-- Sheet -->
+        <div class="absolute bottom-0 left-0 right-0 bg-[#F2F2F7] rounded-t-2xl shadow-xl transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe" id="modal-content">
             
-            <!-- Handle -->
-            <div class="w-full flex justify-center pt-4 pb-2 bg-[#F8F9FB] rounded-t-[32px] shrink-0 sticky top-0 z-10" onclick="fecharModal()">
-                <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            <!-- Header Fixo Modal -->
+            <div class="flex justify-between items-center px-4 py-3 bg-[#F2F2F7] rounded-t-2xl border-b border-[#E5E5EA] shrink-0">
+                <span class="w-16"></span> <!-- Spacer para centrar o título -->
+                <h3 class="font-semibold text-[15px] text-center truncate px-2" id="modal-title-header">Detalhes</h3>
+                <div class="w-16 text-right">
+                    <button onclick="fecharModal()" class="w-7 h-7 bg-gray-200/80 rounded-full inline-flex items-center justify-center text-app-sub active:bg-gray-300"><i class="ph-bold ph-x text-sm"></i></button>
+                </div>
             </div>
             
-            <!-- Área de Scroll -->
-            <div id="modal-body" class="px-6 pb-10 overflow-y-auto no-scrollbar">
-                <!-- Conteúdo Injetado via JS -->
+            <!-- Área de Scroll Interna -->
+            <div id="modal-body" class="px-4 py-5 overflow-y-auto no-scrollbar space-y-5">
+                <!-- Injetado via JS -->
             </div>
         </div>
     </div>
 
 
     <script>
-        // CONFIGURAÇÕES SUPABASE
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
         const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
@@ -346,18 +314,18 @@
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
-                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-[#F8F9FB] p-6"><div class="bg-white p-8 rounded-[32px] shadow-app text-center max-w-sm w-full"><div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-5"><i class="ph-fill ph-lock-key"></i></div><h2 class="text-2xl font-black text-slate-900 mb-2">Login Necessário</h2><p class="text-sm font-medium text-slate-500 mb-6">Abre o ficheiro index.html no teu computador.</p></div></div>`;
+                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6"><div class="bg-app-card p-6 rounded-2xl shadow-sm text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-3xl text-app-sub mb-3"></i><h2 class="text-lg font-semibold mb-1">Sessão Expirada</h2><p class="text-sm text-app-sub">Por favor, abre o index.html.</p></div></div>`;
             }
         }
 
-        const formatarMoeda = (valor) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+        const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
         // ========================================================
-        // 1. CHIPS NATIVOS
+        // 1. CHIPS COMPACTOS
         // ========================================================
         const opcoesChips = {
             categoria: [
-                { val: 'Tecnologia', icon: '💻', text: 'Tecnologia' },
+                { val: 'Tecnologia', icon: '💻', text: 'Tec' },
                 { val: 'Viagem', icon: '✈️', text: 'Viagem' },
                 { val: 'Casa', icon: '🏠', text: 'Casa' },
                 { val: 'Veículo', icon: '🚗', text: 'Veículo' },
@@ -365,18 +333,18 @@
                 { val: 'Outros', icon: '📌', text: 'Outros' }
             ],
             viabilidade: [
-                { val: 'Fácil e rápido', icon: '⚡', text: 'Fazer Eu Mesmo (Rápido)' },
-                { val: 'Requer planeamento', icon: '📅', text: 'Fazer Eu Mesmo (Tempo)' },
-                { val: 'Nao', icon: '🤝', text: 'Vou Contratar Alguém' }
+                { val: 'Fácil e rápido', icon: '⚡', text: 'Imediato' },
+                { val: 'Requer planeamento', icon: '📅', text: 'Planeado' },
+                { val: 'Nao', icon: '🤝', text: 'Contratar' }
             ],
             prioridade: [
                 { val: 'Alta', icon: '🔴', text: 'Urgente' },
-                { val: 'Média', icon: '🟡', text: 'Normal' },
+                { val: 'Média', icon: '🟡', text: 'Média' },
                 { val: 'Baixa', icon: '🟢', text: 'Baixa' }
             ],
             complexidade: [
-                { val: 'Simples', icon: '🧩', text: 'Item Único' },
-                { val: 'Composto', icon: '🏗️', text: 'Comprar por Partes' }
+                { val: 'Simples', icon: '🧩', text: 'Único' },
+                { val: 'Composto', icon: '🏗️', text: 'Por Partes' }
             ]
         };
 
@@ -390,16 +358,16 @@
 
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `whitespace-nowrap px-5 py-3 rounded-full text-xs font-extrabold transition-all border shrink-0 flex items-center gap-2 shadow-sm ${
-                    isSelected ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-500 border-slate-200'
+                btn.className = `whitespace-nowrap px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-colors shrink-0 ${
+                    isSelected ? 'bg-app-text text-white' : 'bg-white text-app-sub border border-app-border'
                 }`;
-                btn.innerHTML = `<span class="text-sm">${opt.icon}</span> ${opt.text}`;
+                btn.innerHTML = `${opt.icon} ${opt.text}`;
                 
                 btn.onclick = () => {
                     Array.from(container.children).forEach(child => {
-                        child.className = 'whitespace-nowrap px-5 py-3 rounded-full text-xs font-extrabold transition-all border shrink-0 flex items-center gap-2 shadow-sm bg-white text-slate-500 border-slate-200';
+                        child.className = 'whitespace-nowrap px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-colors shrink-0 bg-white text-app-sub border border-app-border';
                     });
-                    btn.className = 'whitespace-nowrap px-5 py-3 rounded-full text-xs font-extrabold transition-all border shrink-0 flex items-center gap-2 shadow-sm bg-slate-900 text-white border-slate-900';
+                    btn.className = 'whitespace-nowrap px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-colors shrink-0 bg-app-text text-white border border-app-text';
                     document.getElementById(idInputHidden).value = opt.val;
 
                     if(grupo === 'viabilidade') verificarServico();
@@ -416,7 +384,7 @@
 
 
         // ========================================================
-        // 2. CÁLCULOS DINÂMICOS
+        // 2. CÁLCULOS DINÂMICOS & UI TOGGLES
         // ========================================================
         const inputPreco = document.getElementById('input-preco-unit');
         const inputQtd = document.getElementById('input-quantidade');
@@ -428,19 +396,14 @@
         
         function calcularTotal() {
             let total = 0;
-            
-            // Calc Base ou Composto
             if (complexidadeHidd.value === 'Composto') {
                 document.querySelectorAll('.custo-parte').forEach(inp => total += (parseFloat(inp.value)||0));
             } else {
                 total = (parseFloat(inputPreco.value) || 0) * (parseInt(inputQtd.value) || 1);
             }
-
-            // Somar Serviço se existir
             if (viabilidadeHidd.value === 'Nao') {
                 total += parseFloat(precoServico.value) || 0;
             }
-
             displayTotal.innerText = formatarMoeda(total);
             return total;
         }
@@ -452,10 +415,8 @@
         function verificarServico() {
             if (viabilidadeHidd.value === 'Nao') {
                 divServico.classList.remove('hidden');
-                divServico.classList.add('aba-ativa');
             } else {
                 divServico.classList.add('hidden');
-                divServico.classList.remove('aba-ativa');
                 precoServico.value = '0';
                 document.getElementById('input-tempo-servico').value = '';
             }
@@ -468,16 +429,12 @@
             
             if (isComposto) {
                 divComposto.classList.remove('hidden');
-                divComposto.classList.add('aba-ativa');
-                inputPreco.parentElement.parentElement.classList.add('opacity-30', 'pointer-events-none');
-                inputQtd.parentElement.parentElement.classList.add('opacity-30', 'pointer-events-none');
+                inputPreco.parentElement.classList.add('opacity-40', 'pointer-events-none');
                 inputPreco.value = '';
                 if(document.getElementById('lista-partes').children.length === 0) adicionarParte();
             } else {
                 divComposto.classList.add('hidden');
-                divComposto.classList.remove('aba-ativa');
-                inputPreco.parentElement.parentElement.classList.remove('opacity-30', 'pointer-events-none');
-                inputQtd.parentElement.parentElement.classList.remove('opacity-30', 'pointer-events-none');
+                inputPreco.parentElement.classList.remove('opacity-40', 'pointer-events-none');
                 document.getElementById('lista-partes').innerHTML = '';
             }
             calcularTotal();
@@ -486,11 +443,11 @@
         document.getElementById('btn-add-parte').onclick = adicionarParte;
         function adicionarParte() {
             const div = document.createElement('div');
-            div.className = 'flex gap-2 items-center bg-white/10 p-2 rounded-[16px] border border-white/5';
+            div.className = 'flex items-center px-4 py-2 bg-white';
             div.innerHTML = `
-                <input type="text" placeholder="Nome da Parte" required class="nome-parte flex-1 px-3 py-2 text-sm font-bold rounded-xl bg-slate-900 text-white outline-none focus:bg-slate-800 transition-colors">
-                <input type="number" placeholder="0.00" min="0" step="0.01" required class="custo-parte w-24 px-2 py-2 text-sm font-bold rounded-xl bg-slate-900 text-white outline-none text-center focus:bg-slate-800 transition-colors">
-                <button type="button" class="text-red-400 p-2 rounded-xl hover:bg-red-500/20 transition-colors remover-parte"><i class="ph-bold ph-trash"></i></button>
+                <button type="button" class="text-red-500 mr-3 remover-parte"><i class="ph-fill ph-minus-circle text-xl"></i></button>
+                <input type="text" placeholder="Item" required class="nome-parte flex-1 text-[15px] bg-transparent outline-none">
+                <input type="number" placeholder="0.00" min="0" step="0.01" required class="custo-parte w-20 text-right text-[15px] font-medium bg-transparent outline-none">
             `;
             document.getElementById('lista-partes').appendChild(div);
             div.querySelector('.custo-parte').addEventListener('input', calcularTotal);
@@ -498,7 +455,7 @@
         }
 
         // ========================================================
-        // 3. NAVEGAÇÃO NATIVA
+        // 3. NAVEGAÇÃO
         // ========================================================
         const abas = ['sonhos', 'saldos', 'previsoes', 'perfil'];
         function mudarAba(idAba, botaoClicado) {
@@ -510,46 +467,36 @@
             document.getElementById(`aba-${idAba}`).classList.add('aba-ativa');
             window.scrollTo(0, 0);
 
-            // Mobile style
+            // Estilo Nav Mobile
             if (botaoClicado && botaoClicado.closest('#mobile-nav')) {
-                document.querySelectorAll('#mobile-nav button').forEach(btn => {
-                    btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-float');
-                    btn.classList.add('bg-transparent', 'text-slate-400');
-                    btn.querySelector('.nav-icon').classList.replace('text-white', 'text-slate-400');
-                });
-                const btn = botaoClicado.querySelector('button');
-                btn.classList.replace('bg-transparent', 'bg-indigo-600');
-                btn.classList.replace('text-slate-400', 'text-white');
-                btn.classList.add('shadow-float');
-                btn.querySelector('.nav-icon').classList.replace('text-slate-400', 'text-white');
+                document.querySelectorAll('#mobile-nav button').forEach(btn => btn.classList.replace('text-app-blue', 'text-app-sub'));
+                botaoClicado.querySelector('button').classList.replace('text-app-sub', 'text-app-blue');
             }
             
-            // Desktop style
+            // Estilo Nav Desktop
             if (botaoClicado && botaoClicado.closest('.desktop-tab')) {
                 document.querySelectorAll('.desktop-tab').forEach(tab => {
-                    tab.classList.replace('bg-white', 'bg-transparent');
-                    tab.classList.replace('text-indigo-600', 'text-slate-500');
-                    tab.classList.remove('shadow-app-sm');
+                    tab.classList.replace('text-app-blue', 'text-app-sub');
+                    tab.classList.remove('font-semibold');
+                    tab.classList.add('font-medium');
                 });
-                botaoClicado.classList.replace('bg-transparent', 'bg-white');
-                botaoClicado.classList.replace('text-slate-500', 'text-indigo-600');
-                botaoClicado.classList.add('shadow-app-sm');
+                botaoClicado.classList.replace('text-app-sub', 'text-app-blue');
+                botaoClicado.classList.remove('font-medium');
+                botaoClicado.classList.add('font-semibold');
             }
 
             if(idAba === 'saldos') carregarSonhos();
         }
 
         // ========================================================
-        // 4. SUPABASE LÓGICA
+        // 4. LÓGICA SUPABASE E DADOS
         // ========================================================
         window.onload = async () => {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
             
             idUtilizadorAtual = session.user.id;
-            const email = session.user.email;
-            document.getElementById('boas-vindas-desktop').innerText = `Olá, ${email.split('@')[0]}`;
-            document.getElementById('perfil-email').innerText = email;
+            document.getElementById('perfil-email').innerText = session.user.email;
         };
 
         document.getElementById('btn-sair').onclick = async () => {
@@ -557,7 +504,7 @@
             irParaLogin();
         };
 
-        // Guardar
+        // Guardar Sonho
         const formSonho = document.getElementById('form-sonho');
         formSonho.onsubmit = async (e) => {
             e.preventDefault();
@@ -565,9 +512,9 @@
 
             const btn = document.getElementById('btn-guardar');
             const msg = document.getElementById('msg-form');
-            const btnOriginalHTML = btn.innerHTML;
-            btn.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-2xl"></i> Guardando...`;
-            btn.classList.add('opacity-80', 'pointer-events-none');
+            btn.innerText = `A gravar...`;
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
             
             let itensComp = null;
             if(complexidadeHidd.value === 'Composto'){
@@ -599,11 +546,11 @@
 
             msg.classList.remove('hidden');
             if (error) {
-                msg.innerHTML = `⚠️ Falha ao guardar: ${error.message}`;
-                msg.className = "text-sm font-bold text-red-600 bg-red-50 p-4 rounded-2xl border border-red-100 mt-4 block aba-ativa";
+                msg.innerHTML = error.message;
+                msg.className = "text-sm text-center py-2 px-3 rounded-lg font-medium text-red-600 bg-red-50 mt-4 block";
             } else {
-                msg.innerHTML = `🎉 Plano registado! Desliza para o Portfólio.`;
-                msg.className = "text-sm font-bold text-emerald-600 bg-emerald-50 p-4 rounded-2xl border border-emerald-100 mt-4 block aba-ativa";
+                msg.innerHTML = `Plano guardado com sucesso.`;
+                msg.className = "text-sm text-center py-2 px-3 rounded-lg font-medium text-emerald-600 bg-emerald-50 mt-4 block";
                 formSonho.reset();
                 renderizarChips('categoria', 'chips-categoria', 'val-categoria'); 
                 renderizarChips('viabilidade', 'chips-viabilidade', 'val-viabilidade');
@@ -614,81 +561,73 @@
                 calcularTotal();
             }
 
-            btn.innerHTML = btnOriginalHTML;
-            btn.classList.remove('opacity-80', 'pointer-events-none');
-            setTimeout(() => { msg.classList.add('hidden'); }, 4000);
+            btn.innerText = `Gravar Plano`;
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            setTimeout(() => { msg.classList.add('hidden'); }, 3000);
         };
 
-        // Carregar
+        // Carregar Saldos
         async function carregarSonhos() {
             if(!idUtilizadorAtual) return;
             const container = document.getElementById('lista-sonhos-container');
-            container.innerHTML = '<div class="flex flex-col items-center py-12"><i class="ph-bold ph-spinner animate-spin text-3xl text-indigo-500 mb-3"></i><p class="text-slate-400 text-sm font-bold">A carregar portfólio...</p></div>';
+            container.innerHTML = '<div class="p-6 text-center text-app-sub text-sm">A sincronizar...</div>';
             
             const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
             
             if(error) {
-                container.innerHTML = `<p class="text-red-500 text-center text-sm font-bold bg-red-50 p-4 rounded-2xl">Erro ao sincronizar cofre.</p>`;
+                container.innerHTML = `<div class="p-4 text-center text-red-500 text-sm">Erro ao carregar.</div>`;
                 return;
             }
 
-            let totalGeral = 0;
-            let totalGuardado = 0;
-
+            let totalGeral = 0, totalGuardado = 0;
             container.innerHTML = '';
+            
             if(data.length === 0) {
-                container.innerHTML = '<div class="bg-white rounded-[24px] p-8 text-center shadow-app-sm"><div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center text-3xl mx-auto mb-3"><i class="ph-fill ph-folder-open"></i></div><p class="text-slate-500 font-extrabold">Nenhum plano registado.</p></div>';
+                container.innerHTML = '<div class="p-6 text-center text-app-sub text-sm">Sem planos ativos.</div>';
             } else {
                 data.forEach(sonho => {
                     totalGeral += parseFloat(sonho.custo || 0);
                     totalGuardado += parseFloat(sonho.valor_guardado || 0);
 
-                    // Cores Prioridade Nativas
-                    let corPrio = 'bg-slate-100 text-slate-500';
-                    if(sonho.prioridade === 'Alta') corPrio = 'bg-red-50 text-red-600 border border-red-100';
-                    if(sonho.prioridade === 'Média') corPrio = 'bg-amber-50 text-amber-600 border border-amber-100';
+                    const iconCat = opcoesChips.categoria.find(c => c.val === sonho.categoria)?.icon || '📌';
+                    const percent = sonho.custo > 0 ? Math.round((sonho.valor_guardado / sonho.custo) * 100) : 0;
                     
-                    const card = document.createElement('div');
-                    card.className = "bg-white p-5 rounded-[24px] shadow-app-sm border border-slate-100 flex justify-between items-center active:scale-[0.98] transition-transform cursor-pointer";
-                    card.onclick = () => abrirModalDetalhes(sonho);
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between p-4 bg-white active:bg-gray-50 cursor-pointer transition-colors";
+                    row.onclick = () => abrirModalDetalhes(sonho);
                     
-                    const percent = sonho.custo > 0 ? ((sonho.valor_guardado / sonho.custo) * 100).toFixed(0) : 0;
-
-                    card.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-14 h-14 rounded-[18px] bg-slate-50 flex items-center justify-center text-2xl shadow-inner border border-slate-100 shrink-0">
-                                ${opcoesChips.categoria.find(c => c.val === sonho.categoria)?.icon || '📌'}
-                            </div>
-                            <div>
-                                <h4 class="font-extrabold text-slate-900 leading-tight mb-1 text-base">${sonho.nome}</h4>
-                                <div class="flex gap-1.5 flex-wrap">
-                                    <span class="text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-lg ${corPrio}">${sonho.prioridade}</span>
-                                    <span class="text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">${sonho.complexidade}</span>
-                                </div>
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <span class="text-2xl">${iconCat}</span>
+                            <div class="truncate">
+                                <p class="text-[15px] font-semibold text-app-text truncate">${sonho.nome}</p>
+                                <p class="text-[12px] text-app-sub">${sonho.prioridade} • ${percent}%</p>
                             </div>
                         </div>
                         <div class="text-right shrink-0 ml-2">
-                            <p class="font-black text-slate-900 text-base">${formatarMoeda(sonho.custo)}</p>
-                            <p class="text-[10px] font-extrabold text-emerald-500 uppercase mt-0.5">${percent}% Feito</p>
+                            <p class="text-[15px] font-semibold text-app-text">${formatarMoeda(sonho.custo)}</p>
+                            <i class="ph-bold ph-caret-right text-app-sub text-sm inline-block align-middle ml-1"></i>
                         </div>
                     `;
-                    container.appendChild(card);
+                    container.appendChild(row);
                 });
             }
 
-            document.getElementById('saldos-total-geral').innerHTML = `<span class="text-xl text-indigo-300">R$</span>${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits:2})}`;
+            document.getElementById('saldos-total-geral').innerText = formatarMoeda(totalGeral);
             document.getElementById('saldos-guardado').innerText = formatarMoeda(totalGuardado);
             document.getElementById('saldos-falta').innerText = formatarMoeda(totalGeral - totalGuardado);
         }
 
         // ========================================================
-        // 5. MODAL BOTTOM SHEET NATIVO
+        // 5. MODAL BOTTOM SHEET COMPACTO E ESTRUTURADO
         // ========================================================
         const modal = document.getElementById('modal-detalhes');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const modalContent = document.getElementById('modal-content');
 
         function abrirModalDetalhes(sonho) {
+            document.getElementById('modal-title-header').innerText = sonho.nome;
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modalBackdrop.classList.add('opacity-100');
@@ -696,89 +635,92 @@
                 modalContent.classList.add('bottom-sheet-up');
             }, 10);
 
-            // Bloco de Partes
+            // Bloco de Partes Agrupado
             let HTMLPartes = '';
             if(sonho.complexidade === 'Composto' && sonho.itens_compostos) {
-                HTMLPartes = `<div class="mt-6 bg-white p-4 rounded-[24px] shadow-app-sm">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-3">Sub-itens (${sonho.itens_compostos.length})</p>
-                    <div class="space-y-2">
-                        ${sonho.itens_compostos.map(p => `
-                            <div class="flex justify-between items-center bg-slate-50 p-3 rounded-2xl">
-                                <span class="text-sm font-bold text-slate-700">${p.nome}</span>
-                                <span class="text-sm font-black text-slate-900">${formatarMoeda(p.custo)}</span>
-                            </div>
-                        `).join('')}
+                const linhas = sonho.itens_compostos.map(p => `
+                    <div class="flex justify-between items-center px-4 py-2.5 bg-white">
+                        <span class="text-[15px]">${p.nome}</span>
+                        <span class="text-[15px] text-app-sub">${formatarMoeda(p.custo)}</span>
                     </div>
-                </div>`;
-            }
-
-            // Bloco Serviço
-            let HTMLServico = '';
-            if(sonho.viabilidade === 'Nao') {
-                HTMLServico = `<div class="mt-4 bg-amber-50 p-4 rounded-[24px] border border-amber-100/50 flex justify-between items-center">
+                `).join('');
+                
+                HTMLPartes = `
                     <div>
-                        <p class="text-[10px] font-extrabold text-amber-600 uppercase tracking-widest mb-1">Mão de Obra Incluída</p>
-                        <p class="text-sm font-bold text-amber-900">Tempo: ${sonho.tempo_servico || 'N/A'}</p>
-                    </div>
-                    <p class="text-base font-black text-amber-700">${formatarMoeda(sonho.preco_servico)}</p>
-                </div>`;
+                        <span class="text-[11px] font-medium text-app-sub uppercase tracking-wider ml-2 mb-1 block">Sub-itens</span>
+                        <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list">
+                            ${linhas}
+                        </div>
+                    </div>`;
             }
 
-            // Bloco Observacoes
-            let HTMLObs = '';
-            if(sonho.observacoes) {
-                HTMLObs = `<div class="mt-6 bg-white p-5 rounded-[24px] shadow-app-sm">
-                    <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-2">Meios / Notas</p>
-                    <p class="text-sm font-medium text-slate-700 whitespace-pre-line leading-relaxed">${sonho.observacoes}</p>
-                </div>`;
-            }
-
-            const percent = sonho.custo > 0 ? ((sonho.valor_guardado / sonho.custo) * 100).toFixed(0) : 0;
-
+            // Bloco Agrupado de Info
+            const percent = sonho.custo > 0 ? Math.round((sonho.valor_guardado / sonho.custo) * 100) : 0;
+            
             document.getElementById('modal-body').innerHTML = `
-                <div class="text-center mb-6 pt-2">
-                    <div class="w-20 h-20 rounded-full bg-white shadow-app-sm flex items-center justify-center text-4xl mx-auto mb-4">
-                        ${opcoesChips.categoria.find(c => c.val === sonho.categoria)?.icon || '📌'}
+                <!-- Valores Principais -->
+                <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px]">
+                    <div class="flex justify-between px-4 py-3 bg-white">
+                        <span class="font-medium">Custo Total</span>
+                        <span class="font-semibold">${formatarMoeda(sonho.custo)}</span>
                     </div>
-                    <h2 class="text-3xl font-black text-slate-900 tracking-tight leading-tight px-4">${sonho.nome}</h2>
-                    <p class="text-xs font-bold text-slate-400 mt-2 uppercase tracking-widest">${sonho.categoria} • ${sonho.quantidade} uni.</p>
+                    <div class="flex justify-between px-4 py-3 bg-white">
+                        <span class="font-medium">Guardado (${percent}%)</span>
+                        <span class="text-emerald-600 font-medium">${formatarMoeda(sonho.valor_guardado)}</span>
+                    </div>
+                    <div class="flex justify-between px-4 py-3 bg-white">
+                        <span class="font-medium">Falta</span>
+                        <span class="text-app-sub">${formatarMoeda(sonho.custo - sonho.valor_guardado)}</span>
+                    </div>
                 </div>
 
-                <!-- Resumo Financeiro iOS Style -->
-                <div class="bg-indigo-600 p-6 rounded-[32px] shadow-float text-white mb-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Custo Total</p>
-                            <p class="text-3xl font-black tracking-tight">${formatarMoeda(sonho.custo)}</p>
+                <!-- Detalhes do Plano -->
+                <div>
+                    <span class="text-[11px] font-medium text-app-sub uppercase tracking-wider ml-2 mb-1 block">Detalhes Gerais</span>
+                    <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px]">
+                        <div class="flex justify-between px-4 py-3 bg-white">
+                            <span>Categoria</span>
+                            <span class="text-app-sub">${sonho.categoria}</span>
+                        </div>
+                        <div class="flex justify-between px-4 py-3 bg-white">
+                            <span>Prioridade</span>
+                            <span class="text-app-sub">${sonho.prioridade}</span>
+                        </div>
+                        <div class="flex justify-between px-4 py-3 bg-white">
+                            <span>Execução</span>
+                            <span class="text-app-sub truncate max-w-[150px] text-right">${sonho.viabilidade}</span>
                         </div>
                     </div>
-                    
-                    <div class="w-full bg-indigo-900/50 rounded-full h-2 mb-2">
-                        <div class="bg-emerald-400 h-2 rounded-full" style="width: ${percent}%"></div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center text-xs font-bold">
-                        <span class="text-emerald-300">Salvo: ${formatarMoeda(sonho.valor_guardado)}</span>
-                        <span class="text-indigo-200">Falta: ${formatarMoeda(sonho.custo - sonho.valor_guardado)}</span>
-                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 mb-2">
-                    <div class="bg-white shadow-app-sm p-4 rounded-[24px]">
-                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Prioridade</p>
-                        <p class="text-sm font-bold text-slate-800 flex items-center gap-1">${opcoesChips.prioridade.find(c=>c.val===sonho.prioridade)?.icon} ${sonho.prioridade}</p>
+                <!-- Serviço -->
+                ${sonho.viabilidade === 'Nao' ? `
+                <div>
+                    <span class="text-[11px] font-medium text-app-sub uppercase tracking-wider ml-2 mb-1 block">Mão de Obra</span>
+                    <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px]">
+                        <div class="flex justify-between px-4 py-3 bg-white">
+                            <span>Custo</span>
+                            <span class="text-app-sub">${formatarMoeda(sonho.preco_servico)}</span>
+                        </div>
+                        <div class="flex justify-between px-4 py-3 bg-white">
+                            <span>Tempo</span>
+                            <span class="text-app-sub">${sonho.tempo_servico || '-'}</span>
+                        </div>
                     </div>
-                    <div class="bg-white shadow-app-sm p-4 rounded-[24px]">
-                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mb-1">Execução</p>
-                        <p class="text-sm font-bold text-slate-800 flex items-center gap-1">${opcoesChips.viabilidade.find(c=>c.val===sonho.viabilidade)?.icon} ${opcoesChips.viabilidade.find(c=>c.val===sonho.viabilidade)?.text.split('(')[0]}</p>
-                    </div>
-                </div>
+                </div>` : ''}
 
-                ${HTMLServico}
                 ${HTMLPartes}
-                ${HTMLObs}
+
+                <!-- Observações -->
+                ${sonho.observacoes ? `
+                <div>
+                    <span class="text-[11px] font-medium text-app-sub uppercase tracking-wider ml-2 mb-1 block">Notas</span>
+                    <div class="bg-white rounded-xl border border-app-border p-4 text-[15px] text-app-text whitespace-pre-line leading-relaxed">
+                        ${sonho.observacoes}
+                    </div>
+                </div>` : ''}
                 
-                <div class="h-10"></div>
+                <div class="pb-6"></div>
             `;
         }
 
