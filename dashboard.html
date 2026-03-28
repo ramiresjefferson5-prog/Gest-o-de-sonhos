@@ -1107,7 +1107,7 @@
 
 
         // ========================================================
-        // 5. TIMELINE 2026 E MODAIS BASE (COM DUPLA CASCATA)
+        // 5. TIMELINE 2026 E MODAIS BASE (COM DUPLA CASCATA 100% BLINDADA)
         // ========================================================
         
         // TEMPLATE COM BASE OK E EXTRAS COM STATUS
@@ -1309,7 +1309,7 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            // DUAS LINHAS DE CASCATA INDEPENDENTES
+            // DUAS LINHAS DE CASCATA BLINDADAS
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
             
@@ -1352,26 +1352,24 @@
                 
                 let somaTotalMes = somaRealizada + somaPendente;
 
-                // CASCATA: Atual herda de Atual, Previsto herda de Previsto
+                // CASCATA PROTEGIDA: Apenas o 1º mês pode reiniciar a projeção com o 'Forçar Saldo'. Os outros herdam sempre do Previsto Anterior!
                 let saldoStartAtual = saldoAtualAnterior;
                 let saldoStartPrevisto = saldoPrevistoAnterior;
 
                 let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
-                let corOrigem = 'text-app-sub font-medium';
                 
-                // Forçar Saldo Inicial manual reseta as duas linhas de cascata
-                if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
+                // Se o utilizador inseriu algo no "Forçar Saldo Inicial" do mês 1, ele serve de rampa de lançamento para o ano (ex: 10.000)
+                if (index === 0 && prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
                     saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
-                    textoOrigem = 'Saldo Inicial (Manual)';
-                    corOrigem = 'text-app-blue font-bold';
+                    textoOrigem = 'Saldo Inicial Manual';
                 }
-                
+
+                // Matemática Perfeita: O Atual soma só as bolinhas verdes. O Previsto soma todo o orçamento como se fosses cumprir.
                 let saldoAtual = saldoStartAtual + somaRealizada;
-                // Previsto final = Saldo Projetado Anterior + Total do Orçamento deste mês
                 let saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
                 
-                // Passa para o próximo mês
+                // Passa a cascata de forma limpa para o mês seguinte
                 saldoAtualAnterior = saldoAtual;
                 saldoPrevistoAnterior = saldoPrevistoFinal;
 
@@ -1380,12 +1378,17 @@
                 prev._calcAtual = saldoAtual; 
                 prev._calcPrevisto = saldoPrevistoFinal;
 
-                let htmlSaldoAnterior = `<div class="flex justify-between items-center mb-3 pb-3 border-b border-app-border">
-                    <span class="text-[12px] uppercase tracking-widest ${corOrigem}">${textoOrigem}</span>
-                    <div class="text-right">
-                        <span class="font-bold block ${saldoStartAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStartAtual >= 0 ? '+' : ''}${formatarMoeda(saldoStartAtual)}</span>
-                    </div>
-                </div>`;
+                let htmlSaldoAnterior = `
+                    <div class="flex flex-col gap-2 mb-3 pb-3 border-b border-app-border">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] uppercase tracking-widest text-app-sub">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Real)</span></span>
+                            <span class="font-bold text-[13px] ${saldoStartAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStartAtual >= 0 ? '+' : ''}${formatarMoeda(saldoStartAtual)}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] uppercase tracking-widest text-app-sub opacity-60">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Previsto)</span></span>
+                            <span class="font-bold text-[13px] text-app-text opacity-60">${saldoStartPrevisto >= 0 ? '+' : ''}${formatarMoeda(saldoStartPrevisto)}</span>
+                        </div>
+                    </div>`;
                 
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
@@ -1432,15 +1435,15 @@
                         <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-4 mt-4 space-y-3">
                             <div class="flex justify-between items-center pb-2 border-b border-[#2C2C2E]/50">
                                 <div>
-                                    <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest block">Saldo em Carteira (Real)</span>
-                                    <span class="text-[9px] text-app-sub font-medium">Apenas o que já aconteceu</span>
+                                    <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest block">Saldo Atual (Carteira Real)</span>
+                                    <span class="text-[9px] text-app-sub font-medium">Soma apenas os checks verdes</span>
                                 </div>
                                 <span class="font-black text-[16px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
                             </div>
                             <div class="flex justify-between items-center pt-1">
                                 <div>
                                     <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest block">Acumulado Previsto</span>
-                                    <span class="text-[9px] text-app-sub font-medium block mt-0.5">Sobra Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
+                                    <span class="text-[9px] text-app-sub font-medium block mt-0.5">Sobra deste Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
                                 </div>
                                 <span class="font-black text-[16px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
                             </div>
