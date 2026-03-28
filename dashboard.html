@@ -1018,7 +1018,8 @@
                     document.getElementById('input-valor-rapido').value = '';
                     document.getElementById('input-desc-rapido').value = '';
                 } else {
-                    msg.innerHTML = "Erro de Sincronização."; 
+                    console.error("Erro Supabase:", error);
+                    msg.innerHTML = "Erro: " + error.message; 
                     msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
                 }
             }
@@ -1270,7 +1271,8 @@
                     dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal }; 
                     renderizarTimelineUI(); 
                 } else {
-                    alert("Atenção: Não te esqueças de correr o comando SQL fornecido para criar a coluna 'saldo_inicial' na base de dados!");
+                    console.error("Erro detalhado do Supabase:", error);
+                    alert(`Ocorreu um erro a gravar no Supabase!\n\nErro: ${error.message}\n\nDICA: Se o erro for "column saldo_inicial does not exist", significa que a API do Supabase ainda tem a cache antiga presa. Aguarda uns 2 minutos ou vai a Settings > API > e clica em "Reload Schema Cache".`);
                 }
             }
             btn.innerText = textOrig; btn.classList.remove('opacity-50', 'pointer-events-none');
