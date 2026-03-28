@@ -1104,16 +1104,44 @@
         function mudarAba(idAba, botaoClicado) {
             abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
             document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
+            
+            // --- ATUALIZAÇÃO VISUAL DA NAVEGAÇÃO DESKTOP ---
+            document.querySelectorAll('.desktop-tab').forEach(btn => {
+                btn.classList.remove('text-app-blue', 'font-semibold');
+                btn.classList.add('text-app-sub', 'font-medium');
+            });
+            const btnDesktop = Array.from(document.querySelectorAll('.desktop-tab')).find(b => b.getAttribute('onclick').includes(`'${idAba}'`));
+            if (btnDesktop) {
+                btnDesktop.classList.remove('text-app-sub', 'font-medium');
+                btnDesktop.classList.add('text-app-blue', 'font-semibold');
+            }
+
+            // --- ATUALIZAÇÃO VISUAL DA NAVEGAÇÃO MOBILE ---
+            document.querySelectorAll('#mobile-nav .nav-item button').forEach(btn => {
+                btn.classList.remove('text-app-blue');
+                btn.classList.add('text-app-sub');
+            });
+            const liMobile = Array.from(document.querySelectorAll('#mobile-nav .nav-item')).find(li => li.getAttribute('onclick').includes(`'${idAba}'`));
+            if (liMobile) {
+                const btnMobile = liMobile.querySelector('button');
+                if (btnMobile) {
+                    btnMobile.classList.remove('text-app-sub');
+                    btnMobile.classList.add('text-app-blue');
+                }
+            }
+
             if(idAba === 'saldos') buscarSonhos();
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
         function abrirModal(idModal, idBackdrop, idContent) {
+            document.body.style.overflow = 'hidden'; // Bloqueia o scroll de fundo
             document.getElementById(idModal).classList.remove('hidden');
             setTimeout(() => { document.getElementById(idBackdrop).classList.add('opacity-100'); document.getElementById(idContent).classList.add('bottom-sheet-up'); }, 10);
         }
 
         function fecharModal(idModal) {
+            document.body.style.overflow = ''; // Liberta o scroll de fundo
             document.getElementById(idModal).querySelector('[id$="-content"]').classList.remove('bottom-sheet-up');
             setTimeout(() => { document.getElementById(idModal).classList.add('hidden'); }, 300);
         }
