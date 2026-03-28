@@ -139,7 +139,7 @@
                 </div>
             </div>
 
-            <!-- Resumo Dinâmico do Mês -->
+            <!-- Resumo Dinâmico do Mês (Estilo App Bancária - Sem Centavos) -->
             <div id="resumo-timeline-container" class="w-full">
                 <!-- Preenchido via JS dinamicamente -->
             </div>
@@ -1270,36 +1270,37 @@
             const prev = dadosTimeline[mesResumoIndex];
             if(!prev) return;
             document.getElementById('resumo-mes-titulo').innerText = prev.mes;
+            
+            // Inicial = Real, Atual = Real, Previsto = Orçamento Projetado Total
+            document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
             document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
             document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
         }
 
         function renderizarTimelineUI() {
             const resumoContainer = document.getElementById('resumo-timeline-container');
-            const resumoMesAtual = dadosTimeline[mesResumoIndex] ? dadosTimeline[mesResumoIndex].mes : 'Mês';
-            
-            // CARD RESUMO AZUL LADO-A-LADO PERFEITO
             resumoContainer.innerHTML = `
-                <div class="bg-gradient-to-br from-[#0A84FF] to-[#005bb5] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.3)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
-                    <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-
-                    <div class="flex justify-between items-center mb-5 relative z-10">
+                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
+                    <div class="absolute -bottom-10 -left-10 w-[150%] h-24 bg-gradient-to-t from-black/20 to-transparent blur-md transform -rotate-3"></div>
+                    
+                    <div class="flex justify-between items-center mb-6 relative z-10">
                         <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-left"></i></button>
-                        <div class="text-center">
-                            <p class="text-[10px] uppercase tracking-widest font-bold opacity-80 mb-0.5">Resumo de</p>
-                            <h3 class="font-black text-[20px] leading-none tracking-wide" id="resumo-mes-titulo">${resumoMesAtual}</h3>
-                        </div>
+                        <h3 class="font-bold text-[18px] tracking-wide" id="resumo-mes-titulo">Mês</h3>
                         <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full transition-colors active:scale-95"><i class="ph-bold ph-caret-right"></i></button>
                     </div>
 
-                    <div class="flex gap-3 relative z-10">
-                        <div class="flex-1 bg-black/30 backdrop-blur-sm rounded-2xl p-3 border border-white/10 text-center flex flex-col justify-center">
-                            <p class="text-[9px] uppercase tracking-widest font-bold opacity-70 mb-1 flex items-center justify-center gap-1"><i class="ph-fill ph-wallet"></i> Real na Conta</p>
-                            <p class="font-black text-[22px] leading-tight" id="resumo-val-atual">R$ 0</p>
+                    <div class="flex justify-between items-end relative z-10 pb-2">
+                        <div class="text-left flex-1">
+                            <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider"><i class="ph-bold ph-calendar"></i> Inicial Real</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
                         </div>
-                        <div class="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20 text-center flex flex-col justify-center">
-                            <p class="text-[9px] uppercase tracking-widest font-bold text-blue-100 mb-1 flex items-center justify-center gap-1"><i class="ph-fill ph-target"></i> Previsão Final</p>
-                            <p class="font-black text-[22px] leading-tight text-white" id="resumo-val-previsto">R$ 0</p>
+                        <div class="text-center flex-[1.5]">
+                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-wallet"></i> Saldo Carteira</p>
+                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-atual">R$ 0</p>
+                        </div>
+                        <div class="text-right flex-1">
+                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-target"></i> Previsto Fim</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p>
                         </div>
                     </div>
                 </div>
@@ -1308,36 +1309,35 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            // DUAS LINHAS DE CASCATA MATEMATICAMENTE SEPARADAS
+            // DUAS LINHAS DE CASCATA BLINDADAS
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
             
             dadosTimeline.forEach((prev, index) => {
-                
-                // MÁQUINAS DE CÁLCULO SEPARADAS
-                // Máquina da Projeção (Tudo o que está planeado)
-                let entradasPrevistas = prev.entradas || 0;
-                let saidasPrevistas = (prev.fixos || 0) + (prev.parcela || 0);
-                
-                // Máquina Real (Apenas o que tem 'check')
-                let entradasRealizadas = prev.base_ok.entradas ? prev.entradas : 0;
-                let saidasRealizadas = (prev.base_ok.fixos ? prev.fixos : 0) + (prev.base_ok.parcela ? prev.parcela : 0);
-
                 let htmlExtras = '';
+                
+                // Lógica de Soma Atual (Realizada) e Prevista (Pendente)
+                let somaRealizada = 0;
+                let somaPendente = 0;
 
-                // Verifica os Extras
+                // Base
+                if (prev.base_ok.entradas) somaRealizada += prev.entradas; else somaPendente += prev.entradas;
+                if (prev.base_ok.fixos) somaRealizada -= prev.fixos; else somaPendente -= prev.fixos;
+                if (prev.parcela > 0) {
+                    if (prev.base_ok.parcela) somaRealizada -= prev.parcela; else somaPendente -= prev.parcela;
+                }
+
+                // Extras
                 if(prev.extras && prev.extras.length > 0) {
                     prev.extras.forEach(ext => {
                         const val = parseFloat(ext.valor) || 0;
-                        if (ext.tipo === 'receita') {
-                            entradasPrevistas += val; // Adiciona à projecao
-                            if (ext.realizado) entradasRealizadas += val; // Adiciona ao real só se check
+                        if (ext.realizado) {
+                            ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
                         } else {
-                            saidasPrevistas += val; // Adiciona à projecao
-                            if (ext.realizado) saidasRealizadas += val; // Adiciona ao real só se check
+                            ext.tipo === 'receita' ? somaPendente += val : somaPendente -= val;
                         }
                         
-                        // Desenha a linha visual do Extra
+                        // HTML Extra Line
                         htmlExtras += `
                             <div class="flex justify-between items-center mt-2 group">
                                 <div class="flex items-center gap-2 min-w-0 flex-1 pr-2">
@@ -1350,66 +1350,61 @@
                     });
                 }
                 
-                let sobraPrevista = entradasPrevistas - saidasPrevistas;
-                let sobraReal = entradasRealizadas - saidasRealizadas;
+                let somaTotalMes = somaRealizada + somaPendente;
 
-                // Transita a cascata (Apenas Força o Valor Inicial no Mês 1)
+                // CASCATA PROTEGIDA: Apenas o 1º mês pode reiniciar a projeção com o 'Forçar Saldo'. Os outros herdam sempre do Previsto Anterior!
                 let saldoStartAtual = saldoAtualAnterior;
                 let saldoStartPrevisto = saldoPrevistoAnterior;
 
+                let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
+                
+                // Se o utilizador inseriu algo no "Forçar Saldo Inicial" do mês 1, ele serve de rampa de lançamento para o ano (ex: 10.000)
                 if (index === 0 && prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
                     saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
+                    textoOrigem = 'Saldo Inicial Manual';
                 }
 
-                // Cálculo Final do Mês
-                let saldoAtual = saldoStartAtual + sobraReal;
-                let saldoPrevistoFinal = saldoStartPrevisto + sobraPrevista; 
+                // Matemática Perfeita: O Atual soma só as bolinhas verdes. O Previsto soma todo o orçamento como se fosses cumprir.
+                let saldoAtual = saldoStartAtual + somaRealizada;
+                let saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
                 
+                // Passa a cascata de forma limpa para o mês seguinte
                 saldoAtualAnterior = saldoAtual;
                 saldoPrevistoAnterior = saldoPrevistoFinal;
 
-                // Guarda para o card Azul do Resumo poder mostrar quando for clicado
+                // Salva para o card de Resumo Azul
                 prev._calcStart = saldoStartAtual;
                 prev._calcAtual = saldoAtual; 
                 prev._calcPrevisto = saldoPrevistoFinal;
 
+                let htmlSaldoAnterior = `
+                    <div class="flex flex-col gap-2 mb-3 pb-3 border-b border-app-border">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] uppercase tracking-widest text-app-sub">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Real)</span></span>
+                            <span class="font-bold text-[13px] ${saldoStartAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStartAtual >= 0 ? '+' : ''}${formatarMoeda(saldoStartAtual)}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] uppercase tracking-widest text-app-sub opacity-60">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Previsto)</span></span>
+                            <span class="font-bold text-[13px] text-app-text opacity-60">${saldoStartPrevisto >= 0 ? '+' : ''}${formatarMoeda(saldoStartPrevisto)}</span>
+                        </div>
+                    </div>`;
+                
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
+                let sobraMesHTML = somaTotalMes >= 0 ? `+${formatarMoeda(somaTotalMes)}` : formatarMoeda(somaTotalMes);
+
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
-                
                 card.innerHTML = `
                     <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black ${prev.destaque ? 'shadow-[0_0_12px_rgba(10,132,255,0.6)]' : ''}"></span>
-                    
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
                         <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity">Ajustar</button>
                     </div>
-
-                    <div class="bg-app-card border border-app-border rounded-[20px] p-4 text-[14px] shadow-float w-full">
+                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full">
                         
-                        <!-- NOVO HEADER LADO-A-LADO -->
-                        <div class="flex gap-2 mb-5">
-                            <!-- BLOCO 1: REALIDADE -->
-                            <div class="flex-1 bg-[#151515] border border-[#38383A] rounded-xl p-3 relative overflow-hidden">
-                                <div class="absolute top-0 left-0 w-1 h-full bg-[#38383A]"></div>
-                                <p class="text-[9px] text-[#8E8E93] uppercase font-bold tracking-widest mb-0.5 ml-1">Carteira Real</p>
-                                <p class="text-[17px] font-black text-white ml-1 leading-tight truncate ${saldoAtual < 0 ? 'text-app-red' : ''}">${formatarMoeda(saldoAtual)}</p>
-                                <p class="text-[9px] text-[#8E8E93] font-medium mt-1 ml-1 truncate">Iniciou c/: ${formatarMoeda(saldoStartAtual)}</p>
-                            </div>
-
-                            <!-- BLOCO 2: PROJEÇÃO -->
-                            <div class="flex-1 bg-gradient-to-br from-[#0A84FF]/10 to-transparent border border-[#0A84FF]/30 rounded-xl p-3 relative overflow-hidden">
-                                <div class="absolute top-0 left-0 w-1 h-full bg-[#0A84FF]"></div>
-                                <p class="text-[9px] text-[#0A84FF] uppercase font-bold tracking-widest mb-0.5 ml-1">Projeção Ideal</p>
-                                <p class="text-[17px] font-black text-[#0A84FF] ml-1 leading-tight truncate ${saldoPrevistoFinal < 0 ? 'text-app-red' : ''}">${formatarMoeda(saldoPrevistoFinal)}</p>
-                                <p class="text-[9px] text-[#0A84FF]/70 font-medium mt-1 ml-1 truncate">Iniciou c/: ${formatarMoeda(saldoStartPrevisto)}</p>
-                            </div>
-                        </div>
-
-                        <!-- CHECKLIST DO MÊS -->
-                        <h5 class="text-[10px] text-app-sub uppercase tracking-widest font-bold mb-2 ml-1">Tarefas Financeiras</h5>
+                        ${htmlSaldoAnterior}
 
                         <div class="flex justify-between items-center mb-2">
                             <div class="flex items-center gap-2">
@@ -1418,7 +1413,6 @@
                             </div>
                             <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
                         </div>
-
                         <div class="flex justify-between items-center mb-2">
                             <div class="flex items-center gap-2">
                                 <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
@@ -1437,10 +1431,26 @@
                         </div>` : ''}
                         
                         ${htmlExtras !== '' ? `<div class="mt-3 pt-2 border-t border-dashed border-app-border">${htmlExtras}</div>` : ''}
+                        
+                        <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-4 mt-4 space-y-3">
+                            <div class="flex justify-between items-center pb-2 border-b border-[#2C2C2E]/50">
+                                <div>
+                                    <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest block">Saldo Atual (Carteira Real)</span>
+                                    <span class="text-[9px] text-app-sub font-medium">Soma apenas os checks verdes</span>
+                                </div>
+                                <span class="font-black text-[16px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-1">
+                                <div>
+                                    <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest block">Acumulado Previsto</span>
+                                    <span class="text-[9px] text-app-sub font-medium block mt-0.5">Sobra deste Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
+                                </div>
+                                <span class="font-black text-[16px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
+                            </div>
+                        </div>
 
-                        <div class="mt-4 text-[12px] text-app-sub leading-relaxed whitespace-pre-line border-l-2 border-app-blue/50 pl-3"><span class="font-bold uppercase text-[9px] tracking-widest block mb-0.5">Foco Estratégico</span>${prev.obs}</div>
+                        <div class="mt-4 text-[12px] text-app-sub leading-relaxed whitespace-pre-line border-l-2 border-app-blue/50 pl-3"><span class="font-bold uppercase text-[9px] tracking-widest block mb-0.5">Foco</span>${prev.obs}</div>
                     </div>`;
-                
                 container.appendChild(card);
             });
             
