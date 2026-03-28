@@ -562,7 +562,7 @@
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         
-        // NOVO: Variáveis para o funcionamento do Modal de Detalhes da Timeline
+        // Variáveis para o funcionamento do Modal de Detalhes da Timeline
         window.timelineDetailsHTML = {}; 
         window.mesDetalheAberto = null;
 
@@ -753,6 +753,7 @@
                     let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
                     let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
                     
+                    // Blindagem Matemática para percentagem não ultrapassar 100%
                     if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
                     
                     let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
@@ -816,7 +817,7 @@
                 container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><i class="ph-fill ph-ghost text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Ainda não há conquistas finalizadas.</p></div>';
             } else {
                 concluidos.forEach(sonho => {
-                    let total = sonho.custo;
+                    let total = parseFloat(sonho.custo) || 0;
                     if(sonho.complexidade === 'Composto') {
                         let sub = 0;
                         if(sonho.itens_compostos) sonho.itens_compostos.forEach(i => sub += parseFloat(i.custo)||0);
@@ -1094,11 +1095,11 @@
                 const payload = {
                     user_id: idUtilizadorAtual,
                     mes_id: mesAlvo,
-                    entradas: mesData.entradas,
-                    fixos: mesData.fixos,
-                    parcela: mesData.parcela,
+                    entradas: parseFloat(mesData.entradas) || 0,
+                    fixos: parseFloat(mesData.fixos) || 0,
+                    parcela: parseFloat(mesData.parcela) || 0,
                     observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }),      
-                    saldo_inicial: mesData.saldo_inicial, 
+                    saldo_inicial: mesData.saldo_inicial !== null ? parseFloat(mesData.saldo_inicial) : null, 
                     extras: novosExtras
                 };
 
@@ -1187,20 +1188,20 @@
                 const mesBD = data?.find(d => d.mes_id === temp.id);
                 if(mesBD) {
                     let obsTexto = mesBD.observacoes || '';
-                    let saldoIn = mesBD.saldo_inicial !== undefined ? mesBD.saldo_inicial : null;
+                    let saldoIn = mesBD.saldo_inicial !== undefined && mesBD.saldo_inicial !== null ? parseFloat(mesBD.saldo_inicial) : null;
                     let baseOk = { entradas: false, fixos: false, parcela: false };
                     
                     if (obsTexto && typeof obsTexto === 'string' && obsTexto.trim().startsWith('{')) {
                         try {
                             const parsed = JSON.parse(obsTexto);
                             if (parsed && typeof parsed === 'object') {
-                                if (saldoIn === null && parsed.saldo_inicial !== undefined) saldoIn = parsed.saldo_inicial;
+                                if (saldoIn === null && parsed.saldo_inicial !== undefined && parsed.saldo_inicial !== null) saldoIn = parseFloat(parsed.saldo_inicial);
                                 obsTexto = parsed.texto !== undefined ? parsed.texto : '';
                                 if (parsed.base_ok) baseOk = parsed.base_ok;
                             }
                         } catch(e) {}
                     } else if (typeof obsTexto === 'object') {
-                        if (saldoIn === null && obsTexto.saldo_inicial !== undefined) saldoIn = obsTexto.saldo_inicial;
+                        if (saldoIn === null && obsTexto.saldo_inicial !== undefined && obsTexto.saldo_inicial !== null) saldoIn = parseFloat(obsTexto.saldo_inicial);
                         obsTexto = obsTexto.texto || '';
                         if (obsTexto.base_ok) baseOk = obsTexto.base_ok;
                     }
@@ -1212,11 +1213,20 @@
                         usarExtras = temp.extras;
                         precisaSincronizarSupabase = true; 
                     } else {
-                        // Garante que os extras têm a propriedade realizado
-                        usarExtras = usarExtras.map(e => ({ ...e, realizado: e.realizado || false }));
+                        // Garante que os extras têm a propriedade realizado e valor numérico forte
+                        usarExtras = usarExtras.map(e => ({ ...e, valor: parseFloat(e.valor)||0, realizado: e.realizado || false }));
                     }
                     
-                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras, base_ok: baseOk };
+                    return { 
+                        ...temp, 
+                        entradas: parseFloat(mesBD.entradas)||0, 
+                        fixos: parseFloat(mesBD.fixos)||0, 
+                        parcela: parseFloat(mesBD.parcela)||0, 
+                        obs: obsTexto, 
+                        saldo_inicial: saldoIn, 
+                        extras: usarExtras, 
+                        base_ok: baseOk 
+                    };
                 }
                 
                 precisaSincronizarSupabase = true;
@@ -1227,11 +1237,11 @@
                 const payloadSinc = dadosTimeline.map(m => ({
                     user_id: idUtilizadorAtual,
                     mes_id: m.id,
-                    entradas: m.entradas,
-                    fixos: m.fixos,
-                    parcela: m.parcela,
+                    entradas: parseFloat(m.entradas)||0,
+                    fixos: parseFloat(m.fixos)||0,
+                    parcela: parseFloat(m.parcela)||0,
                     observacoes: JSON.stringify({ texto: m.obs, base_ok: m.base_ok }),
-                    saldo_inicial: m.saldo_inicial,
+                    saldo_inicial: m.saldo_inicial !== null ? parseFloat(m.saldo_inicial) : null,
                     extras: m.extras
                 }));
                 clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => {
@@ -1248,7 +1258,6 @@
             renderizarTimelineUI();
         }
 
-        // NOVO: Função para abrir o modal da Timeline corretamente
         function abrirDetalhesTimeline(mesId) {
             window.mesDetalheAberto = mesId;
             const prev = dadosTimeline.find(m => m.id === mesId);
@@ -1271,10 +1280,9 @@
                 if(ext) ext.realizado = !ext.realizado;
             }
 
-            // Atualiza UI da base instantaneamente
+            // Atualiza UI da base instantaneamente com dados matematicamente blindados
             renderizarTimelineUI();
 
-            // NOVO: Se o modal de detalhes deste mês estiver aberto, atualiza o ecrã dele!
             const modalTimeline = document.getElementById('modal-timeline-detalhes');
             if (modalTimeline && !modalTimeline.classList.contains('hidden')) {
                 if (window.mesDetalheAberto === mesId) {
@@ -1286,11 +1294,11 @@
             const payload = {
                 user_id: idUtilizadorAtual,
                 mes_id: mes.id,
-                entradas: mes.entradas,
-                fixos: mes.fixos,
-                parcela: mes.parcela,
+                entradas: parseFloat(mes.entradas)||0,
+                fixos: parseFloat(mes.fixos)||0,
+                parcela: parseFloat(mes.parcela)||0,
                 observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }),
-                saldo_inicial: mes.saldo_inicial,
+                saldo_inicial: mes.saldo_inicial !== null ? parseFloat(mes.saldo_inicial) : null,
                 extras: mes.extras
             };
             await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
@@ -1308,7 +1316,6 @@
             if(!prev) return;
             document.getElementById('resumo-mes-titulo').innerText = prev.mes;
             
-            // Inicial = Real, Atual = Real, Previsto = Orçamento Projetado Total
             document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
             document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
             document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
@@ -1355,15 +1362,19 @@
             dadosTimeline.forEach((prev, index) => {
                 let htmlExtras = '';
                 
-                // Lógica de Soma Atual (Realizada) e Prevista (Pendente)
+                // Lógica de Soma Atual (Realizada) e Prevista (Pendente) garantindo formato de números puros
                 let somaRealizada = 0;
                 let somaPendente = 0;
 
+                const valEntradas = parseFloat(prev.entradas) || 0;
+                const valFixos = parseFloat(prev.fixos) || 0;
+                const valParcela = parseFloat(prev.parcela) || 0;
+
                 // Base
-                if (prev.base_ok.entradas) somaRealizada += prev.entradas; else somaPendente += prev.entradas;
-                if (prev.base_ok.fixos) somaRealizada -= prev.fixos; else somaPendente -= prev.fixos;
-                if (prev.parcela > 0) {
-                    if (prev.base_ok.parcela) somaRealizada -= prev.parcela; else somaPendente -= prev.parcela;
+                if (prev.base_ok.entradas) somaRealizada += valEntradas; else somaPendente += valEntradas;
+                if (prev.base_ok.fixos) somaRealizada -= valFixos; else somaPendente -= valFixos;
+                if (valParcela > 0) {
+                    if (prev.base_ok.parcela) somaRealizada -= valParcela; else somaPendente -= valParcela;
                 }
 
                 // Extras
@@ -1376,7 +1387,6 @@
                             ext.tipo === 'receita' ? somaPendente += val : somaPendente -= val;
                         }
                         
-                        // HTML Extra Line - ADAPTED FOR MODAL
                         htmlExtras += `
                             <div class="flex justify-between items-center p-2 rounded-lg hover:bg-[#2C2C2E]/50 transition-colors">
                                 <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
@@ -1391,14 +1401,13 @@
                 
                 let somaTotalMes = somaRealizada + somaPendente;
 
-                // CASCATA PROTEGIDA: Apenas o 1º mês pode reiniciar a projeção com o 'Forçar Saldo'. Os outros herdam sempre do Previsto Anterior!
+                // CASCATA PROTEGIDA: Herda sempre o rasto do mês anterior. 
                 let saldoStartAtual = saldoAtualAnterior;
                 let saldoStartPrevisto = saldoPrevistoAnterior;
-
                 let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
                 
-                // Se o utilizador inseriu algo no "Forçar Saldo Inicial" do mês 1, ele serve de rampa de lançamento para o ano (ex: 10.000)
-                if (index === 0 && prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
+                // BLINDAGEM NO FORÇAR SALDO: Se o utilizador inserir saldo inicial, ele quebra a cascata e recomeça o plano a partir deste mês!
+                if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStartAtual = parseFloat(prev.saldo_inicial) || 0;
                     saldoStartPrevisto = parseFloat(prev.saldo_inicial) || 0;
                     textoOrigem = 'Saldo Inicial Manual';
@@ -1408,7 +1417,7 @@
                 let saldoAtual = saldoStartAtual + somaRealizada;
                 let saldoPrevistoFinal = saldoStartPrevisto + somaTotalMes; 
                 
-                // Passa a cascata de forma limpa para o mês seguinte
+                // Passa a cascata de forma limpa para o mês seguinte (Isto é a base da Projeção para Dezembro)
                 saldoAtualAnterior = saldoAtual;
                 saldoPrevistoAnterior = saldoPrevistoFinal;
 
@@ -1450,22 +1459,22 @@
                                 <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
                                 <span class="font-medium text-[14px] ${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Entradas Base</span>
                             </div>
-                            <span class="font-bold text-app-green text-[14px] ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                            <span class="font-bold text-app-green text-[14px] ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(valEntradas)}</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
                             <div class="flex items-center gap-3">
                                 <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
                                 <span class="font-medium text-[14px] ${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Fixos Base</span>
                             </div>
-                            <span class="font-bold text-app-red text-[14px] ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                            <span class="font-bold text-app-red text-[14px] ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(valFixos)}</span>
                         </div>
-                        ${prev.parcela > 0 ? `
+                        ${valParcela > 0 ? `
                         <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
                             <div class="flex items-center gap-3">
                                 <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
                                 <span class="font-medium text-[14px] ${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Empréstimo</span>
                             </div>
-                            <span class="font-bold text-app-orange text-[14px] ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                            <span class="font-bold text-app-orange text-[14px] ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(valParcela)}</span>
                         </div>` : ''}
                     </div>
 
@@ -1591,7 +1600,6 @@
                     dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal, base_ok: baseOk }; 
                     renderizarTimelineUI(); 
                     
-                    // NOVO: Atualiza a interface detalhada do mês se estiveres a vê-lo
                     const modalTimeline = document.getElementById('modal-timeline-detalhes');
                     if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === id) {
                         document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[id];
