@@ -1313,6 +1313,8 @@
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
             
+            window.timelineDetailsHTML = {}; // Clean up
+
             dadosTimeline.forEach((prev, index) => {
                 let htmlExtras = '';
                 
@@ -1337,14 +1339,14 @@
                             ext.tipo === 'receita' ? somaPendente += val : somaPendente -= val;
                         }
                         
-                        // HTML Extra Line
+                        // HTML Extra Line - ADAPTED FOR MODAL
                         htmlExtras += `
-                            <div class="flex justify-between items-center mt-2 group">
-                                <div class="flex items-center gap-2 min-w-0 flex-1 pr-2">
-                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="text-[18px] transition-colors shrink-0 active:scale-95 ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                    <span class="text-[13px] font-medium truncate ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">${ext.descricao}</span>
+                            <div class="flex justify-between items-center p-2 rounded-lg hover:bg-[#2C2C2E]/50 transition-colors">
+                                <div class="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="text-[20px] transition-colors shrink-0 active:scale-95 ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                    <span class="text-[14px] font-medium truncate ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">${ext.descricao}</span>
                                 </div>
-                                <span class="text-[13px] font-bold shrink-0 ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                                <span class="text-[14px] font-bold shrink-0 ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
                             </div>
                         `;
                     });
@@ -1379,7 +1381,7 @@
                 prev._calcPrevisto = saldoPrevistoFinal;
 
                 let htmlSaldoAnterior = `
-                    <div class="flex flex-col gap-2 mb-3 pb-3 border-b border-app-border">
+                    <div class="flex flex-col gap-2">
                         <div class="flex justify-between items-center">
                             <span class="text-[11px] uppercase tracking-widest text-app-sub">${textoOrigem} <span class="text-[9px] lowercase opacity-50">(Real)</span></span>
                             <span class="font-bold text-[13px] ${saldoStartAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStartAtual >= 0 ? '+' : ''}${formatarMoeda(saldoStartAtual)}</span>
@@ -1394,62 +1396,89 @@
                 
                 let sobraMesHTML = somaTotalMes >= 0 ? `+${formatarMoeda(somaTotalMes)}` : formatarMoeda(somaTotalMes);
 
+                // --- BUILD DETAILED HTML FOR MODAL ---
+                window.timelineDetailsHTML[prev.id] = `
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-[15px] font-bold text-app-text flex items-center">Movimentações</h4>
+                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity"><i class="ph-bold ph-pencil-simple"></i> Ajustar Mês</button>
+                    </div>
+
+                    <div class="bg-[#1C1C1E] rounded-xl p-4 border border-app-border mb-4 shadow-sm">
+                        ${htmlSaldoAnterior}
+                    </div>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium text-[14px] ${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Entradas Base</span>
+                            </div>
+                            <span class="font-bold text-app-green text-[14px] ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium text-[14px] ${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Fixos Base</span>
+                            </div>
+                            <span class="font-bold text-app-red text-[14px] ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                        </div>
+                        ${prev.parcela > 0 ? `
+                        <div class="flex justify-between items-center p-3 bg-app-card border border-app-border rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="text-[20px] transition-colors active:scale-95 ${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium text-[14px] ${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Empréstimo</span>
+                            </div>
+                            <span class="font-bold text-app-orange text-[14px] ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                        </div>` : ''}
+                    </div>
+
+                    ${htmlExtras !== '' ? `<div class="mb-4"><h5 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-1">Extras & Variáveis</h5><div class="bg-app-card border border-app-border rounded-xl p-1 space-y-1">${htmlExtras}</div></div>` : ''}
+
+                    <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-5 mt-6 mb-8 shadow-inner">
+                        <div class="flex justify-between items-center pb-3 border-b border-[#2C2C2E]/50">
+                            <div>
+                                <span class="font-bold text-[12px] text-app-blue uppercase tracking-widest block mb-0.5">Saldo Atual Real</span>
+                                <span class="text-[10px] text-app-sub font-medium">Na tua carteira hoje</span>
+                            </div>
+                            <span class="font-black text-[18px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3">
+                            <div>
+                                <span class="font-bold text-[12px] text-app-sub uppercase tracking-widest block mb-0.5">Projeção Final</span>
+                                <span class="text-[10px] text-app-sub font-medium block mt-0.5">Sobra Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
+                            </div>
+                            <span class="font-black text-[18px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
+                        </div>
+                    </div>
+                `;
+
+                // --- BUILD MACRO CARD FOR TIMELINE ---
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
                 card.innerHTML = `
                     <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black ${prev.destaque ? 'shadow-[0_0_12px_rgba(10,132,255,0.6)]' : ''}"></span>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
-                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity">Ajustar</button>
                     </div>
-                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full">
-                        
-                        ${htmlSaldoAnterior}
-
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium ${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Entradas Base</span>
+                    <div onclick="abrirDetalhesTimeline('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full cursor-pointer active:scale-[0.98] transition-transform">
+                        <div class="flex justify-between items-center pb-3 border-b border-[#2C2C2E]/50">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest">Saldo Real</span>
+                                <span class="text-[9px] text-app-sub">No bolso hoje</span>
                             </div>
-                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
+                            <span class="font-black text-[18px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
                         </div>
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium ${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Fixos Base</span>
+                        <div class="flex justify-between items-center pt-3">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest">Previsto Mês</span>
+                                <span class="text-[9px] text-app-sub">Final projetado</span>
                             </div>
-                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                            <span class="font-bold text-[15px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
                         </div>
-                        
-                        ${prev.parcela > 0 ? `
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="font-medium ${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Empréstimo</span>
-                            </div>
-                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
-                        </div>` : ''}
-                        
-                        ${htmlExtras !== '' ? `<div class="mt-3 pt-2 border-t border-dashed border-app-border">${htmlExtras}</div>` : ''}
-                        
-                        <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-4 mt-4 space-y-3">
-                            <div class="flex justify-between items-center pb-2 border-b border-[#2C2C2E]/50">
-                                <div>
-                                    <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest block">Saldo Atual (Carteira Real)</span>
-                                    <span class="text-[9px] text-app-sub font-medium">Soma apenas os checks verdes</span>
-                                </div>
-                                <span class="font-black text-[16px] ${saldoAtual >= 0 ? 'text-app-blue' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
-                            </div>
-                            <div class="flex justify-between items-center pt-1">
-                                <div>
-                                    <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest block">Acumulado Previsto</span>
-                                    <span class="text-[9px] text-app-sub font-medium block mt-0.5">Sobra deste Mês: <span class="${somaTotalMes >= 0 ? 'text-app-green' : 'text-app-red'}">${sobraMesHTML}</span></span>
-                                </div>
-                                <span class="font-black text-[16px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
-                            </div>
+                        <div class="mt-4 pt-3 border-t border-dashed border-app-border flex items-center justify-between text-app-sub">
+                            <span class="text-[11px] font-medium line-clamp-1 flex-1 pr-4 border-l-2 border-app-blue/50 pl-2">${prev.obs || 'Ver detalhes e marcar checks'}</span>
+                            <i class="ph-bold ph-caret-right text-sm"></i>
                         </div>
-
-                        <div class="mt-4 text-[12px] text-app-sub leading-relaxed whitespace-pre-line border-l-2 border-app-blue/50 pl-3"><span class="font-bold uppercase text-[9px] tracking-widest block mb-0.5">Foco</span>${prev.obs}</div>
                     </div>`;
                 container.appendChild(card);
             });
