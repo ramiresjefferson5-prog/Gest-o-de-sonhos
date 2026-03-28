@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Gestor de Sonhos - Guia Pessoal</title>
+    <title>Gestor de Sonhos - App Premium</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,13 +52,14 @@
         input[type="number"] { -moz-appearance: textfield; }
         input::placeholder, textarea::placeholder { color: #C7C7CC; }
         
-        /* Snap scrolling para chips não cortarem feio */
-        .snap-x-mandatory { scroll-snap-type: x mandatory; }
-        .snap-center { scroll-snap-align: center; }
-        .snap-start { scroll-snap-align: start; }
+        /* ESTILOS DA ROLETA NATIVA (WHEEL PICKER) */
+        .picker-container { height: 120px; overflow-y: scroll; scroll-snap-type: y mandatory; position: relative; scroll-behavior: smooth; }
+        .picker-highlight { position: absolute; top: 40px; left: 0; right: 0; height: 40px; background: rgba(0, 122, 255, 0.05); border-top: 1px solid rgba(0, 122, 255, 0.1); border-bottom: 1px solid rgba(0, 122, 255, 0.1); pointer-events: none; z-index: 0; }
+        .picker-item { height: 40px; scroll-snap-align: center; position: relative; z-index: 10; }
+        .picker-spacer { height: 40px; scroll-snap-align: center; }
     </style>
 </head>
-<body class="min-h-screen text-app-text pb-[88px] md:pb-0 overflow-x-hidden">
+<body class="min-h-screen text-app-text pb-[100px] md:pb-0 overflow-x-hidden">
 
     <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border">
@@ -108,7 +109,7 @@
     <main class="max-w-2xl mx-auto w-full" id="conteudo-principal">
         
         <!-- ========================================== -->
-        <!-- ABA 1: REGISTO (Lógico e Estruturado) -->
+        <!-- ABA 1: REGISTO -->
         <!-- ========================================== -->
         <section id="aba-sonhos" class="aba-ativa px-4 pt-6 pb-8 md:p-8">
             <div class="mb-5 px-1">
@@ -116,69 +117,80 @@
                 <p class="text-[13px] font-medium text-app-sub mt-0.5">Preenchimento estruturado por fases.</p>
             </div>
 
-            <!-- NUDGE COMPORTAMENTAL -->
             <div class="bg-[#FFF4CE] border border-[#FFD55F] rounded-2xl p-4 mb-8 shadow-sm">
                 <div class="flex items-start gap-3">
                     <div class="bg-[#FFD55F] p-1.5 rounded-full text-[#B27B00] shrink-0 mt-0.5"><i class="ph-bold ph-warning text-lg"></i></div>
                     <div>
                         <p class="text-sm font-bold text-[#8A5F00] uppercase tracking-wide mb-1">Regra de Ouro</p>
-                        <p class="text-[13px] text-[#8A5F00] font-medium leading-relaxed">Não é fase de luxo. Estás em <b>transição para estruturação</b>. Evita comprar coisas desnecessárias.</p>
+                        <p class="text-[13px] text-[#8A5F00] font-medium leading-relaxed">Não é fase de luxo. Estás em <b>transição para estruturação</b>.</p>
                     </div>
                 </div>
             </div>
 
             <form id="form-sonho" class="space-y-8">
                 
-                <!-- SESSÃO 1: Identificação -->
+                <!-- SESSÃO 1 -->
                 <div>
                     <h3 class="text-xs font-bold text-app-sub uppercase tracking-wider mb-2 ml-2 flex items-center gap-2">
                         <span class="bg-gray-200 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">1</span> Identificação
                     </h3>
-                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px] shadow-sm">
-                        <div class="flex items-center px-4 py-3.5 bg-white">
-                            <label class="w-24 shrink-0 font-medium">O que é?</label>
-                            <input type="text" id="input-nome" required placeholder="Ex: Telhas (Obra)" class="flex-1 bg-transparent text-right">
+                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border shadow-sm">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border">
+                            <label class="w-24 shrink-0 font-medium text-[15px]">O que é?</label>
+                            <input type="text" id="input-nome" required placeholder="Ex: Telhas (Obra)" class="flex-1 bg-transparent text-right text-[15px]">
                         </div>
-                        <div class="px-4 py-3.5 bg-white">
-                            <label class="block font-medium mb-2.5">Categoria</label>
-                            <!-- Scrollable Native-like Chips -->
-                            <div class="flex gap-2 overflow-x-auto no-scrollbar snap-x-mandatory pb-1" id="chips-categoria"></div>
-                            <input type="hidden" id="val-categoria" value="Casa (Obra)">
+
+                        <!-- ROLETA CATEGORIA -->
+                        <div class="px-4 py-3 border-b border-app-border bg-gray-50/50">
+                            <label class="block font-semibold text-sm mb-1 text-center text-app-sub uppercase tracking-wider">Categoria</label>
+                            <div class="relative bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <div class="picker-highlight"></div>
+                                <div class="picker-container no-scrollbar" id="picker-categoria"></div>
+                                <input type="hidden" id="val-categoria" value="Casa (Obra)">
+                            </div>
                         </div>
-                        <div class="px-4 py-3.5 bg-white">
-                            <label class="block font-medium mb-2.5">Prioridade Estratégica</label>
-                            <div class="flex flex-col gap-2" id="chips-prioridade"></div>
-                            <input type="hidden" id="val-prioridade" value="Alta (Proteção)">
+
+                        <!-- ROLETA PRIORIDADE -->
+                        <div class="px-4 py-3 bg-gray-50/50">
+                            <label class="block font-semibold text-sm mb-1 text-center text-app-sub uppercase tracking-wider">Prioridade Estratégica</label>
+                            <div class="relative bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <div class="picker-highlight"></div>
+                                <div class="picker-container no-scrollbar" id="picker-prioridade"></div>
+                                <input type="hidden" id="val-prioridade" value="Alta (Proteção)">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SESSÃO 2: Valores e Estrutura -->
+                <!-- SESSÃO 2 -->
                 <div>
                     <h3 class="text-xs font-bold text-app-sub uppercase tracking-wider mb-2 ml-2 flex items-center gap-2">
                         <span class="bg-gray-200 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">2</span> Valores
                     </h3>
                     
-                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px] shadow-sm mb-3">
-                        <div class="px-4 py-3.5 bg-white">
-                            <label class="block font-medium mb-2.5">Estrutura da Compra</label>
-                            <div class="flex gap-2" id="chips-complexidade"></div>
-                            <input type="hidden" id="val-complexidade" value="Simples">
+                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border shadow-sm mb-3">
+                        
+                        <!-- ROLETA ESTRUTURA -->
+                        <div class="px-4 py-3 border-b border-app-border bg-gray-50/50">
+                            <label class="block font-semibold text-sm mb-1 text-center text-app-sub uppercase tracking-wider">Estrutura da Compra</label>
+                            <div class="relative bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <div class="picker-highlight"></div>
+                                <div class="picker-container no-scrollbar" id="picker-complexidade"></div>
+                                <input type="hidden" id="val-complexidade" value="Simples">
+                            </div>
                         </div>
                         
-                        <!-- Inputs Simples -->
                         <div id="div-simples">
-                            <div class="flex items-center px-4 py-3.5 bg-white">
-                                <label class="w-28 shrink-0 font-medium">Preço (R$)</label>
+                            <div class="flex items-center px-4 py-3.5 border-b border-app-border">
+                                <label class="w-28 shrink-0 font-medium text-[15px]">Preço (R$)</label>
                                 <input type="number" id="input-preco-unit" min="0" step="0.01" placeholder="0,00" class="flex-1 bg-transparent text-right text-app-blue font-bold text-lg">
                             </div>
-                            <div class="flex items-center px-4 py-3.5 bg-white">
-                                <label class="w-28 shrink-0 font-medium">Quantidade</label>
-                                <input type="number" id="input-quantidade" min="1" value="1" required class="flex-1 bg-transparent text-right font-medium">
+                            <div class="flex items-center px-4 py-3.5">
+                                <label class="w-28 shrink-0 font-medium text-[15px]">Quantidade</label>
+                                <input type="number" id="input-quantidade" min="1" value="1" required class="flex-1 bg-transparent text-right font-medium text-[15px]">
                             </div>
                         </div>
 
-                        <!-- Inputs Compostos -->
                         <div id="div-composto" class="hidden bg-gray-50 px-4 py-4">
                             <div class="flex justify-between items-end mb-2">
                                 <span class="text-[13px] font-semibold text-app-sub">Sub-itens da Obra</span>
@@ -188,46 +200,51 @@
                         </div>
                     </div>
 
-                    <div class="bg-blue-50/50 rounded-xl overflow-hidden border border-blue-100 grouped-list text-[15px] shadow-sm">
+                    <div class="bg-blue-50/50 rounded-xl overflow-hidden border border-blue-100 shadow-sm grouped-list">
                         <div class="flex items-center justify-between px-4 py-4 bg-transparent">
-                            <label class="font-semibold text-app-blue">Custo Total</label>
+                            <label class="font-semibold text-app-blue text-[15px]">Custo Total</label>
                             <span class="font-black text-xl text-app-blue" id="display-total">R$ 0,00</span>
                         </div>
                         <div class="flex items-center px-4 py-3.5 bg-white">
-                            <label class="flex-1 font-medium">Já tens guardado?</label>
+                            <label class="flex-1 font-medium text-[15px]">Já tens guardado?</label>
                             <span class="text-app-sub mr-1">R$</span>
                             <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-24 bg-transparent text-right font-bold text-app-green text-lg">
                         </div>
                     </div>
                 </div>
 
-                <!-- SESSÃO 3: Execução -->
+                <!-- SESSÃO 3 -->
                 <div>
                     <h3 class="text-xs font-bold text-app-sub uppercase tracking-wider mb-2 ml-2 flex items-center gap-2">
                         <span class="bg-gray-200 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">3</span> Execução
                     </h3>
-                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border grouped-list text-[15px] shadow-sm">
-                        <div class="px-4 py-3.5 bg-white">
-                            <label class="block font-medium mb-2.5">Quem vai executar?</label>
-                            <div class="flex gap-2 overflow-x-auto no-scrollbar snap-x-mandatory pb-1" id="chips-viabilidade"></div>
-                            <input type="hidden" id="val-viabilidade" value="Vou fazer">
+                    <div class="bg-app-card rounded-xl overflow-hidden border border-app-border shadow-sm">
+                        
+                        <!-- ROLETA QUEM VAI FAZER -->
+                        <div class="px-4 py-3 bg-gray-50/50 border-b border-app-border">
+                            <label class="block font-semibold text-sm mb-1 text-center text-app-sub uppercase tracking-wider">Quem vai executar?</label>
+                            <div class="relative bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <div class="picker-highlight"></div>
+                                <div class="picker-container no-scrollbar" id="picker-viabilidade"></div>
+                                <input type="hidden" id="val-viabilidade" value="Vou fazer">
+                            </div>
                         </div>
 
-                        <div id="div-servico" class="hidden bg-orange-50/30">
+                        <div id="div-servico" class="hidden bg-orange-50/30 grouped-list">
                             <div class="flex items-center px-4 py-3.5">
-                                <label class="w-32 shrink-0 font-medium">Custo Mão de Obra</label>
+                                <label class="w-32 shrink-0 font-medium text-[15px]">Custo Mão de Obra</label>
                                 <span class="text-app-sub mr-1">R$</span>
-                                <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="flex-1 bg-transparent text-right font-bold text-app-orange">
+                                <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="flex-1 bg-transparent text-right font-bold text-app-orange text-lg">
                             </div>
                             <div class="flex items-center px-4 py-3.5">
-                                <label class="w-32 shrink-0 font-medium">Tempo/Dias</label>
-                                <input type="text" id="input-tempo-servico" placeholder="Ex: 5 dias" class="flex-1 bg-transparent text-right">
+                                <label class="w-32 shrink-0 font-medium text-[15px]">Tempo/Dias</label>
+                                <input type="text" id="input-tempo-servico" placeholder="Ex: 5 dias" class="flex-1 bg-transparent text-right text-[15px]">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SESSÃO 4: Análise Mental -->
+                <!-- SESSÃO 4 -->
                 <div>
                     <h3 class="text-xs font-bold text-app-sub uppercase tracking-wider mb-2 ml-2 flex items-center gap-2">
                         <span class="bg-gray-200 text-gray-600 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">4</span> Análise
@@ -244,12 +261,12 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 2: PORTFÓLIO (Saldos) -->
+        <!-- ABA 2: PORTFÓLIO -->
         <!-- ========================================== -->
         <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
             <div class="flex justify-between items-center mb-5 px-1">
                 <h2 class="text-2xl font-bold tracking-tight">Portfólio</h2>
-                <button onclick="carregarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1"><i class="ph-bold ph-arrows-clockwise"></i> Sincronizar</button>
+                <button onclick="carregarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1"><i class="ph-bold ph-arrows-clockwise"></i></button>
             </div>
 
             <div class="bg-app-text rounded-2xl p-5 mb-6 shadow-md text-white">
@@ -272,68 +289,42 @@
             </div>
 
             <h3 class="text-[12px] font-semibold text-app-sub uppercase tracking-wider mb-2 ml-1">Planos / Obras Ativas</h3>
-            
             <div id="lista-sonhos-container" class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list shadow-sm">
                 <div class="p-6 text-center text-app-sub text-sm">A carregar...</div>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 3: PREVISÕES 2026 (Timeline Completa & Editável) -->
+        <!-- ABA 3: PREVISÕES 2026 (INTERATIVA) -->
         <!-- ========================================== -->
         <section id="aba-previsoes" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
             <div class="mb-6 px-1">
                 <h2 class="text-2xl font-bold tracking-tight">Plano 2026</h2>
-                <p class="text-[13px] font-medium text-app-sub mt-0.5">O teu roteiro exato. Clica em Ajustar se algo mudar.</p>
+                <p class="text-[13px] font-medium text-app-sub mt-0.5">Dinâmico e interativo. Ajusta o teu mês.</p>
             </div>
 
-            <!-- TIMELINE DINÂMICA -->
             <div class="relative border-l-2 border-gray-200 ml-4 space-y-6 pb-8" id="timeline-container">
-                <!-- Injetado via JS -->
+                <!-- Timeline injetada via JS -->
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- ABA 4: PERFIL ESTRATÉGICO -->
+        <!-- ABA 4: PERFIL -->
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8">
             <h2 class="text-2xl font-bold tracking-tight mb-5 px-1">Mindset</h2>
-            
             <div class="bg-app-card border border-app-border rounded-2xl p-5 mb-6 text-center shadow-sm">
-                <div class="w-16 h-16 bg-blue-50 text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
-                    <i class="ph-fill ph-brain"></i>
-                </div>
+                <div class="w-16 h-16 bg-blue-50 text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-3"><i class="ph-fill ph-brain"></i></div>
                 <h3 class="font-bold text-app-text mb-1">Tu Não Estás Quebrado</h3>
                 <p class="text-[14px] text-app-sub leading-relaxed">A base financeira existe. Só falta a <b>execução limpa</b> e foco na casa.</p>
             </div>
-
-            <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list mb-6 shadow-sm">
-                <div class="p-4 bg-white">
-                    <h4 class="text-xs font-bold text-app-green uppercase tracking-widest mb-3 flex items-center gap-2"><i class="ph-bold ph-check-circle"></i> Vantagens</h4>
-                    <ul class="text-[14px] text-app-text space-y-2">
-                        <li class="flex gap-2"><span class="text-app-green">✔</span> Divisão por categorias.</li>
-                        <li class="flex gap-2"><span class="text-app-green">✔</span> Manténs R$ 400 para lazer (vital).</li>
-                        <li class="flex gap-2"><span class="text-app-green">✔</span> Visão de longo prazo.</li>
-                    </ul>
-                </div>
-                <div class="p-4 bg-white">
-                    <h4 class="text-xs font-bold text-app-red uppercase tracking-widest mb-3 flex items-center gap-2"><i class="ph-bold ph-warning-circle"></i> Zonas de Perigo</h4>
-                    <ul class="text-[14px] text-app-text space-y-2">
-                        <li class="flex gap-2 items-start"><span class="text-app-red">⚠</span> <span>Gastar só "porque sobrou margem".</span></li>
-                        <li class="flex gap-2 items-start"><span class="text-app-red">⚠</span> <span>Criar parcelas novas.</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <button id="btn-sair" class="w-full bg-white border border-app-border text-app-red font-semibold py-3.5 rounded-xl transition-colors active:bg-gray-50 text-[15px] shadow-sm">
-                Terminar Sessão
-            </button>
+            <button id="btn-sair" class="w-full bg-white border border-app-border text-app-red font-semibold py-3.5 rounded-xl shadow-sm">Terminar Sessão</button>
         </section>
 
     </main>
 
     <!-- ========================================== -->
-    <!-- MODAIS BOTTOM SHEET (ESTILO IOS) -->
+    <!-- MODAIS BOTTOM SHEET -->
     <!-- ========================================== -->
     
     <!-- Modal: Detalhes do Plano -->
@@ -343,15 +334,13 @@
             <div class="flex justify-between items-center px-4 py-3 bg-[#F2F2F7] rounded-t-3xl border-b border-[#E5E5EA] shrink-0 sticky top-0 z-10">
                 <span class="w-16"></span>
                 <h3 class="font-semibold text-[15px] text-center truncate px-2" id="modal-title-header">Detalhes do Gasto</h3>
-                <div class="w-16 text-right">
-                    <button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-gray-200/80 rounded-full inline-flex items-center justify-center text-app-sub active:bg-gray-300"><i class="ph-bold ph-x text-sm"></i></button>
-                </div>
+                <div class="w-16 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-gray-200/80 rounded-full inline-flex items-center justify-center text-app-sub active:bg-gray-300"><i class="ph-bold ph-x text-sm"></i></button></div>
             </div>
             <div id="modal-body" class="px-4 py-5 overflow-y-auto no-scrollbar space-y-5"></div>
         </div>
     </div>
 
-    <!-- Modal: Editar Mês Timeline -->
+    <!-- Modal: Editar Mês Timeline (Novo & Interativo) -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-[#F2F2F7] rounded-t-3xl shadow-xl transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe" id="modal-mes-content">
@@ -360,9 +349,12 @@
                 <h3 class="font-semibold text-[15px] text-center" id="titulo-editar-mes">Ajustar Mês</h3>
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[15px]">Gravar</button>
             </div>
-            <div class="px-4 py-5 overflow-y-auto no-scrollbar">
+            
+            <div class="px-4 py-5 overflow-y-auto no-scrollbar" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
-                <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-sm mb-4">
+                
+                <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-wider mb-1.5 ml-2">Estrutura Base do Mês</h4>
+                <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-sm mb-5">
                     <div class="flex items-center px-4 py-3.5 bg-white">
                         <label class="w-32 shrink-0 font-medium">Entradas (R$)</label>
                         <input type="number" id="edit-mes-entradas" class="flex-1 bg-transparent text-right font-semibold text-app-green">
@@ -376,8 +368,21 @@
                         <input type="number" id="edit-mes-parcela" class="flex-1 bg-transparent text-right text-app-orange">
                     </div>
                 </div>
+
+                <div class="flex justify-between items-end mb-1.5 px-2 mt-2">
+                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-wider">Lançamentos Extras do Mês</h4>
+                    <div class="flex gap-2">
+                        <button onclick="adicionarExtraMes('receita')" class="text-app-green text-xs font-bold bg-green-50 px-2 py-1 rounded">+ Receita</button>
+                        <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-xs font-bold bg-red-50 px-2 py-1 rounded">+ Gasto</button>
+                    </div>
+                </div>
+                
+                <div class="bg-app-card rounded-xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-sm mb-5 min-h-[50px]" id="lista-extras-mes">
+                    <!-- Dinâmico -->
+                </div>
+
                 <div>
-                    <span class="text-[12px] font-semibold text-app-sub uppercase ml-2 mb-1 block">Anotações / Destino da Sobra</span>
+                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-wider mb-1.5 ml-2">Anotações / Destino da Sobra</h4>
                     <textarea id="edit-mes-obs" class="w-full bg-app-card border border-app-border rounded-xl p-3 text-[14px] min-h-[80px] resize-none shadow-sm"></textarea>
                 </div>
             </div>
@@ -391,79 +396,95 @@
         const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
         
         let idUtilizadorAtual = null;
+        const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
-                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6"><div class="bg-app-card p-6 rounded-2xl shadow-sm text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-3xl text-app-sub mb-3"></i><h2 class="text-lg font-semibold mb-1">Sessão Expirada</h2><p class="text-sm text-app-sub">Abre o index.html no teu computador.</p></div></div>`;
+                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6"><div class="bg-app-card p-6 rounded-2xl shadow-sm text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-3xl text-app-sub mb-3"></i><h2 class="text-lg font-semibold mb-1">Sessão Expirada</h2></div></div>`;
             }
         }
 
-        const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
-
         // ========================================================
-        // 1. CHIPS (Scroll Snap Nativo)
+        // 1. ROLETA NATIVA (WHEEL PICKER JS)
         // ========================================================
         const opcoesChips = {
             categoria: [
-                { val: 'Casa (Obra)', icon: '🏠', text: 'Obra/Casa' },
-                { val: 'Reserva', icon: '💰', text: 'Reserva' },
-                { val: 'Lazer', icon: '🍺', text: 'Lazer' },
-                { val: 'Dívida', icon: '💳', text: 'Dívidas' },
-                { val: 'Fixos Extras', icon: '🛒', text: 'Fixos/Extra' }
+                { val: 'Casa (Obra)', icon: '🏠', text: 'Obra / Casa' },
+                { val: 'Reserva', icon: '💰', text: 'Reserva / Poupança' },
+                { val: 'Lazer', icon: '🍺', text: 'Lazer / Recompensa' },
+                { val: 'Dívida', icon: '💳', text: 'Pagamento Dívidas' },
+                { val: 'Fixos Extras', icon: '🛒', text: 'Gastos Extras' }
             ],
             viabilidade: [
-                { val: 'Vou fazer', icon: '🛠️', text: 'Vou executar eu mesmo' },
-                { val: 'Nao', icon: '👷', text: 'Vou contratar Mão de Obra' }
+                { val: 'Vou fazer', icon: '🛠️', text: 'Eu vou executar (Sem custo)' },
+                { val: 'Nao', icon: '👷', text: 'Contratar Mão de Obra' }
             ],
             prioridade: [
                 { val: 'Alta (Proteção)', icon: '🔴', text: 'Urgente (Ex: Telhado/Portão)' },
                 { val: 'Média (Conforto)', icon: '🟡', text: 'Conforto (Ex: Acabamento)' },
-                { val: 'Baixa (Futuro)', icon: '🟢', text: 'Futuro' }
+                { val: 'Baixa (Futuro)', icon: '🟢', text: 'Estética Futura' }
             ],
             complexidade: [
-                { val: 'Simples', icon: '📦', text: 'Item Direto' },
-                { val: 'Composto', icon: '🏗️', text: 'Comprar por Partes' }
+                { val: 'Simples', icon: '📦', text: 'Item Direto (Único)' },
+                { val: 'Composto', icon: '🏗️', text: 'Composto (Várias partes)' }
             ]
         };
 
-        function renderizarChips(grupo, idContainer, idInputHidden) {
+        function iniciarRoleta(grupo, idContainer, idInputHidden) {
             const container = document.getElementById(idContainer);
-            container.innerHTML = '';
+            container.innerHTML = '<div class="picker-spacer"></div>'; 
             
             opcoesChips[grupo].forEach((opt, index) => {
-                const isSelected = index === 0;
-                if(isSelected) document.getElementById(idInputHidden).value = opt.val;
-
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                // Adicionado snap-start para o scroll ficar perfeito no telemóvel
-                btn.className = `whitespace-nowrap snap-start px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors shrink-0 shadow-sm ${
-                    isSelected ? 'bg-app-blue text-white' : 'bg-white text-app-sub border border-app-border'
-                }`;
-                btn.innerHTML = `${opt.icon} ${opt.text}`;
+                if(index === 0) document.getElementById(idInputHidden).value = opt.val;
                 
-                btn.onclick = () => {
-                    Array.from(container.children).forEach(child => {
-                        child.className = 'whitespace-nowrap snap-start px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors shrink-0 bg-white text-app-sub border border-app-border shadow-sm';
-                    });
-                    btn.className = 'whitespace-nowrap snap-start px-4 py-2.5 rounded-full text-[13px] font-medium transition-colors shrink-0 bg-app-blue text-white border border-app-blue shadow-sm';
-                    document.getElementById(idInputHidden).value = opt.val;
+                const div = document.createElement('div');
+                div.className = `picker-item flex items-center justify-center transition-all duration-200 cursor-pointer ${index === 0 ? 'text-app-blue font-bold text-[16px]' : 'text-app-sub font-medium text-[15px]'}`;
+                div.dataset.val = opt.val;
+                div.innerHTML = `${opt.icon} <span class="ml-2">${opt.text}</span>`;
+                
+                div.onclick = () => { container.scrollTo({ top: div.offsetTop - 40, behavior: 'smooth' }); };
+                container.appendChild(div);
+            });
+            
+            container.innerHTML += '<div class="picker-spacer"></div>';
 
-                    if(grupo === 'viabilidade') verificarServico();
-                    if(grupo === 'complexidade') verificarComplexidade();
-                };
-                container.appendChild(btn);
+            container.addEventListener('scroll', () => {
+                const items = container.querySelectorAll('.picker-item');
+                let closest = null, minDiff = Infinity;
+                const centerPosition = container.scrollTop + 60; // Metade dos 120px
+
+                items.forEach(item => {
+                    const itemCenter = item.offsetTop + 20; // Metade dos 40px
+                    const diff = Math.abs(centerPosition - itemCenter);
+                    if (diff < minDiff) { minDiff = diff; closest = item; }
+                });
+
+                if (closest) {
+                    items.forEach(item => {
+                        item.classList.remove('text-app-blue', 'font-bold', 'text-[16px]');
+                        item.classList.add('text-app-sub', 'font-medium', 'text-[15px]');
+                    });
+                    closest.classList.remove('text-app-sub', 'font-medium', 'text-[15px]');
+                    closest.classList.add('text-app-blue', 'font-bold', 'text-[16px]');
+                    
+                    const hiddenInput = document.getElementById(idInputHidden);
+                    if(hiddenInput.value !== closest.dataset.val) {
+                        hiddenInput.value = closest.dataset.val;
+                        if(grupo === 'viabilidade') verificarServico();
+                        if(grupo === 'complexidade') verificarComplexidade();
+                    }
+                }
             });
         }
 
-        renderizarChips('categoria', 'chips-categoria', 'val-categoria');
-        renderizarChips('viabilidade', 'chips-viabilidade', 'val-viabilidade');
-        renderizarChips('prioridade', 'chips-prioridade', 'val-prioridade');
-        renderizarChips('complexidade', 'chips-complexidade', 'val-complexidade');
+        iniciarRoleta('categoria', 'picker-categoria', 'val-categoria');
+        iniciarRoleta('viabilidade', 'picker-viabilidade', 'val-viabilidade');
+        iniciarRoleta('prioridade', 'picker-prioridade', 'val-prioridade');
+        iniciarRoleta('complexidade', 'picker-complexidade', 'val-complexidade');
 
 
         // ========================================================
-        // 2. CÁLCULOS DO FORMULÁRIO (Sessões Dinâmicas)
+        // 2. CÁLCULOS DO FORMULÁRIO DE REGISTO
         // ========================================================
         const inputPreco = document.getElementById('input-preco-unit');
         const inputQtd = document.getElementById('input-quantidade');
@@ -480,9 +501,8 @@
             } else {
                 total = (parseFloat(inputPreco.value) || 0) * (parseInt(inputQtd.value) || 1);
             }
-            if (viabilidadeHidd.value === 'Nao') {
-                total += parseFloat(precoServico.value) || 0;
-            }
+            if (viabilidadeHidd.value === 'Nao') total += parseFloat(precoServico.value) || 0;
+            
             displayTotal.innerText = formatarMoeda(total);
             return total;
         }
@@ -492,29 +512,19 @@
         precoServico.addEventListener('input', calcularTotal);
 
         function verificarServico() {
-            if (viabilidadeHidd.value === 'Nao') {
-                divServico.classList.remove('hidden');
-            } else {
-                divServico.classList.add('hidden');
-                precoServico.value = '0';
-                document.getElementById('input-tempo-servico').value = '';
-            }
+            viabilidadeHidd.value === 'Nao' ? divServico.classList.remove('hidden') : (divServico.classList.add('hidden'), precoServico.value = '0');
             calcularTotal();
         }
 
         function verificarComplexidade() {
-            const isComposto = complexidadeHidd.value === 'Composto';
-            const divComposto = document.getElementById('div-composto');
-            const divSimples = document.getElementById('div-simples');
-            
-            if (isComposto) {
-                divComposto.classList.remove('hidden');
-                divSimples.classList.add('hidden');
+            if (complexidadeHidd.value === 'Composto') {
+                document.getElementById('div-composto').classList.remove('hidden');
+                document.getElementById('div-simples').classList.add('hidden');
                 inputPreco.value = '';
                 if(document.getElementById('lista-partes').children.length === 0) adicionarParte();
             } else {
-                divComposto.classList.add('hidden');
-                divSimples.classList.remove('hidden');
+                document.getElementById('div-composto').classList.add('hidden');
+                document.getElementById('div-simples').classList.remove('hidden');
                 document.getElementById('lista-partes').innerHTML = '';
             }
             calcularTotal();
@@ -536,28 +546,61 @@
 
 
         // ========================================================
-        // 3. TIMELINE 2026 (Completa e Editável)
+        // 3. TIMELINE 2026 COM DADOS REAIS DO SUPABASE
         // ========================================================
-        // Estado local da Timeline (Em ambiente real, viria do Supabase tabela fluxo_caixa)
-        let previsoes2026 = [
-            { id: 'abr', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 5080, fixos: 650, parcela: 0, obs: 'Obra R$ 2200, Ajustes R$ 300, Reserva R$ 300. \nLivre: ~R$ 1.600.' },
-            { id: 'mai', mes: 'Maio', cor: 'gray-400', entradas: 2580, fixos: 750, parcela: 0, obs: 'Lazer 400 | Reserva 500 | Casa 400 | Poup 150 \nLivre: ~R$ 380.' },
-            { id: 'jun', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável: Lazer 400 | Casa 400 | Res 350 | Poup 150' },
-            { id: 'jul', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2800, fixos: 750, obs: 'Casa 600 | Reserva 500 | Lazer 400' },
-            { id: 'ago', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Ponto de Virada', parcela: 520, entradas: 3500, fixos: 750, obs: 'Injeção na Obra: Casa R$ 1200 | Reserva 800 | Lazer 400' },
-            { id: 'set', mes: 'Setembro', cor: 'gray-400', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.' },
-            { id: 'out', mes: 'Outubro', cor: 'gray-400', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.' },
-            { id: 'nov', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 3480, fixos: 530, obs: 'Última Parcela do Empréstimo!' },
-            { id: 'dez', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 3480, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Início da reserva forte.' }
+        const templateMeses = [
+            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 5080, fixos: 650, parcela: 0, obs: 'Obra R$ 2200, Ajustes R$ 300, Reserva R$ 300.' },
+            { id: '2026-05', mes: 'Maio', cor: 'gray-400', entradas: 2580, fixos: 750, parcela: 0, obs: 'Lazer 400 | Reserva 500 | Casa 400 | Poup 150' },
+            { id: '2026-06', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável: Lazer 400 | Casa 400' },
+            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2800, fixos: 750, obs: 'Casa 600 | Reserva 500 | Lazer 400' },
+            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Ponto de Virada', parcela: 520, entradas: 3500, fixos: 750, obs: 'Injeção na Obra: Casa R$ 1200' },
+            { id: '2026-09', mes: 'Setembro', cor: 'gray-400', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.' },
+            { id: '2026-10', mes: 'Outubro', cor: 'gray-400', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.' },
+            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 3480, fixos: 530, obs: 'Última Parcela do Empréstimo!' },
+            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 3480, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Reserva forte.' }
         ];
 
-        function renderizarTimeline() {
+        let dadosTimeline = [];
+
+        async function inicializarTimeline() {
+            if(!idUtilizadorAtual) return;
+            const container = document.getElementById('timeline-container');
+            container.innerHTML = '<div class="text-center py-6 text-app-sub font-medium text-sm">A sincronizar mapa financeiro...</div>';
+
+            const { data, error } = await clienteSupabase.from('fluxo_caixa').select('*').eq('user_id', idUtilizadorAtual);
+            
+            dadosTimeline = templateMeses.map(temp => {
+                const mesBD = data?.find(d => d.mes_id === temp.id);
+                if(mesBD) {
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: mesBD.observacoes, extras: mesBD.extras || [] };
+                }
+                return { ...temp, extras: [] };
+            });
+
+            renderizarTimelineUI();
+        }
+
+        function renderizarTimelineUI() {
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
 
-            previsoes2026.forEach(prev => {
-                const sobra = prev.entradas - prev.fixos - prev.parcela;
+            dadosTimeline.forEach(prev => {
+                let somaExtras = 0;
+                let htmlExtras = '';
                 
+                if(prev.extras && prev.extras.length > 0) {
+                    prev.extras.forEach(ext => {
+                        const val = parseFloat(ext.valor) || 0;
+                        if(ext.tipo === 'receita') { somaExtras += val; } else { somaExtras -= val; }
+                        
+                        htmlExtras += `<div class="flex justify-between items-center mt-1 text-[12px]">
+                            <span class="text-gray-500 truncate max-w-[150px]">- ${ext.descricao}</span>
+                            <span class="${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} font-medium">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                        </div>`;
+                    });
+                }
+
+                const sobra = prev.entradas - prev.fixos - prev.parcela + somaExtras;
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold ${prev.risco ? 'bg-red-100 text-red-600' : ''} ${prev.cor === 'app-green' ? 'bg-green-100 text-green-700' : ''}">${prev.badge}</span>` : '';
                 
                 const card = document.createElement('div');
@@ -571,13 +614,15 @@
                     </div>
                     
                     <div class="bg-app-card border border-app-border rounded-xl p-4 text-[14px] shadow-sm">
-                        <div class="flex justify-between mb-1"><span class="text-app-sub">Entradas</span> <span class="font-medium ${prev.entradas > 3000 ? 'text-app-green' : ''}">${formatarMoeda(prev.entradas)}</span></div>
-                        <div class="flex justify-between mb-1"><span class="text-app-sub">Fixos base</span> <span class="text-app-red">-${formatarMoeda(prev.fixos)}</span></div>
+                        <div class="flex justify-between mb-1"><span class="text-app-sub">Entradas Base</span> <span class="font-medium ${prev.entradas > 3000 ? 'text-app-green' : ''}">${formatarMoeda(prev.entradas)}</span></div>
+                        <div class="flex justify-between mb-1"><span class="text-app-sub">Fixos Base</span> <span class="text-app-red">-${formatarMoeda(prev.fixos)}</span></div>
                         ${prev.parcela > 0 ? `<div class="flex justify-between mb-2"><span class="text-app-sub">Empréstimo</span> <span class="text-app-orange">-${formatarMoeda(prev.parcela)}</span></div>` : ''}
                         
-                        <div class="flex justify-between pt-2.5 mt-1.5 border-t border-gray-100 font-bold">
-                            <span class="${sobra > 2000 ? 'text-app-green' : 'text-app-blue'}">Sobra Livre</span> 
-                            <span>${formatarMoeda(sobra)}</span>
+                        ${htmlExtras !== '' ? `<div class="mt-2 pt-2 border-t border-dashed border-gray-200"><p class="text-[10px] font-bold text-app-sub uppercase tracking-wider">Lançamentos Extras</p>${htmlExtras}</div>` : ''}
+
+                        <div class="flex justify-between pt-2.5 mt-2 border-t border-gray-100 font-bold">
+                            <span class="${sobra > 2000 ? 'text-app-green' : 'text-app-blue'}">Sobra Total do Mês</span> 
+                            <span class="${sobra < 0 ? 'text-app-red' : ''}">${formatarMoeda(sobra)}</span>
                         </div>
                         
                         <div class="mt-3 bg-gray-50 rounded-lg p-3 text-[13px] text-gray-600 leading-relaxed whitespace-pre-line border border-gray-100">
@@ -589,8 +634,11 @@
             });
         }
 
+        // Lógica de Edição do Mês e Extras
+        let extrasTemp = [];
+
         function abrirEdicaoMes(idMes) {
-            const prev = previsoes2026.find(m => m.id === idMes);
+            const prev = dadosTimeline.find(m => m.id === idMes);
             if(!prev) return;
 
             document.getElementById('titulo-editar-mes').innerText = `Ajustar ${prev.mes}`;
@@ -599,28 +647,94 @@
             document.getElementById('edit-mes-fixos').value = prev.fixos;
             document.getElementById('edit-mes-parcela').value = prev.parcela;
             document.getElementById('edit-mes-obs').value = prev.obs;
+            
+            extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
+            renderizarExtrasEditUI();
 
             abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
         }
 
-        function guardarEdicaoMes() {
+        function adicionarExtraMes(tipo) {
+            extrasTemp.push({ id: Date.now().toString(), tipo: tipo, descricao: '', valor: 0 });
+            renderizarExtrasEditUI();
+            
+            // Scroll down a bit
+            const area = document.getElementById('modal-mes-scroll-area');
+            setTimeout(() => area.scrollTo({top: area.scrollHeight, behavior: 'smooth'}), 50);
+        }
+
+        function removerExtraMes(idExtra) {
+            extrasTemp = extrasTemp.filter(e => e.id !== idExtra);
+            renderizarExtrasEditUI();
+        }
+
+        function renderizarExtrasEditUI() {
+            const list = document.getElementById('lista-extras-mes');
+            list.innerHTML = '';
+            
+            if(extrasTemp.length === 0) {
+                list.innerHTML = `<div class="px-4 py-3 text-sm text-app-sub text-center bg-white">Nenhum lançamento extra neste mês.</div>`;
+                return;
+            }
+
+            extrasTemp.forEach((ext, index) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center px-3 py-2 bg-white border-b border-app-border last:border-0";
+                div.innerHTML = `
+                    <button type="button" onclick="removerExtraMes('${ext.id}')" class="text-app-red mr-2"><i class="ph-fill ph-minus-circle text-lg"></i></button>
+                    <div class="flex-1 flex gap-2 items-center">
+                        <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${ext.tipo==='receita'?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${ext.tipo==='receita'?'+Rec':'-Gas'}</span>
+                        <input type="text" placeholder="Descrição" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[14px] bg-transparent outline-none text-app-text font-medium">
+                    </div>
+                    <input type="number" placeholder="0,00" value="${ext.valor || ''}" min="0" step="0.01" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 text-right text-[14px] font-bold bg-transparent outline-none ${ext.tipo==='receita'?'text-app-green':'text-app-red'}">
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function guardarEdicaoMes() {
+            const btn = event.target;
+            const textOrig = btn.innerText;
+            btn.innerText = 'A gravar...';
+            btn.classList.add('opacity-50', 'pointer-events-none');
+
             const id = document.getElementById('edit-mes-id').value;
-            const index = previsoes2026.findIndex(m => m.id === id);
+            const index = dadosTimeline.findIndex(m => m.id === id);
             
             if(index !== -1) {
-                previsoes2026[index].entradas = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
-                previsoes2026[index].fixos = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
-                previsoes2026[index].parcela = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
-                previsoes2026[index].obs = document.getElementById('edit-mes-obs').value;
+                const dados = {
+                    user_id: idUtilizadorAtual,
+                    mes_id: id,
+                    entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0,
+                    fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0,
+                    parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0,
+                    observacoes: document.getElementById('edit-mes-obs').value,
+                    extras: extrasTemp
+                };
+
+                // Upsert no Supabase
+                const { error } = await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
                 
-                renderizarTimeline();
+                if(!error) {
+                    dadosTimeline[index].entradas = dados.entradas;
+                    dadosTimeline[index].fixos = dados.fixos;
+                    dadosTimeline[index].parcela = dados.parcela;
+                    dadosTimeline[index].obs = dados.observacoes;
+                    dadosTimeline[index].extras = dados.extras;
+                    renderizarTimelineUI();
+                } else {
+                    alert("Erro ao gravar fluxo: " + error.message);
+                }
             }
+            
+            btn.innerText = textOrig;
+            btn.classList.remove('opacity-50', 'pointer-events-none');
             fecharModal('modal-editar-mes');
         }
 
 
         // ========================================================
-        // 4. SUPABASE LÓGICA (Registo de Sonhos)
+        // 4. SUPABASE LÓGICA (Registo de Sonhos e Saldos)
         // ========================================================
         const formSonho = document.getElementById('form-sonho');
         formSonho.onsubmit = async (e) => {
@@ -669,10 +783,10 @@
                 msg.innerHTML = `Registado com sucesso. Continua o bom trabalho!`;
                 msg.className = "text-[14px] text-center py-3 px-3 rounded-xl font-medium text-app-green bg-green-50 mt-4 block border border-green-100";
                 formSonho.reset();
-                renderizarChips('categoria', 'chips-categoria', 'val-categoria'); 
-                renderizarChips('viabilidade', 'chips-viabilidade', 'val-viabilidade');
-                renderizarChips('prioridade', 'chips-prioridade', 'val-prioridade');
-                renderizarChips('complexidade', 'chips-complexidade', 'val-complexidade');
+                iniciarRoleta('categoria', 'picker-categoria', 'val-categoria'); 
+                iniciarRoleta('viabilidade', 'picker-viabilidade', 'val-viabilidade');
+                iniciarRoleta('prioridade', 'picker-prioridade', 'val-prioridade');
+                iniciarRoleta('complexidade', 'picker-complexidade', 'val-complexidade');
                 verificarServico();
                 verificarComplexidade();
                 calcularTotal();
@@ -701,7 +815,7 @@
             container.innerHTML = '';
             
             if(data.length === 0) {
-                container.innerHTML = '<div class="p-8 text-center"><i class="ph-fill ph-check-circle text-4xl text-gray-300 mb-2"></i><p class="text-app-sub font-medium">Nenhum gasto ativo. Cofre limpo.</p></div>';
+                container.innerHTML = '<div class="p-8 text-center"><i class="ph-fill ph-check-circle text-4xl text-gray-300 mb-2"></i><p class="text-app-sub font-medium">Nenhum plano ativo. Cofre limpo.</p></div>';
             } else {
                 data.forEach(sonho => {
                     totalGeral += parseFloat(sonho.custo || 0);
@@ -765,7 +879,7 @@
             }
 
             if(idAba === 'saldos') carregarSonhos();
-            if(idAba === 'previsoes') renderizarTimeline();
+            if(idAba === 'previsoes') inicializarTimeline();
         }
 
         function abrirModal(idModal, idBackdrop, idContent) {
@@ -865,7 +979,7 @@
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
             idUtilizadorAtual = session.user.id;
-            renderizarTimeline(); // Inicializa a Timeline 2026
+            inicializarTimeline(); 
         };
 
         document.getElementById('btn-sair').onclick = async () => {
