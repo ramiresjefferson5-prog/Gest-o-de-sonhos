@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="color-scheme" content="dark">
     <title>Gestor de Sonhos - App Premium</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,11 +20,11 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        app: { bg: '#F2F2F7', card: '#FFFFFF', text: '#1C1C1E', sub: '#8E8E93', border: '#E5E5EA', blue: '#007AFF', green: '#34C759', orange: '#FF9500', red: '#FF3B30', purple: '#AF52DE' }
+                        app: { bg: '#000000', card: '#1C1C1E', text: '#FFFFFF', sub: '#8E8E93', border: '#2C2C2E', blue: '#0A84FF', green: '#30D158', orange: '#FF9F0A', red: '#FF453A', purple: '#BF5AF2' }
                     },
                     boxShadow: {
-                        'float': '0 4px 20px rgba(0, 0, 0, 0.03)',
-                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.08)'
+                        'float': '0 4px 20px rgba(0, 0, 0, 0.4)',
+                        'modal': '0 -10px 40px rgba(0, 0, 0, 0.6)'
                     }
                 }
             }
@@ -35,7 +36,7 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         * { -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
 
-        body { background-color: #F2F2F7; overscroll-behavior-y: none; overflow-x: hidden; }
+        body { background-color: #000000; overscroll-behavior-y: none; overflow-x: hidden; color: #FFFFFF; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
@@ -45,14 +46,14 @@
         .bottom-sheet-down { transform: translateY(100%); }
 
         .glass-nav { 
-            background: rgba(255, 255, 255, 0.85); 
+            background: rgba(28, 28, 30, 0.85); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px); 
         }
         
         input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="number"] { -moz-appearance: textfield; }
-        input::placeholder, textarea::placeholder { color: #C7C7CC; }
+        input::placeholder, textarea::placeholder { color: #8E8E93; }
         
         select {
             -webkit-appearance: none;
@@ -60,14 +61,15 @@
             appearance: none;
             text-align: right;
             direction: rtl; 
+            color: #8E8E93;
         }
-        select option { direction: ltr; } 
+        select option { direction: ltr; background-color: #1C1C1E; color: #FFFFFF; } 
         
         /* Transições Suaves para Checkboxes */
         .check-transition { transition: all 0.2s ease-in-out; }
     </style>
 </head>
-<body class="min-h-screen text-app-text pb-[100px] md:pb-0 w-full">
+<body class="min-h-screen pb-[100px] md:pb-0 w-full">
 
     <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
@@ -125,9 +127,9 @@
                 <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema ajusta-se automaticamente.</p>
             </div>
 
-            <div class="bg-orange-50/70 border border-orange-200/50 rounded-2xl p-4 mb-6 shadow-float w-full">
-                <p class="text-[11px] font-bold text-orange-600 uppercase tracking-widest mb-1 text-center">Foco Estratégico</p>
-                <p class="text-[13px] text-orange-800 text-center font-medium leading-relaxed">Estás na fase de <b>estruturação</b>. Foca na casa, evita parcelas soltas.</p>
+            <div class="bg-app-orange/10 border border-app-orange/20 rounded-2xl p-4 mb-6 shadow-float w-full">
+                <p class="text-[11px] font-bold text-app-orange uppercase tracking-widest mb-1 text-center">Foco Estratégico</p>
+                <p class="text-[13px] text-app-orange text-center font-medium leading-relaxed">Estás na fase de <b>estruturação</b>. Foca na casa, evita parcelas soltas.</p>
             </div>
 
             <form id="form-sonho" class="space-y-6 w-full">
@@ -135,12 +137,12 @@
                 <!-- IDENTIFICAÇÃO -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Identificação</span>
-                    <div class="bg-white rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
-                        <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-white">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
                             <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">O que é?</label>
-                            <input type="text" id="input-nome" required placeholder="Ex: Telhado Frontal" class="flex-1 min-w-0 bg-transparent text-right text-[15px] text-app-blue font-bold outline-none placeholder-gray-300">
+                            <input type="text" id="input-nome" required placeholder="Ex: Telhado Frontal" class="flex-1 min-w-0 bg-transparent text-right text-[15px] text-app-blue font-bold outline-none placeholder-app-sub/50">
                         </div>
-                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-white">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
                             <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Categoria</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-categoria" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium">
@@ -150,10 +152,10 @@
                                     <option value="Dívida">💳 Pagamento Dívida</option>
                                     <option value="Fixos Extras">🛒 Gastos Extras</option>
                                 </select>
-                                <i class="ph-bold ph-caret-up-down absolute right-0 text-gray-400 text-[10px] z-0"></i>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
-                        <div class="flex items-center px-4 py-3.5 relative bg-white">
+                        <div class="flex items-center px-4 py-3.5 relative bg-app-card">
                             <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Prioridade</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-prioridade" class="w-full bg-transparent text-[15px] text-app-orange outline-none pr-5 cursor-pointer z-10 font-bold">
@@ -161,7 +163,7 @@
                                     <option value="Média (Conforto)">🟡 Média (Conforto/Acabamento)</option>
                                     <option value="Baixa (Futuro)">🟢 Baixa (Futuro/Estética)</option>
                                 </select>
-                                <i class="ph-bold ph-caret-up-down absolute right-0 text-gray-400 text-[10px] z-0"></i>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
                     </div>
@@ -170,48 +172,48 @@
                 <!-- VALORES E ITENS -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Estrutura Financeira</span>
-                    <div class="bg-white rounded-[20px] border border-app-border overflow-hidden shadow-float mb-4 w-full">
-                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-white">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float mb-4 w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
                             <label class="w-32 shrink-0 font-medium text-[15px] text-app-text">Tipo de Compra</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-complexidade" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium" onchange="verificarComplexidade()">
                                     <option value="Simples">📦 Compra Única (Pronto)</option>
                                     <option value="Composto">🏗️ Por Etapas/Sub-itens</option>
                                 </select>
-                                <i class="ph-bold ph-caret-up-down absolute right-0 text-gray-400 text-[10px] z-0"></i>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
                         
                         <!-- Compra Simples -->
                         <div id="div-simples" class="w-full transition-all">
-                            <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-white">
+                            <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
                                 <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Preço Unit.</label>
                                 <span class="text-app-sub mr-1">R$</span>
-                                <input type="number" id="input-preco-unit" min="0" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-blue font-bold text-[17px] outline-none placeholder-gray-300">
+                                <input type="number" id="input-preco-unit" min="0" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-blue font-bold text-[17px] outline-none placeholder-app-sub/50">
                             </div>
-                            <div class="flex items-center px-4 py-3.5 bg-white">
+                            <div class="flex items-center px-4 py-3.5 bg-app-card">
                                 <label class="w-24 shrink-0 font-medium text-[15px] text-app-text">Quantidade</label>
                                 <input type="number" id="input-quantidade" min="1" value="1" required class="flex-1 min-w-0 bg-transparent text-right font-medium text-[15px] text-app-sub outline-none">
                             </div>
                         </div>
 
                         <!-- Compra Composta -->
-                        <div id="div-composto" class="hidden bg-gray-50/50 px-4 py-4 w-full border-b border-app-border">
+                        <div id="div-composto" class="hidden bg-[#151515] px-4 py-4 w-full border-b border-app-border">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-[12px] font-bold text-app-sub uppercase tracking-wider">Itens da Obra</span>
-                                <button type="button" onclick="adicionarParte()" class="text-app-blue text-[12px] font-bold bg-[#E5F1FF] px-3 py-1.5 rounded-lg active:opacity-60 transition-opacity flex items-center gap-1"><i class="ph-bold ph-plus"></i> Novo Item</button>
+                                <button type="button" onclick="adicionarParte()" class="text-app-blue text-[12px] font-bold bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-60 transition-opacity flex items-center gap-1"><i class="ph-bold ph-plus"></i> Novo Item</button>
                             </div>
                             <div class="space-y-2 w-full" id="lista-partes"></div>
                         </div>
                     </div>
 
                     <!-- Totais Agrupados Inteligentes -->
-                    <div class="bg-gradient-to-r from-[#F0F7FF] to-[#E5F1FF] rounded-[20px] border border-[#D0E5FF] shadow-float overflow-hidden w-full">
-                        <div class="flex items-center justify-between px-5 py-4 border-b border-[#D0E5FF]/50">
+                    <div class="bg-gradient-to-r from-app-blue/10 to-app-blue/20 rounded-[20px] border border-app-blue/20 shadow-float overflow-hidden w-full">
+                        <div class="flex items-center justify-between px-5 py-4 border-b border-app-blue/20">
                             <label class="font-bold text-app-blue text-[15px]">Custo Total Calculado</label>
                             <span class="font-black text-xl text-app-blue truncate pl-2" id="display-total">R$ 0,00</span>
                         </div>
-                        <div class="flex items-center px-5 py-4 bg-white/40">
+                        <div class="flex items-center px-5 py-4 bg-[#2C2C2E]/50">
                             <div class="flex-1 pr-2">
                                 <label class="font-bold text-[15px] text-app-text block">Dinheiro em Caixa</label>
                                 <p class="text-[11px] text-app-sub">Valor já separado na conta para isto.</p>
@@ -225,27 +227,27 @@
                 <!-- EXECUÇÃO -->
                 <div class="w-full">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-4 mb-1.5 block">Execução da Tarefa</span>
-                    <div class="bg-white rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
-                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-white">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden shadow-float w-full">
+                        <div class="flex items-center px-4 py-3.5 border-b border-app-border relative bg-app-card">
                             <label class="w-32 shrink-0 font-medium text-[15px] text-app-text">Quem faz a obra?</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-viabilidade" class="w-full bg-transparent text-[15px] text-app-sub outline-none pr-5 cursor-pointer z-10 font-medium" onchange="verificarServico()">
                                     <option value="Vou fazer">🛠️ Eu executo (S/ Custo)</option>
                                     <option value="Nao">👷 Contratar Pedreiro</option>
                                 </select>
-                                <i class="ph-bold ph-caret-up-down absolute right-0 text-gray-400 text-[10px] z-0"></i>
+                                <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
                         </div>
 
-                        <div id="div-servico" class="hidden bg-[#FFF8F0]">
-                            <div class="flex items-center px-4 py-3.5 border-b border-orange-100">
+                        <div id="div-servico" class="hidden bg-app-orange/10">
+                            <div class="flex items-center px-4 py-3.5 border-b border-app-orange/20">
                                 <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Mão de Obra</label>
                                 <span class="text-app-sub mr-1 text-right flex-1">R$</span>
                                 <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-24 shrink-0 bg-transparent text-right font-bold text-app-orange text-[17px] outline-none">
                             </div>
                             <div class="flex items-center px-4 py-3.5">
                                 <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Estimativa</label>
-                                <input type="text" id="input-tempo-servico" placeholder="Ex: 1 semana" class="flex-1 min-w-0 bg-transparent text-right text-[15px] outline-none text-app-sub placeholder-gray-300">
+                                <input type="text" id="input-tempo-servico" placeholder="Ex: 1 semana" class="flex-1 min-w-0 bg-transparent text-right text-[15px] outline-none text-app-sub placeholder-app-sub/50">
                             </div>
                         </div>
                     </div>
@@ -269,7 +271,7 @@
             </div>
 
             <!-- Resumo Financeiro Dinâmico -->
-            <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.15)] text-white w-full relative overflow-hidden">
+            <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
                 
                 <div class="flex justify-between items-start mb-1 relative z-10">
@@ -291,7 +293,7 @@
             </div>
 
             <h3 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">As Tuas Obras / Metas</h3>
-            <div id="lista-sonhos-container" class="bg-white rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">
+            <div id="lista-sonhos-container" class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">
                 <div class="p-8 text-center text-app-sub text-sm">A analisar ecossistema...</div>
             </div>
         </section>
@@ -304,7 +306,7 @@
                 <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-0.5">Adapta o teu fluxo aos imprevistos.</p>
             </div>
-            <div class="relative border-l-2 border-[#E5E5EA] ml-4 space-y-8 pb-8" id="timeline-container"></div>
+            <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
         </section>
 
         <!-- ========================================== -->
@@ -312,12 +314,12 @@
         <!-- ========================================== -->
         <section id="aba-perfil" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <h2 class="text-2xl font-bold tracking-tight mb-5 px-1 text-app-text">Mindset</h2>
-            <div class="bg-white border border-app-border rounded-[24px] p-6 mb-6 text-center shadow-float w-full">
-                <div class="w-16 h-16 bg-[#E5F1FF] text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="ph-fill ph-brain"></i></div>
+            <div class="bg-app-card border border-app-border rounded-[24px] p-6 mb-6 text-center shadow-float w-full">
+                <div class="w-16 h-16 bg-app-blue/20 text-app-blue rounded-full flex items-center justify-center text-2xl mx-auto mb-4"><i class="ph-fill ph-brain"></i></div>
                 <h3 class="font-bold text-[17px] text-app-text mb-2">Tu Não Estás Quebrado</h3>
                 <p class="text-[14px] text-app-sub leading-relaxed">A base financeira existe. Só falta a execução limpa. Mantém-te focado na casa e evita distrações.</p>
             </div>
-            <button id="btn-sair" class="w-full bg-white border border-app-border text-app-red font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-gray-50 text-[15px]">Terminar Sessão</button>
+            <button id="btn-sair" class="w-full bg-[#1C1C1E] border border-app-border text-app-red font-semibold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[15px]">Terminar Sessão</button>
         </section>
 
     </main>
@@ -328,12 +330,12 @@
     
     <!-- Modal: Detalhes & Checklist do Plano -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-[#F2F2F7] rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto" id="modal-content">
-            <div class="flex justify-between items-center px-4 py-4 bg-[#F2F2F7] rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-[#E5E5EA]">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
+            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
                 <span class="w-12"></span>
                 <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text" id="modal-title-header">Detalhes</h3>
-                <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#E5E5EA] rounded-full inline-flex items-center justify-center text-app-sub active:bg-gray-300"><i class="ph-bold ph-x text-xs"></i></button></div>
+                <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
             </div>
             <div id="modal-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-6">
                 <!-- Conteúdo Injetado Dinamicamente com a Checklist -->
@@ -343,22 +345,33 @@
 
     <!-- Modal: Editar Mês Timeline -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-[#F2F2F7] rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto" id="modal-mes-content">
-            <div class="flex justify-between items-center px-5 py-4 bg-[#F2F2F7] rounded-t-[32px] shrink-0 sticky top-0 z-10 border-b border-[#E5E5EA]">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-mes-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-10 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Ajustar Mês</h3>
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
             </div>
             <div class="px-5 py-6 overflow-y-auto no-scrollbar w-full" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
+                
+                <!-- O CABEÇALHO DO MÊS ESTAVA EM FALTA! -->
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-app-blue/20 text-app-blue mb-3">
+                        <i class="ph-fill ph-calendar-blank text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-mes-nome">Mês</h2>
+                    <p class="text-sm text-app-sub mt-0.5">Edita a tua base financeira e ajusta os fixos.</p>
+                </div>
+                <!-- FIM CABEÇALHO -->
+
                 <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Estrutura Base</h4>
-                <div class="bg-white rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
-                    <div class="flex items-center px-4 py-4">
+                <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
+                    <div class="flex items-center px-4 py-4 border-b border-app-border">
                         <label class="w-32 shrink-0 font-medium">Entradas (R$)</label>
                         <input type="number" id="edit-mes-entradas" class="flex-1 min-w-0 bg-transparent text-right font-bold text-app-green text-lg outline-none">
                     </div>
-                    <div class="flex items-center px-4 py-4">
+                    <div class="flex items-center px-4 py-4 border-b border-app-border">
                         <label class="w-32 shrink-0 font-medium">Fixos Base (R$)</label>
                         <input type="number" id="edit-mes-fixos" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-medium outline-none">
                     </div>
@@ -370,14 +383,14 @@
                 <div class="flex justify-between items-end mb-2 px-1 w-full">
                     <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lançamentos Extras</h4>
                     <div class="flex gap-2 shrink-0">
-                        <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-[#E8F8EE] px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Receita</button>
-                        <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-[#FFEBEE] px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Gasto</button>
+                        <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-app-green/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Receita</button>
+                        <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Gasto</button>
                     </div>
                 </div>
-                <div class="bg-white rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 min-h-[50px] w-full" id="lista-extras-mes"></div>
+                <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 min-h-[50px] w-full" id="lista-extras-mes"></div>
                 <div class="w-full">
                     <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-2 ml-2">Anotações</h4>
-                    <textarea id="edit-mes-obs" class="w-full bg-white border border-app-border rounded-2xl p-4 text-[15px] min-h-[100px] resize-none shadow-float outline-none"></textarea>
+                    <textarea id="edit-mes-obs" class="w-full bg-[#151515] border border-app-border rounded-2xl p-4 text-[15px] min-h-[100px] resize-none shadow-float outline-none text-app-text"></textarea>
                 </div>
                 <div class="pb-6"></div>
             </div>
@@ -391,14 +404,14 @@
         const clienteSupabase = window.supabase.createClient(URL_DO_TEU_SUPABASE, CHAVE_DO_TEU_SUPABASE);
         
         let idUtilizadorAtual = null;
-        let sonhosGlobais = []; // Mantém o estado global das metas para atualizar a UI rápido
-        let dadosTimeline = []; // Mantém a timeline global
+        let sonhosGlobais = []; 
+        let dadosTimeline = []; 
         
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
         function irParaLogin() {
             try { window.location.href = 'index.html'; } catch (erro) {
-                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6 w-full"><div class="bg-app-card p-8 rounded-3xl shadow-float text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-4xl text-app-sub mb-4"></i><h2 class="text-xl font-bold mb-2">Sessão Expirada</h2><p class="text-sm text-app-sub">Abre o index.html para aceder.</p></div></div>`;
+                document.body.innerHTML = `<div class="min-h-screen flex items-center justify-center bg-app-bg p-6 w-full"><div class="bg-app-card p-8 rounded-3xl shadow-float text-center max-w-sm w-full"><i class="ph-fill ph-lock-key text-4xl text-app-sub mb-4"></i><h2 class="text-xl font-bold mb-2 text-white">Sessão Expirada</h2><p class="text-sm text-app-sub">Abre o index.html para aceder.</p></div></div>`;
             }
         }
 
@@ -454,11 +467,11 @@
 
         function adicionarParte() {
             const div = document.createElement('div');
-            div.className = 'flex items-center px-4 py-3 bg-white rounded-[14px] border border-app-border shadow-sm w-full gap-3 transition-all';
+            div.className = 'flex items-center px-4 py-3 bg-[#2C2C2E] rounded-[14px] border border-app-border shadow-sm w-full gap-3 transition-all';
             div.innerHTML = `
                 <button type="button" class="text-app-red remover-parte shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
-                <input type="text" placeholder="Nome do item..." required class="nome-parte flex-1 min-w-0 text-[15px] bg-transparent outline-none text-app-text placeholder-gray-300 font-medium">
-                <input type="number" placeholder="0,00" min="0" step="0.01" required class="custo-parte w-24 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none text-app-blue placeholder-gray-300">
+                <input type="text" placeholder="Nome do item..." required class="nome-parte flex-1 min-w-0 text-[15px] bg-transparent outline-none text-app-text placeholder-app-sub/50 font-medium">
+                <input type="number" placeholder="0,00" min="0" step="0.01" required class="custo-parte w-24 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none text-app-blue placeholder-app-sub/50">
             `;
             document.getElementById('lista-partes').appendChild(div);
             div.querySelector('.custo-parte').addEventListener('input', calcularTotalFormulario);
@@ -478,7 +491,7 @@
             const { data, error } = await clienteSupabase.from('sonhos').select('*').eq('user_id', idUtilizadorAtual).order('criado_em', { ascending: false });
             
             if(error) {
-                container.innerHTML = `<div class="p-6 text-center text-app-red font-medium border border-red-200 bg-red-50 rounded-xl m-4">Falha de ligação ao sistema.</div>`;
+                container.innerHTML = `<div class="p-6 text-center text-app-red font-medium border border-app-red/20 bg-app-red/10 rounded-xl m-4">Falha de ligação ao sistema.</div>`;
                 return;
             }
             sonhosGlobais = data || [];
@@ -493,10 +506,9 @@
             let totalGeralInvestido = 0;
 
             if(sonhosGlobais.length === 0) {
-                container.innerHTML = '<div class="p-10 text-center"><i class="ph-fill ph-check-circle text-[40px] text-[#E5E5EA] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo. Nenhum projeto ativo.</p></div>';
+                container.innerHTML = '<div class="p-10 text-center"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo. Nenhum projeto ativo.</p></div>';
             } else {
                 sonhosGlobais.forEach(sonho => {
-                    // CÁLCULOS INTELIGENTES DO ITEM
                     let custoSubItens = 0;
                     let valorItensComprados = 0;
                     let qtdComprada = 0;
@@ -514,24 +526,19 @@
                         });
                     }
 
-                    // Total Exato (Subitens + Mão de obra OU Preço Único + Mão de Obra)
                     let maoDeObra = parseFloat(sonho.preco_servico) || 0;
                     let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
                     
-                    // Progresso Real
                     let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
                     let progressoFinanceiroReal = valorItensComprados + dinheiroGuardado;
                     
-                    // Garantir que a % e o progresso não ultrapassam o total visualmente (opcional, mas bom UI)
                     if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
                     
                     let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
 
-                    // Acumuladores Globais
                     totalGeralCusto += custoTotalProjeto;
                     totalGeralInvestido += progressoFinanceiroReal;
 
-                    // UI do Item
                     let iconCat = '📌';
                     if(sonho.categoria.includes('Casa')) iconCat = '🏠';
                     if(sonho.categoria.includes('Reserva')) iconCat = '💰';
@@ -544,12 +551,12 @@
                     }
 
                     const row = document.createElement('div');
-                    row.className = "flex items-center justify-between p-4 bg-white active:bg-gray-50 cursor-pointer transition-colors w-full border-b border-app-border last:border-0";
+                    row.className = "flex items-center justify-between p-4 bg-app-card active:bg-[#2C2C2E] cursor-pointer transition-colors w-full border-b border-app-border last:border-0";
                     row.onclick = () => abrirModalDetalhesSonho(sonho.id);
                     
                     row.innerHTML = `
                         <div class="flex items-center gap-3 overflow-hidden flex-1 min-w-0 pr-2">
-                            <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100 text-[24px]">
+                            <div class="w-12 h-12 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[24px]">
                                 ${iconCat}
                             </div>
                             <div class="min-w-0 flex-1">
@@ -566,7 +573,6 @@
                 });
             }
 
-            // Atualizar Painel Global
             document.getElementById('saldos-total-geral').innerText = formatarMoeda(totalGeralCusto);
             document.getElementById('saldos-guardado').innerText = formatarMoeda(totalGeralInvestido);
             
@@ -585,7 +591,6 @@
 
             document.getElementById('modal-title-header').innerText = sonho.nome;
             
-            // Recálculo Local para o Modal
             let custoSubItens = 0;
             let valorItensComprados = 0;
             let qtdComprada = 0;
@@ -598,12 +603,11 @@
                     custoSubItens += val;
                     if(p.comprado) { valorItensComprados += val; qtdComprada++; }
 
-                    // Row da Checklist Nativa
                     HTMLPartes += `
-                        <div class="flex justify-between items-center px-4 py-3 bg-white w-full border-b border-app-border last:border-0 cursor-pointer active:bg-gray-50 check-transition" 
+                        <div class="flex justify-between items-center px-4 py-3 bg-app-card w-full border-b border-app-border last:border-0 cursor-pointer active:bg-[#2C2C2E] check-transition" 
                              onclick="toggleItemComprado('${sonho.id}', ${index}, ${!p.comprado})">
                             <div class="flex items-center gap-3 min-w-0 flex-1">
-                                <div class="w-6 h-6 rounded-full border-[1.5px] flex items-center justify-center shrink-0 check-transition ${p.comprado ? 'bg-app-green border-app-green text-white shadow-sm' : 'border-gray-300 text-transparent bg-gray-50'}">
+                                <div class="w-6 h-6 rounded-full border-[1.5px] flex items-center justify-center shrink-0 check-transition ${p.comprado ? 'bg-app-green border-app-green text-[#000000] shadow-sm' : 'border-[#38383A] text-transparent bg-[#151515]'}">
                                     <i class="ph-bold ph-check text-xs"></i>
                                 </div>
                                 <span class="text-[15px] truncate pr-2 check-transition ${p.comprado ? 'line-through text-app-sub' : 'text-app-text font-medium'}">${p.nome}</span>
@@ -619,7 +623,7 @@
                             <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lista de Compras da Obra</span>
                             <span class="text-[11px] font-bold ${qtdComprada === sonho.itens_compostos.length ? 'text-app-green' : 'text-app-blue'}">${qtdComprada}/${sonho.itens_compostos.length} Feito</span>
                         </div>
-                        <div class="bg-white rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">${HTMLPartes}</div>
+                        <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list shadow-float w-full">${HTMLPartes}</div>
                     </div>`;
             }
 
@@ -633,18 +637,18 @@
             const percent = custoTotalProjeto > 0 ? Math.min(100, Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100)) : 0;
             
             document.getElementById('modal-body').innerHTML = `
-                <div class="bg-gradient-to-br from-white to-[#F8FAFC] rounded-[24px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full relative">
-                    <div class="absolute top-0 right-0 w-full h-1 bg-gray-100"><div class="h-full bg-app-green transition-all duration-500" style="width: ${percent}%"></div></div>
+                <div class="bg-gradient-to-br from-[#2C2C2E] to-[#1C1C1E] rounded-[24px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full relative">
+                    <div class="absolute top-0 right-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-green transition-all duration-500" style="width: ${percent}%"></div></div>
                     
-                    <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100">
+                    <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
                         <span class="font-medium text-app-sub">Custo Total Projeto</span>
                         <span class="font-black text-[18px] text-app-text">${formatarMoeda(custoTotalProjeto)}</span>
                     </div>
-                    <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100">
-                        <span class="font-bold text-app-text">Total Investido <span class="text-[10px] text-app-green ml-1 bg-green-100 px-1.5 py-0.5 rounded">${percent}%</span></span>
+                    <div class="flex justify-between items-center px-5 py-4 border-b border-app-border">
+                        <span class="font-bold text-app-text">Total Investido <span class="text-[10px] text-black ml-1 bg-app-green px-1.5 py-0.5 rounded">${percent}%</span></span>
                         <span class="text-app-green font-black text-[18px]">${formatarMoeda(progressoFinanceiroReal)}</span>
                     </div>
-                    <div class="flex justify-between items-center px-5 py-4 bg-gray-50/50">
+                    <div class="flex justify-between items-center px-5 py-4 bg-[#151515]/50">
                         <span class="font-medium text-app-sub text-[13px]">Falta p/ Concluir</span>
                         <span class="text-app-sub font-bold">${formatarMoeda(falta)}</span>
                     </div>
@@ -654,18 +658,18 @@
 
                 <div class="w-full mt-4">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-2 mb-1.5 block">Estrutura & Mão de Obra</span>
-                    <div class="bg-white rounded-[20px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full">
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-white border-b border-app-border">
+                    <div class="bg-app-card rounded-[20px] border border-app-border overflow-hidden grouped-list text-[15px] shadow-float w-full">
+                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card border-b border-app-border">
                             <span class="text-app-text">Estratégia</span><span class="text-app-sub font-medium truncate ml-2">${sonho.categoria} • <span class="text-app-orange font-bold">${sonho.prioridade.split('(')[0]}</span></span>
                         </div>
                         ${sonho.viabilidade === 'Nao' ? `
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-[#FFF8F0] border-b border-orange-100">
+                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-orange/10 border-b border-app-orange/20">
                             <span class="text-app-text">Pedreiro / Serviço</span><span class="text-app-orange font-bold">${formatarMoeda(maoDeObra)}</span>
                         </div>
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-white">
+                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card">
                             <span class="text-app-text">Tempo Estimado</span><span class="text-app-sub font-medium truncate ml-2">${sonho.tempo_servico || '-'}</span>
                         </div>` : `
-                        <div class="flex justify-between items-center px-4 py-3.5 bg-white">
+                        <div class="flex justify-between items-center px-4 py-3.5 bg-app-card">
                             <span class="text-app-text">Execução</span><span class="text-app-sub font-medium">Eu mesmo (S/ Custo)</span>
                         </div>
                         `}
@@ -675,7 +679,7 @@
                 ${sonho.observacoes ? `
                 <div class="w-full mt-4">
                     <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest ml-2 mb-1.5 block">Análise e Notas</span>
-                    <div class="bg-white rounded-[20px] border border-app-border p-4 text-[14px] text-app-text whitespace-pre-line shadow-float leading-relaxed w-full">${sonho.observacoes}</div>
+                    <div class="bg-app-card rounded-[20px] border border-app-border p-4 text-[14px] text-app-text whitespace-pre-line shadow-float leading-relaxed w-full">${sonho.observacoes}</div>
                 </div>` : ''}
                 
                 <div class="pb-8 w-full"></div>
@@ -685,23 +689,19 @@
         }
 
         async function toggleItemComprado(sonhoId, itemIndex, novoStatus) {
-            // Encontrar no state global e atualizar imediatamente (Optimistic UI)
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho || !sonho.itens_compostos) return;
 
             sonho.itens_compostos[itemIndex].comprado = novoStatus;
             
-            // Re-render UI imediatamente para ser fluído
             abrirModalDetalhesSonho(sonhoId);
             renderizarUIEcossistema();
 
-            // Gravar em background no Supabase (O JSONB faz com que seja guardado perfeitamente)
             const { error } = await clienteSupabase.from('sonhos')
                 .update({ itens_compostos: sonho.itens_compostos })
                 .eq('id', sonhoId);
                 
             if(error) {
-                // Se falhar, reverte
                 sonho.itens_compostos[itemIndex].comprado = !novoStatus;
                 abrirModalDetalhesSonho(sonhoId);
                 renderizarUIEcossistema();
@@ -730,7 +730,7 @@
                     itensComp.push({ 
                         nome: l.querySelector('.nome-parte').value, 
                         custo: parseFloat(l.querySelector('.custo-parte').value) || 0, 
-                        comprado: false // Começa sempre como não comprado
+                        comprado: false
                     });
                 });
             }
@@ -741,7 +741,7 @@
                 user_id: idUtilizadorAtual,
                 nome: document.getElementById('input-nome').value,
                 quantidade: parseInt(inputQtd.value) || 1,
-                custo: custoCalc, // Aqui vai o custo base/simples
+                custo: custoCalc,
                 valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
                 categoria: document.getElementById('val-categoria').value,
                 viabilidade: document.getElementById('val-viabilidade').value,
@@ -758,17 +758,16 @@
             msg.classList.remove('hidden');
             if (error) {
                 msg.innerHTML = "Erro: " + error.message;
-                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-[#FFEBEE] mt-4 block w-full";
+                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
             } else {
                 msg.innerHTML = `Registado com sucesso. Continua focado!`;
-                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-[#E8F8EE] mt-4 block w-full";
+                msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-green bg-app-green/20 mt-4 block w-full";
                 formSonho.reset();
                 
                 verificarServico();
                 verificarComplexidade();
                 calcularTotalFormulario();
                 
-                // Atualiza o ecosistema global em background
                 buscarSonhos();
             }
 
@@ -823,17 +822,17 @@
                     });
                 }
                 const sobra = prev.entradas - prev.fixos - prev.parcela + somaExtras;
-                const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-gray-200 text-gray-600 px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-[#FFEBEE] text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-[#E8F8EE] text-app-green' : ''}">${prev.badge}</span>` : '';
+                const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
                 card.innerHTML = `
-                    <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-app-bg ${prev.destaque ? 'shadow-[0_0_12px_rgba(0,122,255,0.6)]' : ''}"></span>
+                    <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black ${prev.destaque ? 'shadow-[0_0_12px_rgba(10,132,255,0.6)]' : ''}"></span>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
-                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-[#E5F1FF] px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity">Ajustar</button>
+                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity">Ajustar</button>
                     </div>
-                    <div class="bg-white border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full">
+                    <div class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full">
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Entradas Base</span> <span class="font-bold text-app-text">${formatarMoeda(prev.entradas)}</span></div>
                         <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Fixos Base</span> <span class="text-app-red font-medium">-${formatarMoeda(prev.fixos)}</span></div>
                         ${prev.parcela > 0 ? `<div class="flex justify-between items-center mb-2"><span class="text-app-sub font-medium">Empréstimo</span> <span class="text-app-orange font-medium">-${formatarMoeda(prev.parcela)}</span></div>` : ''}
@@ -842,7 +841,7 @@
                             <span class="font-bold text-[13px] text-app-sub uppercase tracking-widest">Sobra Total</span> 
                             <span class="font-black text-[17px] ${sobra > 2000 ? 'text-app-green' : (sobra < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(sobra)}</span>
                         </div>
-                        <div class="mt-4 bg-[#F2F2F7] rounded-xl p-3 text-[13px] text-app-text leading-relaxed whitespace-pre-line border border-gray-100"><span class="font-bold text-app-sub uppercase text-[10px] tracking-widest block mb-1">Foco do Mês</span>${prev.obs}</div>
+                        <div class="mt-4 bg-[#151515] rounded-xl p-3 text-[13px] text-app-text leading-relaxed whitespace-pre-line border border-[#2C2C2E]"><span class="font-bold text-app-sub uppercase text-[10px] tracking-widest block mb-1">Foco do Mês</span>${prev.obs}</div>
                     </div>`;
                 container.appendChild(card);
             });
@@ -875,11 +874,11 @@
         function renderizarExtrasEditUI() {
             const list = document.getElementById('lista-extras-mes');
             list.innerHTML = '';
-            if(extrasTemp.length === 0) { list.innerHTML = `<div class="px-4 py-4 text-[14px] text-app-sub text-center bg-white font-medium">Nenhum lançamento extra.</div>`; return; }
+            if(extrasTemp.length === 0) { list.innerHTML = `<div class="px-4 py-4 text-[14px] text-app-sub text-center bg-app-card font-medium border-b border-app-border">Nenhum lançamento extra.</div>`; return; }
             extrasTemp.forEach((ext, index) => {
                 const div = document.createElement('div');
-                div.className = "flex items-center px-4 py-3.5 bg-white border-b border-app-border last:border-0 w-full gap-2";
-                div.innerHTML = `<button type="button" onclick="removerExtraMes('${ext.id}')" class="text-app-red shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-[22px]"></i></button><div class="flex-1 flex gap-2 items-center min-w-0"><span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 ${ext.tipo==='receita'?'bg-[#E8F8EE] text-app-green':'bg-[#FFEBEE] text-app-red'}">${ext.tipo==='receita'?'+ Rec':'- Gas'}</span><input type="text" placeholder="Descrição" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[15px] bg-transparent outline-none text-app-text min-w-0 placeholder-gray-300"></div><input type="number" placeholder="0,00" value="${ext.valor || ''}" min="0" step="0.01" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none ${ext.tipo==='receita'?'text-app-green':'text-app-red'} placeholder-gray-300">`;
+                div.className = "flex items-center px-4 py-3.5 bg-app-card border-b border-app-border last:border-0 w-full gap-2";
+                div.innerHTML = `<button type="button" onclick="removerExtraMes('${ext.id}')" class="text-app-red shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-[22px]"></i></button><div class="flex-1 flex gap-2 items-center min-w-0"><span class="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md shrink-0 ${ext.tipo==='receita'?'bg-app-green/20 text-app-green':'bg-app-red/20 text-app-red'}">${ext.tipo==='receita'?'+ Rec':'- Gas'}</span><input type="text" placeholder="Descrição" value="${ext.descricao}" onchange="extrasTemp[${index}].descricao = this.value" class="w-full text-[15px] bg-transparent outline-none text-app-text min-w-0 placeholder-app-sub/50"></div><input type="number" placeholder="0,00" value="${ext.valor || ''}" min="0" step="0.01" onchange="extrasTemp[${index}].valor = parseFloat(this.value)||0" class="w-20 shrink-0 text-right text-[15px] font-bold bg-transparent outline-none ${ext.tipo==='receita'?'text-app-green':'text-app-red'} placeholder-app-sub/50">`;
                 list.appendChild(div);
             });
         }
@@ -940,7 +939,7 @@
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
             idUtilizadorAtual = session.user.id;
-            buscarSonhos(); // Carrega o ecossistema assim que a app abre
+            buscarSonhos(); 
         };
 
         document.getElementById('btn-sair').onclick = async () => { await clienteSupabase.auth.signOut(); irParaLogin(); };
