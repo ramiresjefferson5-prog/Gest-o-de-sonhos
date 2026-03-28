@@ -439,6 +439,21 @@
     <!-- ========================================== -->
     <!-- MODAIS NATIVOS INTERATIVOS -->
     <!-- ========================================== -->
+
+    <!-- Modal: Timeline Detalhes (Macro -> Micro) -->
+    <div id="modal-timeline-detalhes" class="fixed inset-0 z-[90] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-timeline-backdrop" onclick="fecharModal('modal-timeline-detalhes')"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-timeline-content">
+            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
+                <span class="w-12"></span>
+                <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text" id="modal-timeline-title">Mês</h3>
+                <div class="w-12 text-right"><button onclick="fecharModal('modal-timeline-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
+            </div>
+            <div id="modal-timeline-body" class="px-5 py-6 overflow-y-auto no-scrollbar space-y-2">
+                <!-- Detalhes injetados via JS -->
+            </div>
+        </div>
+    </div>
     
     <!-- Modal: Editar Perfil -->
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
@@ -547,6 +562,10 @@
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
         
+        // NOVO: Variáveis para o funcionamento do Modal de Detalhes da Timeline
+        window.timelineDetailsHTML = {}; 
+        window.mesDetalheAberto = null;
+
         // Padrões de formatação da moeda
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
         const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
@@ -1229,6 +1248,16 @@
             renderizarTimelineUI();
         }
 
+        // NOVO: Função para abrir o modal da Timeline corretamente
+        function abrirDetalhesTimeline(mesId) {
+            window.mesDetalheAberto = mesId;
+            const prev = dadosTimeline.find(m => m.id === mesId);
+            if(!prev) return;
+            document.getElementById('modal-timeline-title').innerText = prev.mes + " - Detalhes";
+            document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
+            abrirModal('modal-timeline-detalhes', 'modal-timeline-backdrop', 'modal-timeline-content');
+        }
+
         async function toggleRealizado(mesId, tipo, extraId = null) {
             const index = dadosTimeline.findIndex(m => m.id === mesId);
             if(index === -1) return;
@@ -1242,8 +1271,16 @@
                 if(ext) ext.realizado = !ext.realizado;
             }
 
-            // Atualiza UI instantaneamente
+            // Atualiza UI da base instantaneamente
             renderizarTimelineUI();
+
+            // NOVO: Se o modal de detalhes deste mês estiver aberto, atualiza o ecrã dele!
+            const modalTimeline = document.getElementById('modal-timeline-detalhes');
+            if (modalTimeline && !modalTimeline.classList.contains('hidden')) {
+                if (window.mesDetalheAberto === mesId) {
+                    document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[mesId];
+                }
+            }
 
             // Grava background
             const payload = {
@@ -1553,6 +1590,13 @@
                 if(!error) { 
                     dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal, base_ok: baseOk }; 
                     renderizarTimelineUI(); 
+                    
+                    // NOVO: Atualiza a interface detalhada do mês se estiveres a vê-lo
+                    const modalTimeline = document.getElementById('modal-timeline-detalhes');
+                    if (modalTimeline && !modalTimeline.classList.contains('hidden') && window.mesDetalheAberto === id) {
+                        document.getElementById('modal-timeline-body').innerHTML = window.timelineDetailsHTML[id];
+                    }
+
                 } else {
                     console.error("Erro detalhado do Supabase:", error);
                     alert(`Erro ao gravar:\n${error.message}`);
