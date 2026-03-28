@@ -6,156 +6,223 @@
     <title>Gestor de Sonhos - Painel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Animação suave para elementos que aparecem no ecrã */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .anima-entrada {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Personalizar a barra de rolagem para um look mais clean */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen font-sans">
+<body class="bg-[#F8FAFC] min-h-screen font-sans text-slate-800">
 
-    <!-- Barra de Navegação no topo -->
-    <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <div class="flex items-center gap-2">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            <h1 class="text-xl font-bold text-slate-800">Meus Sonhos & Gastos</h1>
+    <!-- Barra de Navegação no topo (Efeito Vidro / Glassmorphism) -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-20 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 p-2 rounded-lg text-white shadow-md shadow-indigo-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h1 class="text-xl font-extrabold tracking-tight text-slate-900">Gestor de <span class="text-indigo-600">Sonhos</span></h1>
         </div>
         
         <div class="flex items-center gap-4">
-            <span id="mensagem-boas-vindas" class="text-sm text-slate-500 hidden md:block"></span>
-            <button id="btn-sair" class="text-sm font-medium text-red-600 hover:text-red-800 transition-colors px-3 py-1 rounded-md hover:bg-red-50">
+            <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span id="mensagem-boas-vindas" class="text-xs font-semibold text-slate-600"></span>
+            </div>
+            <button id="btn-sair" class="text-sm font-bold text-slate-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg hover:bg-red-50">
                 Sair
             </button>
         </div>
     </nav>
 
     <!-- Área principal -->
-    <main class="p-4 md:p-8 max-w-6xl mx-auto hidden" id="conteudo-principal">
+    <main class="p-4 md:p-8 max-w-7xl mx-auto hidden anima-entrada" id="conteudo-principal">
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- COLUNA ESQUERDA: Formulário para adicionar um sonho -->
-            <div class="lg:col-span-1">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h2 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">🎯 Registar Novo Sonho</h2>
+            <!-- COLUNA ESQUERDA: Formulário para adicionar um sonho (Tamanho 5/12) -->
+            <div class="lg:col-span-5">
+                <div class="bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
                     
-                    <form id="form-sonho" class="space-y-4">
+                    <!-- Decoração de fundo do cartão -->
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-indigo-50 blur-2xl opacity-70 pointer-events-none"></div>
+
+                    <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4 relative z-10">
+                        <span class="text-2xl">🎯</span>
+                        <h2 class="text-xl font-bold text-slate-900">Registar Sonho</h2>
+                    </div>
+                    
+                    <form id="form-sonho" class="space-y-5 relative z-10">
                         
-                        <!-- Tipo de Sonho -->
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Tipo de Item</label>
-                            <select id="input-tipo" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                <option value="Produto">Objeto / Produto</option>
-                                <option value="Servico">Trabalho / Serviço Manual</option>
-                            </select>
-                        </div>
-
-                        <!-- O que? -->
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">O que é o sonho? (Nome/Item)</label>
-                            <input type="text" id="input-nome" required placeholder="Ex: Computador Novo" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-
+                        <!-- Tipo e Categoria (Lado a Lado) -->
                         <div class="grid grid-cols-2 gap-4">
-                            <!-- Quantos? -->
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Quantidade</label>
-                                <input type="number" id="input-quantidade" min="1" value="1" required class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-                            <!-- Categoria -->
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
-                                <select id="input-categoria" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                    <option value="Tecnologia">Tecnologia</option>
-                                    <option value="Viagem">Viagem</option>
-                                    <option value="Casa">Casa</option>
-                                    <option value="Veículo">Veículo</option>
-                                    <option value="Outros">Outros</option>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tipo</label>
+                                <select id="input-tipo" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium cursor-pointer">
+                                    <option value="Produto">📦 Produto/Objeto</option>
+                                    <option value="Servico">🛠️ Trabalho/Serviço</option>
                                 </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Categoria</label>
+                                <select id="input-categoria" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium cursor-pointer">
+                                    <option value="Tecnologia">💻 Tecnologia</option>
+                                    <option value="Viagem">✈️ Viagem</option>
+                                    <option value="Casa">🏠 Casa</option>
+                                    <option value="Veículo">🚗 Veículo</option>
+                                    <option value="Outros">📌 Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- O que? e Quantidade -->
+                        <div class="flex gap-4 items-end">
+                            <div class="flex-1">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">O que é? (Nome)</label>
+                                <input type="text" id="input-nome" required placeholder="Ex: Macbook Pro M3" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium placeholder-slate-400">
+                            </div>
+                            <div class="w-24">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Qtd</label>
+                                <input type="number" id="input-quantidade" min="1" value="1" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium text-center">
                             </div>
                         </div>
 
                         <!-- Consigo fazer? -->
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Consigo fazer? (Viabilidade)</label>
-                            <select id="input-viabilidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                <option value="Fácil e rápido">Sim, fácil e rápido</option>
-                                <option value="Requer planeamento">Sim, requer planeamento/tempo</option>
-                                <option value="Nao">Não (Vou contratar alguém)</option>
+                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Consigo fazer/executar?</label>
+                            <select id="input-viabilidade" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium cursor-pointer">
+                                <option value="Fácil e rápido">⚡ Sim, fácil e rápido</option>
+                                <option value="Requer planeamento">📅 Sim, requer planeamento</option>
+                                <option value="Nao">🤝 Não (Vou contratar alguém)</option>
                             </select>
                         </div>
 
-                        <!-- Campos extra de Serviço (Escondidos por padrão) -->
-                        <div id="div-servico" class="hidden bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-3">
-                            <p class="text-xs font-bold text-slate-500 uppercase">Detalhes da Contratação</p>
+                        <!-- Campos extra de Serviço (Com Animação) -->
+                        <div id="div-servico" class="hidden anima-entrada bg-amber-50 p-4 rounded-xl border border-amber-100 shadow-inner">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-amber-500">👷</span>
+                                <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Detalhes da Contratação</p>
+                            </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Preço Serviço (R$)</label>
-                                    <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-xs font-bold text-amber-700 mb-1">Custo do Serviço (R$)</label>
+                                    <input type="number" id="input-preco-servico" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-amber-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Tempo Estimado</label>
-                                    <input type="text" id="input-tempo-servico" placeholder="Ex: 2 semanas" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <label class="block text-xs font-bold text-amber-700 mb-1">Tempo Estimado</label>
+                                    <input type="text" id="input-tempo-servico" placeholder="Ex: 2 semanas" class="w-full px-3 py-2 rounded-lg border border-amber-200 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm font-medium">
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Prioridade e Complexidade -->
                         <div class="grid grid-cols-2 gap-4">
-                            <!-- Prioridade -->
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Prioridade</label>
-                                <select id="input-prioridade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                    <option value="Alta">🔴 Alta</option>
-                                    <option value="Média" selected>🟡 Média</option>
-                                    <option value="Baixa">🟢 Baixa</option>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Prioridade</label>
+                                <select id="input-prioridade" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium cursor-pointer">
+                                    <option value="Alta">🔴 Urgente / Alta</option>
+                                    <option value="Média" selected>🟡 Importante / Média</option>
+                                    <option value="Baixa">🟢 Se sobrar / Baixa</option>
                                 </select>
                             </div>
-                            <!-- Complexidade -->
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Complexidade</label>
-                                <select id="input-complexidade" class="w-full px-3 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                                    <option value="Simples">Simples (Único)</option>
-                                    <option value="Composto">Composto (Por partes)</option>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Complexidade</label>
+                                <select id="input-complexidade" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium cursor-pointer">
+                                    <option value="Simples">🧩 Único (1 peça)</option>
+                                    <option value="Composto">🏗️ Composto (Partes)</option>
                                 </select>
                             </div>
                         </div>
 
-                        <!-- Sub-itens para Itens Compostos (Escondido por padrão) -->
-                        <div id="div-composto" class="hidden bg-blue-50 p-3 rounded-lg border border-blue-100 space-y-3">
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-sm font-bold text-blue-800">Partes do Item Composto</label>
-                                <button type="button" id="btn-add-parte" class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700">+ Adicionar Parte</button>
+                        <!-- Sub-itens para Itens Compostos -->
+                        <div id="div-composto" class="hidden anima-entrada bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-lg text-white">
+                            <div class="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
+                                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Partes do Projeto</label>
+                                <button type="button" id="btn-add-parte" class="text-xs font-bold bg-indigo-500 hover:bg-indigo-400 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                    <span>+</span> Adicionar Parte
+                                </button>
                             </div>
-                            <div id="lista-partes" class="space-y-2">
+                            <div id="lista-partes" class="space-y-3 max-h-48 overflow-y-auto pr-1">
                                 <!-- As partes entram aqui via JavaScript -->
                             </div>
-                            <p class="text-xs text-blue-600 mt-1">* O custo total será a soma de todas as partes.</p>
+                            <p class="text-xs text-slate-400 mt-3 text-center bg-slate-900/50 py-1 rounded">A soma das partes calculará o Total automaticamente.</p>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                            <!-- Quanto custa? -->
+                        <!-- Área de Valores (Destaque) -->
+                        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex flex-col gap-4">
                             <div>
-                                <label class="block text-sm font-bold text-slate-800 mb-1">Custo Total (R$)</label>
-                                <input type="number" id="input-custo" min="0" step="0.01" required placeholder="0.00" class="w-full px-3 py-2 rounded-lg border border-slate-300 font-bold text-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="block text-xs font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Custo Total (R$)</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-3 text-indigo-400 font-bold">R$</span>
+                                    <input type="number" id="input-custo" min="0" step="0.01" required placeholder="0.00" class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-indigo-200 bg-white focus:outline-none focus:ring-0 focus:border-indigo-500 transition-all duration-200 text-xl font-extrabold text-indigo-900 placeholder-indigo-300 shadow-sm">
+                                </div>
                             </div>
-                            <!-- Valor guardado agora -->
+                            
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Já tens algum valor?</label>
-                                <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="block text-xs font-bold text-indigo-800 uppercase tracking-wider mb-1.5">Valor Guardado (Já tens algo?)</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-3 text-slate-400 font-bold">R$</span>
+                                    <input type="number" id="input-guardado" min="0" step="0.01" value="0" class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm font-medium">
+                                </div>
                             </div>
                         </div>
 
                         <!-- Mensagem de Feedback -->
-                        <div id="msg-form" class="text-sm font-medium hidden mt-2"></div>
+                        <div id="msg-form" class="text-sm font-bold text-center hidden py-2 px-4 rounded-lg"></div>
 
-                        <button type="submit" id="btn-guardar" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors mt-4">
+                        <button type="submit" id="btn-guardar" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg shadow-indigo-200 transform hover:-translate-y-0.5 transition-all duration-200 flex justify-center items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                             Guardar Sonho no Cofre
                         </button>
                     </form>
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: Onde vamos mostrar a lista no futuro -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Cartão de Resumo Temporário -->
-                <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white shadow-lg">
-                    <h2 class="text-xl font-bold mb-2">A preparar o teu Império...</h2>
-                    <p class="text-slate-300">O sistema está pronto para receber objetos simples, serviços ou projetos complexos (compostos por partes). Preenche o formulário ao lado e testa as novas opções!</p>
+            <!-- COLUNA DIREITA: Onde vamos mostrar a lista no futuro (Tamanho 7/12) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Banner de Boas-vindas Elegante -->
+                <div class="relative overflow-hidden bg-slate-900 rounded-3xl p-8 text-white shadow-2xl shadow-slate-300 border border-slate-800 anima-entrada" style="animation-delay: 0.1s;">
+                    <!-- Decoração abstrata -->
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+                    <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="inline-block px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-xs font-bold tracking-wide uppercase mb-4 text-indigo-200">
+                            Ambiente Preparado
+                        </div>
+                        <h2 class="text-3xl font-extrabold mb-3 leading-tight">Constrói o teu império,<br>um sonho de cada vez.</h2>
+                        <p class="text-slate-400 max-w-lg text-sm leading-relaxed mb-6">O sistema está pronto para receber objetos simples, serviços ou projetos complexos por partes. O painel interativo de progresso vai nascer exatamente aqui.</p>
+                        
+                        <div class="flex gap-4">
+                            <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-4 rounded-2xl flex-1">
+                                <span class="block text-2xl mb-1">📊</span>
+                                <span class="block text-xs font-bold text-slate-400 uppercase">Organização Visual</span>
+                            </div>
+                            <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-4 rounded-2xl flex-1">
+                                <span class="block text-2xl mb-1">🎯</span>
+                                <span class="block text-xs font-bold text-slate-400 uppercase">Controlo de Metas</span>
+                            </div>
+                            <div class="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-4 rounded-2xl flex-1 hidden sm:block">
+                                <span class="block text-2xl mb-1">💸</span>
+                                <span class="block text-xs font-bold text-slate-400 uppercase">Gestão Inteligente</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Placeholder invisível para espaço -->
+                <div class="h-32 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-400 font-medium text-sm anima-entrada" style="animation-delay: 0.2s;">
+                    Área reservada para a lista dinâmica de sonhos
                 </div>
             </div>
 
@@ -183,7 +250,9 @@
                 irParaLogin();
             } else {
                 document.getElementById('conteudo-principal').classList.remove('hidden');
-                document.getElementById('mensagem-boas-vindas').innerText = session.user.email;
+                // Pega apenas a primeira parte do email para ficar mais elegante
+                const nomeCurto = session.user.email.split('@')[0];
+                document.getElementById('mensagem-boas-vindas').innerText = `Olá, ${nomeCurto}`;
                 idUtilizadorAtual = session.user.id;
             }
         }
@@ -238,33 +307,37 @@
             if (this.value === 'Composto') {
                 divComposto.classList.remove('hidden');
                 custoTotalInput.readOnly = true;
-                custoTotalInput.classList.add('bg-slate-100'); // Fica cinza indicando bloqueio
-                if (listaPartes.children.length === 0) adicionarParte(); // Adiciona 1ª linha vazia
+                custoTotalInput.classList.add('bg-slate-200', 'text-slate-500', 'cursor-not-allowed'); 
+                if (listaPartes.children.length === 0) adicionarParte(); 
             } else {
                 divComposto.classList.add('hidden');
                 custoTotalInput.readOnly = false;
-                custoTotalInput.classList.remove('bg-slate-100');
-                listaPartes.innerHTML = ''; // Limpa as partes
+                custoTotalInput.classList.remove('bg-slate-200', 'text-slate-500', 'cursor-not-allowed');
+                listaPartes.innerHTML = ''; 
             }
             recalcularCustoTotal();
         });
 
-        // Adicionar nova linha de parte composta
+        // Adicionar nova linha de parte composta com design renovado
         function adicionarParte() {
             const div = document.createElement('div');
-            div.className = 'flex gap-2 items-center';
+            div.className = 'flex gap-2 items-center bg-slate-700 p-2 rounded-lg anima-entrada';
             div.innerHTML = `
-                <input type="text" placeholder="Nome da parte (ex: Placa Mãe)" required class="nome-parte flex-1 px-2 py-1 text-sm rounded border border-slate-300">
-                <input type="number" placeholder="R$ 0.00" min="0" step="0.01" required class="custo-parte w-24 px-2 py-1 text-sm rounded border border-slate-300">
-                <button type="button" class="text-red-500 hover:text-red-700 font-bold px-2 remover-parte">X</button>
+                <input type="text" placeholder="Ex: Placa Mãe" required class="nome-parte flex-1 px-3 py-2 text-sm rounded-md border-none bg-slate-800 text-white focus:ring-2 focus:ring-indigo-400 outline-none">
+                <input type="number" placeholder="R$ 0.00" min="0" step="0.01" required class="custo-parte w-28 px-3 py-2 text-sm rounded-md border-none bg-slate-800 text-white focus:ring-2 focus:ring-indigo-400 outline-none text-right">
+                <button type="button" class="bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white p-2 rounded-md transition-colors remover-parte" title="Remover Parte">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
             `;
             listaPartes.appendChild(div);
             
-            // Eventos para recalcular ao escrever e para o botão de remover
             div.querySelector('.custo-parte').addEventListener('input', recalcularCustoTotal);
             div.querySelector('.remover-parte').addEventListener('click', function() {
-                div.remove();
-                recalcularCustoTotal();
+                div.style.opacity = '0';
+                setTimeout(() => {
+                    div.remove();
+                    recalcularCustoTotal();
+                }, 200);
             });
         }
 
@@ -281,10 +354,12 @@
             evento.preventDefault(); 
             if(!idUtilizadorAtual) return; 
 
-            btnGuardar.innerText = "A guardar...";
+            // Estilo de Loading
+            const textoOriginalBtn = btnGuardar.innerHTML;
+            btnGuardar.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> A guardar no Cofre...`;
             btnGuardar.disabled = true;
+            btnGuardar.classList.add('opacity-80', 'cursor-wait');
 
-            // Extrair partes se for composto
             let itensCompostosArray = [];
             if (complexidadeInput.value === 'Composto') {
                 const linhas = document.querySelectorAll('#lista-partes > div');
@@ -292,12 +367,11 @@
                     itensCompostosArray.push({
                         nome: linha.querySelector('.nome-parte').value,
                         custo: parseFloat(linha.querySelector('.custo-parte').value) || 0,
-                        comprado: false // Já definimos como "não comprado" inicialmente
+                        comprado: false 
                     });
                 });
             }
 
-            // Construir o objeto para a base de dados
             const dadosDoSonho = {
                 user_id: idUtilizadorAtual,
                 tipo: tipoInput.value,
@@ -319,21 +393,25 @@
                 .insert([dadosDoSonho]);
 
             if (error) {
-                console.error("Erro do Supabase:", error);
-                msgForm.innerText = "Erro ao guardar: " + error.message;
-                msgForm.className = "text-sm font-medium mt-2 text-red-600 block";
+                console.error("Erro:", error);
+                msgForm.innerText = "⚠️ Erro ao guardar: " + error.message;
+                msgForm.className = "text-sm font-bold text-red-700 bg-red-100 border border-red-200 block py-2 px-4 rounded-lg mt-4 anima-entrada";
             } else {
                 msgForm.innerText = "🎉 Sonho guardado com sucesso!";
-                msgForm.className = "text-sm font-medium mt-2 text-green-600 block";
+                msgForm.className = "text-sm font-bold text-green-700 bg-green-100 border border-green-200 block py-2 px-4 rounded-lg mt-4 anima-entrada";
                 
-                // Limpar formulário mantendo regras visuais
                 formSonho.reset(); 
                 complexidadeInput.dispatchEvent(new Event('change'));
                 tipoInput.dispatchEvent(new Event('change'));
             }
 
-            btnGuardar.innerText = "Guardar Sonho no Cofre";
-            btnGuardar.disabled = false;
+            // Restaurar botão
+            setTimeout(() => {
+                btnGuardar.innerHTML = textoOriginalBtn;
+                btnGuardar.disabled = false;
+                btnGuardar.classList.remove('opacity-80', 'cursor-wait');
+            }, 500);
+
             setTimeout(() => { msgForm.classList.add('hidden'); }, 4000);
         });
 
