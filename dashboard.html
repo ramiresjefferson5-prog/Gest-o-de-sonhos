@@ -132,9 +132,11 @@
         <!-- ABA 1: PREVISÕES 2026 (INICIAL) -->
         <!-- ========================================== -->
         <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
-            <div class="mb-6 px-1 w-full">
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                <p class="text-[13px] font-medium text-app-sub mt-0.5">O teu fluxo financeiro projetado ao longo dos meses.</p>
+            <div class="mb-6 px-1 w-full flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
+                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clica no 'check' ao pagar ou receber.</p>
+                </div>
             </div>
 
             <!-- Resumo Dinâmico do Mês (Estilo App Bancária - Sem Centavos) -->
@@ -500,8 +502,8 @@
                 <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
                     
                     <div class="flex items-center px-4 py-4 border-b border-app-border bg-[#0A84FF]/10">
-                        <label class="w-36 shrink-0 font-bold text-app-blue">Saldo Inicial</label>
-                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
+                        <label class="w-36 shrink-0 font-bold text-app-blue">Forçar Saldo Inicial</label>
+                        <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Vem do anterior)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
                     </div>
 
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
@@ -1064,9 +1066,11 @@
             const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
             if (index !== -1) {
                 const mesData = dadosTimeline[index];
-                const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor };
+                const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: false };
                 
                 let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
+
+                const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
 
                 const payload = {
                     user_id: idUtilizadorAtual,
@@ -1074,7 +1078,7 @@
                     entradas: mesData.entradas,
                     fixos: mesData.fixos,
                     parcela: mesData.parcela,
-                    observacoes: mesData.obs,      
+                    observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }),      
                     saldo_inicial: mesData.saldo_inicial, 
                     extras: novosExtras
                 };
@@ -1092,11 +1096,7 @@
                     document.getElementById('input-desc-rapido').value = '';
                 } else {
                     console.error("Erro Supabase:", error);
-                    if (error.message && error.message.includes('extras')) {
-                        msg.innerHTML = "Falta a coluna 'extras' na base de dados! Lê o aviso do ecrã para resolver."; 
-                    } else {
-                        msg.innerHTML = "Erro: " + error.message; 
-                    }
+                    msg.innerHTML = "Erro: " + error.message; 
                     msg.className = "text-[14px] text-center py-3 px-4 rounded-xl font-medium text-app-red bg-app-red/20 mt-4 block w-full";
                 }
             }
@@ -1107,51 +1107,51 @@
 
 
         // ========================================================
-        // 5. TIMELINE 2026 E MODAIS BASE
+        // 5. TIMELINE 2026 E MODAIS BASE (COM CASCATA E CHECKBOXES)
         // ========================================================
         
-        // TEMPLATE BASEADO NO TEU MAPA: Já preenchido com todos os extras/receitas detalhadamente
+        // TEMPLATE COM BASE OK E EXTRAS COM STATUS
         const templateMeses = [
             { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Foco no arranque da obra e ajustes.', extras: [
-                { id: 'ab1', tipo: 'receita', descricao: 'Rendimento Extra / Venda', valor: 2500 },
-                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200 },
-                { id: 'ab3', tipo: 'gasto', descricao: 'Ajustes', valor: 300 },
-                { id: 'ab4', tipo: 'gasto', descricao: 'Reserva', valor: 300 }
+                { id: 'ab1', tipo: 'receita', descricao: 'Rendimento Extra / Venda', valor: 2500, realizado: false },
+                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200, realizado: false },
+                { id: 'ab3', tipo: 'gasto', descricao: 'Ajustes', valor: 300, realizado: false },
+                { id: 'ab4', tipo: 'gasto', descricao: 'Reserva', valor: 300, realizado: false }
             ]},
             { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Equilíbrio entre lazer e obra.', extras: [
-                { id: 'ma1', tipo: 'gasto', descricao: 'Lazer', valor: 400 },
-                { id: 'ma2', tipo: 'gasto', descricao: 'Reserva', valor: 500 },
-                { id: 'ma3', tipo: 'gasto', descricao: 'Casa', valor: 400 },
-                { id: 'ma4', tipo: 'gasto', descricao: 'Poupança', valor: 150 }
+                { id: 'ma1', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false },
+                { id: 'ma2', tipo: 'gasto', descricao: 'Reserva', valor: 500, realizado: false },
+                { id: 'ma3', tipo: 'gasto', descricao: 'Casa', valor: 400, realizado: false },
+                { id: 'ma4', tipo: 'gasto', descricao: 'Poupança', valor: 150, realizado: false }
             ]},
             { id: '2026-06', mes: 'Junho', cor: 'app-orange', badge: 'Início Parcela', parcela: 520, entradas: 2580, fixos: 750, obs: 'Aperto Saudável.', extras: [
-                { id: 'ju1', tipo: 'gasto', descricao: 'Lazer', valor: 400 },
-                { id: 'ju2', tipo: 'gasto', descricao: 'Casa', valor: 400 }
+                { id: 'ju1', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false },
+                { id: 'ju2', tipo: 'gasto', descricao: 'Casa', valor: 400, realizado: false }
             ]},
             { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Manter a disciplina.', extras: [
-                { id: 'jl1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 220 },
-                { id: 'jl2', tipo: 'gasto', descricao: 'Casa', valor: 600 },
-                { id: 'jl3', tipo: 'gasto', descricao: 'Reserva', valor: 500 },
-                { id: 'jl4', tipo: 'gasto', descricao: 'Lazer', valor: 400 }
+                { id: 'jl1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 220, realizado: false },
+                { id: 'jl2', tipo: 'gasto', descricao: 'Casa', valor: 600, realizado: false },
+                { id: 'jl3', tipo: 'gasto', descricao: 'Reserva', valor: 500, realizado: false },
+                { id: 'jl4', tipo: 'gasto', descricao: 'Lazer', valor: 400, realizado: false }
             ]},
             { id: '2026-08', mes: 'Agosto', cor: 'app-blue', destaque: true, badge: 'Virada', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção forte na Obra.', extras: [
-                { id: 'ag1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 920 },
-                { id: 'ag2', tipo: 'gasto', descricao: 'Casa (Injeção Obra)', valor: 1200 }
+                { id: 'ag1', tipo: 'receita', descricao: 'Rendimento Extra', valor: 920, realizado: false },
+                { id: 'ag2', tipo: 'gasto', descricao: 'Casa (Injeção Obra)', valor: 1200, realizado: false }
             ]},
             { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Fim do telemóvel nos fixos.', extras: [
-                { id: 'se1', tipo: 'gasto', descricao: 'Poupança / Reserva', valor: 400 }
+                { id: 'se1', tipo: 'gasto', descricao: 'Poupança / Reserva', valor: 400, realizado: false }
             ]},
             { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Manter disciplina da obra.', extras: [
-                { id: 'oc1', tipo: 'gasto', descricao: 'Casa', valor: 600 }
+                { id: 'oc1', tipo: 'gasto', descricao: 'Casa', valor: 600, realizado: false }
             ]},
             { id: '2026-11', mes: 'Novembro', cor: 'app-purple', badge: '13º Salário', parcela: 520, entradas: 2580, fixos: 530, obs: 'Última Parcela do Empréstimo!', extras: [
-                { id: 'no1', tipo: 'receita', descricao: '13º Salário (Adiantamento)', valor: 900 },
-                { id: 'no2', tipo: 'gasto', descricao: 'Lazer', valor: 300 }
+                { id: 'no1', tipo: 'receita', descricao: '13º Salário (Adiantamento)', valor: 900, realizado: false },
+                { id: 'no2', tipo: 'gasto', descricao: 'Lazer', valor: 300, realizado: false }
             ]},
             { id: '2026-12', mes: 'Dezembro', cor: 'app-green', badge: 'Consolidação', entradas: 2580, fixos: 530, parcela: 0, obs: 'Sem dívidas. Casa Pronta. Reserva forte.', extras: [
-                { id: 'de1', tipo: 'receita', descricao: '13º Salário (Final)', valor: 900 },
-                { id: 'de2', tipo: 'gasto', descricao: 'Férias / Festas', valor: 600 },
-                { id: 'de3', tipo: 'gasto', descricao: 'Reserva Forte', valor: 1000 }
+                { id: 'de1', tipo: 'receita', descricao: '13º Salário (Final)', valor: 900, realizado: false },
+                { id: 'de2', tipo: 'gasto', descricao: 'Férias / Festas', valor: 600, realizado: false },
+                { id: 'de3', tipo: 'gasto', descricao: 'Reserva Forte', valor: 1000, realizado: false }
             ]}
         ];
 
@@ -1169,6 +1169,7 @@
                 if(mesBD) {
                     let obsTexto = mesBD.observacoes || '';
                     let saldoIn = mesBD.saldo_inicial !== undefined ? mesBD.saldo_inicial : null;
+                    let baseOk = { entradas: false, fixos: false, parcela: false };
                     
                     if (obsTexto && typeof obsTexto === 'string' && obsTexto.trim().startsWith('{')) {
                         try {
@@ -1176,31 +1177,33 @@
                             if (parsed && typeof parsed === 'object') {
                                 if (saldoIn === null && parsed.saldo_inicial !== undefined) saldoIn = parsed.saldo_inicial;
                                 obsTexto = parsed.texto !== undefined ? parsed.texto : '';
+                                if (parsed.base_ok) baseOk = parsed.base_ok;
                             }
                         } catch(e) {}
                     } else if (typeof obsTexto === 'object') {
                         if (saldoIn === null && obsTexto.saldo_inicial !== undefined) saldoIn = obsTexto.saldo_inicial;
                         obsTexto = obsTexto.texto || '';
+                        if (obsTexto.base_ok) baseOk = obsTexto.base_ok;
                     }
                     
-                    // LÓGICA DE INJEÇÃO: Se a base de dados não tiver os extras do template, nós forçamos o template para preencher a app como pediste!
                     let bdExtras = Array.isArray(mesBD.extras) ? mesBD.extras : (mesBD.extras ? [mesBD.extras] : []);
                     let usarExtras = bdExtras;
                     
                     if (bdExtras.length === 0 && temp.extras.length > 0) {
                         usarExtras = temp.extras;
-                        precisaSincronizarSupabase = true; // Força gravação na BD a seguir
+                        precisaSincronizarSupabase = true; 
+                    } else {
+                        // Garante que os extras têm a propriedade realizado
+                        usarExtras = usarExtras.map(e => ({ ...e, realizado: e.realizado || false }));
                     }
                     
-                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras };
+                    return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: saldoIn, extras: usarExtras, base_ok: baseOk };
                 }
                 
-                // Se o mês não existe na BD, marcamos para salvar tudo o que vem no template!
                 precisaSincronizarSupabase = true;
-                return { ...temp, saldo_inicial: null };
+                return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false } };
             });
 
-            // "Jogar no Supabase" se for a primeira vez ou estiver vazio de extras
             if (precisaSincronizarSupabase) {
                 const payloadSinc = dadosTimeline.map(m => ({
                     user_id: idUtilizadorAtual,
@@ -1208,11 +1211,10 @@
                     entradas: m.entradas,
                     fixos: m.fixos,
                     parcela: m.parcela,
-                    observacoes: m.obs,
+                    observacoes: JSON.stringify({ texto: m.obs, base_ok: m.base_ok }),
                     saldo_inicial: m.saldo_inicial,
                     extras: m.extras
                 }));
-                // Salva no fundo de forma invisível para o utilizador
                 clienteSupabase.from('fluxo_caixa').upsert(payloadSinc, { onConflict: 'user_id, mes_id' }).then(({error}) => {
                     if(error) console.log("Aviso: Sincronização inicial falhou", error);
                 });
@@ -1227,6 +1229,36 @@
             renderizarTimelineUI();
         }
 
+        async function toggleRealizado(mesId, tipo, extraId = null) {
+            const index = dadosTimeline.findIndex(m => m.id === mesId);
+            if(index === -1) return;
+            const mes = dadosTimeline[index];
+
+            if(tipo === 'entradas') mes.base_ok.entradas = !mes.base_ok.entradas;
+            else if(tipo === 'fixos') mes.base_ok.fixos = !mes.base_ok.fixos;
+            else if(tipo === 'parcela') mes.base_ok.parcela = !mes.base_ok.parcela;
+            else if(tipo === 'extra' && extraId) {
+                const ext = mes.extras.find(e => e.id === extraId);
+                if(ext) ext.realizado = !ext.realizado;
+            }
+
+            // Atualiza UI instantaneamente
+            renderizarTimelineUI();
+
+            // Grava background
+            const payload = {
+                user_id: idUtilizadorAtual,
+                mes_id: mes.id,
+                entradas: mes.entradas,
+                fixos: mes.fixos,
+                parcela: mes.parcela,
+                observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }),
+                saldo_inicial: mes.saldo_inicial,
+                extras: mes.extras
+            };
+            await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+        }
+
         function mudarMesResumo(dir) {
             mesResumoIndex += dir;
             if(mesResumoIndex < 0) mesResumoIndex = 0;
@@ -1239,15 +1271,13 @@
             if(!prev) return;
             document.getElementById('resumo-mes-titulo').innerText = prev.mes;
             
-            // ATUALIZAÇÃO REQUISITADA
-            // O Previsto agora é o Acumulado (End) e o Sobra Mês é a Sobra Real do Mês (_calcSobra)
+            // Inicial = Vem do anterior, Atual = O que já se concretizou, Previsto = Como acaba o mês
             document.getElementById('resumo-val-inicial').innerText = formatarMoedaSemCentavos(prev._calcStart || 0);
-            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcEnd || 0);
-            document.getElementById('resumo-val-sobra').innerText = formatarMoedaSemCentavos(prev._calcSobra || 0);
+            document.getElementById('resumo-val-atual').innerText = formatarMoedaSemCentavos(prev._calcAtual || 0);
+            document.getElementById('resumo-val-previsto').innerText = formatarMoedaSemCentavos(prev._calcPrevisto || 0);
         }
 
         function renderizarTimelineUI() {
-            // UI do Cartão de Resumo - Alterados os textos (Previsto = Meio, Sobra = Direita)
             const resumoContainer = document.getElementById('resumo-timeline-container');
             resumoContainer.innerHTML = `
                 <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
@@ -1261,16 +1291,16 @@
 
                     <div class="flex justify-between items-end relative z-10 pb-2">
                         <div class="text-left flex-1">
-                            <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider"><i class="ph-bold ph-check-circle"></i> Inicial</p>
+                            <p class="text-[10px] font-semibold text-white/80 flex items-center gap-1 mb-1 justify-start uppercase tracking-wider"><i class="ph-bold ph-calendar"></i> Inicial</p>
                             <p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p>
                         </div>
                         <div class="text-center flex-[1.5]">
-                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-target"></i> Previsto</p>
-                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-previsto">R$ 0</p>
+                            <p class="text-[12px] font-bold text-white flex items-center justify-center gap-1 mb-0.5 shadow-sm drop-shadow-md"><i class="ph-fill ph-wallet"></i> Saldo Atual</p>
+                            <p class="font-black text-[22px] leading-none tracking-tight drop-shadow-md" id="resumo-val-atual">R$ 0</p>
                         </div>
                         <div class="text-right flex-1">
-                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-clock"></i> Líquido Mês</p>
-                            <p class="font-bold text-[13px]" id="resumo-val-sobra">R$ 0</p>
+                            <p class="text-[10px] font-semibold text-white/80 flex items-center justify-end gap-1 mb-1 uppercase tracking-wider"><i class="ph-bold ph-target"></i> Previsto</p>
+                            <p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p>
                         </div>
                     </div>
                 </div>
@@ -1279,38 +1309,69 @@
             const container = document.getElementById('timeline-container');
             container.innerHTML = '';
             
-            let saldoCorrente = 0; 
+            let saldoPrevistoAnterior = 0; 
             
             dadosTimeline.forEach((prev, index) => {
-                let somaExtras = 0; let htmlExtras = '';
+                let htmlExtras = '';
+                
+                // Lógica de Soma Atual (Realizada) e Prevista (Pendente)
+                let somaRealizada = 0;
+                let somaPendente = 0;
+
+                // Base
+                if (prev.base_ok.entradas) somaRealizada += prev.entradas; else somaPendente += prev.entradas;
+                if (prev.base_ok.fixos) somaRealizada -= prev.fixos; else somaPendente -= prev.fixos;
+                if (prev.parcela > 0) {
+                    if (prev.base_ok.parcela) somaRealizada -= prev.parcela; else somaPendente -= prev.parcela;
+                }
+
+                // Extras
                 if(prev.extras && prev.extras.length > 0) {
                     prev.extras.forEach(ext => {
                         const val = parseFloat(ext.valor) || 0;
-                        ext.tipo === 'receita' ? somaExtras += val : somaExtras -= val;
-                        htmlExtras += `<div class="flex justify-between items-center mt-1 text-[13px]"><span class="text-app-sub truncate pr-2">- ${ext.descricao}</span><span class="${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} font-medium shrink-0">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span></div>`;
+                        if (ext.realizado) {
+                            ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
+                        } else {
+                            ext.tipo === 'receita' ? somaPendente += val : somaPendente -= val;
+                        }
+                        
+                        // HTML Extra Line
+                        htmlExtras += `
+                            <div class="flex justify-between items-center mt-2 group">
+                                <div class="flex items-center gap-2 min-w-0 flex-1 pr-2">
+                                    <button onclick="toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="text-[18px] transition-colors shrink-0 active:scale-95 ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                    <span class="text-[13px] font-medium truncate ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">${ext.descricao}</span>
+                                </div>
+                                <span class="text-[13px] font-bold shrink-0 ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
+                            </div>
+                        `;
                     });
                 }
                 
-                let saldoStart = saldoCorrente;
+                // CASCATA: Saldo Inicial vem sempre do previsto anterior, exceto se forçado manualmente
+                let saldoStart = saldoPrevistoAnterior;
                 let textoOrigem = index === 0 ? 'Início do Plano' : 'Vem do Mês Anterior';
                 let corOrigem = 'text-app-sub font-medium';
                 
                 if (prev.saldo_inicial !== null && prev.saldo_inicial !== undefined && prev.saldo_inicial !== "") {
                     saldoStart = parseFloat(prev.saldo_inicial) || 0;
-                    textoOrigem = 'Saldo Inicial (Ajustado Manualmente)';
+                    textoOrigem = 'Saldo Inicial (Manual)';
                     corOrigem = 'text-app-blue font-bold';
                 }
                 
-                let htmlSaldoAnterior = `<div class="flex justify-between items-center mb-1"><span class="${corOrigem}">${textoOrigem}</span> <span class="font-bold ${saldoStart >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStart >= 0 ? '+' : ''}${formatarMoeda(saldoStart)}</span></div>`;
+                let saldoAtual = saldoStart + somaRealizada;
+                let saldoPrevistoFinal = saldoAtual + somaPendente;
                 
-                const sobraMes = prev.entradas - prev.fixos - prev.parcela + somaExtras;
-                saldoCorrente = saldoStart + sobraMes; 
-                
-                // Guardar para o Cartão de Resumo usar a lógica certa pedida
-                prev._calcStart = saldoStart;
-                prev._calcEnd = saldoCorrente; // Acumulado Final = SaldoStart + SobraMes
-                prev._calcSobra = sobraMes;    // Líquido Exato Apenas Daquele Mês
+                // Passa para o próximo mês
+                saldoPrevistoAnterior = saldoPrevistoFinal;
 
+                // Salva para o card de Resumo Azul
+                prev._calcStart = saldoStart;
+                prev._calcAtual = saldoAtual; 
+                prev._calcPrevisto = saldoPrevistoFinal;
+
+                let htmlSaldoAnterior = `<div class="flex justify-between items-center mb-3 pb-3 border-b border-app-border"><span class="text-[12px] uppercase tracking-widest ${corOrigem}">${textoOrigem}</span> <span class="font-bold ${saldoStart >= 0 ? 'text-app-blue' : 'text-app-red'}">${saldoStart >= 0 ? '+' : ''}${formatarMoeda(saldoStart)}</span></div>`;
+                
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase tracking-wider font-bold ${prev.risco ? 'bg-app-red/20 text-app-red' : ''} ${prev.cor === 'app-green' ? 'bg-app-green/20 text-app-green' : ''}">${prev.badge}</span>` : '';
                 
                 const card = document.createElement('div');
@@ -1322,19 +1383,47 @@
                         <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs font-semibold text-app-blue bg-app-blue/20 px-3 py-1.5 rounded-lg active:opacity-70 transition-opacity">Ajustar</button>
                     </div>
                     <div class="bg-app-card border border-app-border rounded-[20px] p-5 text-[14px] shadow-float w-full">
-                        <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Entradas Base</span> <span class="font-bold text-app-text">${formatarMoeda(prev.entradas)}</span></div>
-                        <div class="flex justify-between items-center mb-1"><span class="text-app-sub font-medium">Fixos Base</span> <span class="text-app-red font-medium">-${formatarMoeda(prev.fixos)}</span></div>
-                        ${prev.parcela > 0 ? `<div class="flex justify-between items-center mb-2"><span class="text-app-sub font-medium">Empréstimo</span> <span class="text-app-orange font-medium">-${formatarMoeda(prev.parcela)}</span></div>` : ''}
+                        
                         ${htmlSaldoAnterior}
-                        ${htmlExtras !== '' ? `<div class="mt-3 pt-3 border-t border-dashed border-app-border"><p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1.5">Registo Diário</p>${htmlExtras}</div>` : ''}
-                        <div class="flex justify-between items-center pt-3 mt-3 border-t border-app-border">
-                            <div>
-                                <span class="font-bold text-[13px] text-app-sub uppercase tracking-widest block">Acumulado Final</span>
-                                <span class="text-[10px] text-app-sub font-medium mt-0.5 block">Sobra do Mês: ${sobraMes >= 0 ? '+' : ''}${formatarMoeda(sobraMes)}</span>
+
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'entradas')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium ${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Entradas Base</span>
                             </div>
-                            <span class="font-black text-[17px] ${saldoCorrente > 2000 ? 'text-app-green' : (saldoCorrente < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoCorrente)}</span>
+                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
                         </div>
-                        <div class="mt-4 bg-[#151515] rounded-xl p-3 text-[13px] text-app-text leading-relaxed whitespace-pre-line border border-[#2C2C2E]"><span class="font-bold text-app-sub uppercase text-[10px] tracking-widest block mb-1">Foco do Mês</span>${prev.obs}</div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'fixos')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium ${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Fixos Base</span>
+                            </div>
+                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
+                        </div>
+                        
+                        ${prev.parcela > 0 ? `
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <button onclick="toggleRealizado('${prev.id}', 'parcela')" class="text-[18px] transition-colors active:scale-95 ${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
+                                <span class="font-medium ${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">Empréstimo</span>
+                            </div>
+                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
+                        </div>` : ''}
+                        
+                        ${htmlExtras !== '' ? `<div class="mt-3 pt-2 border-t border-dashed border-app-border">${htmlExtras}</div>` : ''}
+                        
+                        <div class="bg-[#151515] border border-[#2C2C2E] rounded-xl p-4 mt-4 space-y-2">
+                            <div class="flex justify-between items-center pb-2 border-b border-[#2C2C2E]/50">
+                                <span class="font-bold text-[11px] text-app-blue uppercase tracking-widest block">Saldo Atual (Realizado)</span>
+                                <span class="font-black text-[15px] ${saldoAtual > 0 ? 'text-app-blue' : 'text-app-text'}">${formatarMoeda(saldoAtual)}</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="font-bold text-[11px] text-app-sub uppercase tracking-widest block">Previsto Fim Mês</span>
+                                <span class="font-black text-[15px] ${saldoPrevistoFinal > 2000 ? 'text-app-green' : (saldoPrevistoFinal < 0 ? 'text-app-red' : 'text-app-text')}">${formatarMoeda(saldoPrevistoFinal)}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-[12px] text-app-sub leading-relaxed whitespace-pre-line border-l-2 border-app-blue/50 pl-3"><span class="font-bold uppercase text-[9px] tracking-widest block mb-0.5">Foco</span>${prev.obs}</div>
                     </div>`;
                 container.appendChild(card);
             });
@@ -1361,7 +1450,7 @@
         }
 
         function adicionarExtraMes(tipo) {
-            extrasTemp.push({ id: Date.now().toString(), tipo: tipo, descricao: '', valor: 0 });
+            extrasTemp.push({ id: Date.now().toString(), tipo: tipo, descricao: '', valor: 0, realizado: false });
             renderizarExtrasEditUI();
             const area = document.getElementById('modal-mes-scroll-area');
             setTimeout(() => area.scrollTo({top: area.scrollHeight, behavior: 'smooth'}), 50);
@@ -1391,6 +1480,7 @@
                 const saldoInicialStr = document.getElementById('edit-mes-saldo-inicial').value;
                 const saldoInicialVal = (saldoInicialStr === '' || isNaN(saldoInicialStr)) ? null : parseFloat(saldoInicialStr);
                 const obsText = document.getElementById('edit-mes-obs').value;
+                const baseOk = dadosTimeline[index].base_ok || { entradas: false, fixos: false, parcela: false };
 
                 const dados = { 
                     user_id: idUtilizadorAtual, 
@@ -1398,7 +1488,7 @@
                     entradas: parseFloat(document.getElementById('edit-mes-entradas').value) || 0, 
                     fixos: parseFloat(document.getElementById('edit-mes-fixos').value) || 0, 
                     parcela: parseFloat(document.getElementById('edit-mes-parcela').value) || 0, 
-                    observacoes: obsText,          
+                    observacoes: JSON.stringify({ texto: obsText, base_ok: baseOk }),      
                     saldo_inicial: saldoInicialVal, 
                     extras: extrasTemp 
                 };
@@ -1406,17 +1496,11 @@
                 const { error } = await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
                 
                 if(!error) { 
-                    dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal }; 
+                    dadosTimeline[index] = { ...dadosTimeline[index], ...dados, obs: obsText, saldo_inicial: saldoInicialVal, base_ok: baseOk }; 
                     renderizarTimelineUI(); 
                 } else {
                     console.error("Erro detalhado do Supabase:", error);
-                    if (error.message && error.message.includes('extras')) {
-                        alert(`Falta a coluna 'extras' na base de dados!\n\nPor favor, corre este comando no SQL do Supabase:\nALTER TABLE fluxo_caixa ADD COLUMN extras JSONB DEFAULT '[]'::jsonb;`);
-                    } else if (error.message && error.message.includes('saldo_inicial')) {
-                        alert(`A cache do Supabase ainda está presa!\n\nVai a Settings > API > e clica em "Reload Schema Cache" ou aguarda uns minutos.`);
-                    } else {
-                        alert(`Erro ao gravar:\n${error.message}`);
-                    }
+                    alert(`Erro ao gravar:\n${error.message}`);
                 }
             }
             btn.innerText = textOrig; btn.classList.remove('opacity-50', 'pointer-events-none');
