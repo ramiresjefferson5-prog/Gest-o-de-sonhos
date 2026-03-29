@@ -501,6 +501,7 @@
                             <button onclick="abrirNovoLancamentoExtra('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Gasto</button>
                         </div>
                     </div>
+                    
                     <div id="lista-extras-mes" class="space-y-2.5 w-full"></div>
                 </div>
 
@@ -609,7 +610,7 @@
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Valor</label>
                         <span class="text-app-sub mr-1">R$</span>
-                        <input type="number" id="input-extra-valor" min="0" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-[18px] font-black text-app-text outline-none">
+                        <input type="text" inputmode="decimal" id="input-extra-valor" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-[18px] font-black text-app-text outline-none">
                     </div>
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Dia</label>
@@ -766,10 +767,13 @@
             div.innerHTML = `
                 <button type="button" class="text-app-red remover-parte shrink-0 active:opacity-50"><i class="ph-fill ph-minus-circle text-2xl"></i></button>
                 <input type="text" placeholder="Nome do item..." required class="nome-parte flex-1 min-w-0 text-[15px] bg-transparent outline-none text-app-text placeholder-app-sub/50 font-medium">
-                <input type="number" placeholder="0,00" min="0" step="0.01" required class="custo-parte w-24 shrink-0 min-w-0 text-right text-[15px] font-bold bg-transparent outline-none text-app-blue placeholder-app-sub/50">
+                <input type="text" inputmode="decimal" placeholder="0,00" required class="custo-parte w-24 shrink-0 min-w-0 text-right text-[15px] font-bold bg-transparent outline-none text-app-blue placeholder-app-sub/50">
             `;
             document.getElementById('lista-partes').appendChild(div);
-            div.querySelector('.custo-parte').addEventListener('input', calcularTotalFormulario);
+            div.querySelector('.custo-parte').addEventListener('input', function() {
+                this.value = this.value.replace(',', '.');
+                calcularTotalFormulario();
+            });
             div.querySelector('.remover-parte').onclick = () => { div.remove(); calcularTotalFormulario(); };
         }
 
@@ -1046,9 +1050,15 @@
             document.getElementById('form-rapido').onsubmit = async (e) => {
                 e.preventDefault();
                 if(!idUtilizadorAtual) return;
+                
+                // Tratamento seguro de virgulas
+                const valRaw = document.getElementById('input-valor-rapido').value.toString().replace(',', '.');
+                const valor = parseFloat(valRaw) || 0;
+                
+                if(valor <= 0) { alert("Valor inválido."); return; }
+
                 const mesAlvo = document.getElementById('val-mes-rapido').value;
                 const tipo = document.getElementById('val-tipo-rapido').value;
-                const valor = parseFloat(document.getElementById('input-valor-rapido').value);
                 const desc = document.getElementById('input-desc-rapido').value;
                 const sonhoId = document.getElementById('val-obra-rapido').value; 
                 
@@ -1230,7 +1240,6 @@
 
         let extrasTemp = [];
         
-        // FUNÇÃO BLINDADA COM ALERTA PARA NÃO FALHAR EM SILÊNCIO
         window.abrirEdicaoMes = function(idMes) {
             try {
                 const prev = dadosTimeline.find(m => m.id === idMes);
@@ -1283,62 +1292,88 @@
             abrirModal('modal-novo-extra', 'modal-extra-backdrop', 'modal-extra-content');
         }
 
+        // ==========================================
+        // CÓDIGO BLINDADO DE GRAVAÇÃO DO NOVO EXTRA
+        // ==========================================
         window.guardarNovoExtra = async function() {
-            const desc = document.getElementById('input-extra-desc').value;
-            const valor = parseFloat(document.getElementById('input-extra-valor').value) || 0;
-            const dia = document.getElementById('input-extra-dia').value;
-            const recorrencia = document.getElementById('val-extra-recorrencia').value;
-            const parcelas = parseInt(document.getElementById('input-extra-parcelas').value) || 2;
-            const sonhoId = document.getElementById('val-extra-obra').value;
+            try {
+                const desc = document.getElementById('input-extra-desc').value;
+                
+                // Tratamento à prova de balas para teclados que usam vírgulas (iOS/Android)
+                const valorRaw = document.getElementById('input-extra-valor').value.toString().replace(',', '.');
+                const valor = parseFloat(valorRaw) || 0;
+                
+                const dia = document.getElementById('input-extra-dia').value;
+                const recorrencia = document.getElementById('val-extra-recorrencia').value;
+                const parcelas = parseInt(document.getElementById('input-extra-parcelas').value) || 2;
+                const sonhoId = document.getElementById('val-extra-obra').value;
 
-            if(!desc || valor <= 0) { alert("Preenche a descrição e o valor."); return; }
+                if(!desc || valor <= 0) { 
+                    alert("Por favor, preencha a descrição e um valor maior que 0."); 
+                    return; 
+                }
 
-            const idMesAtual = document.getElementById('edit-mes-id').value;
-            const indexAtual = dadosTimeline.findIndex(m => m.id === idMesAtual);
-            if(indexAtual === -1) return;
+                const idMesAtual = document.getElementById('edit-mes-id').value;
+                const indexAtual = dadosTimeline.findIndex(m => m.id === idMesAtual);
+                if(indexAtual === -1) { 
+                    alert("Mês não encontrado na memória."); 
+                    return; 
+                }
 
-            const baseId = Date.now().toString();
-            let mesesAfetados = [];
+                const baseId = Date.now().toString();
+                let limit = 1;
+                
+                if(recorrencia === 'fixo') limit = dadosTimeline.length - indexAtual;
+                if(recorrencia === 'parcela') limit = parcelas;
 
-            if(recorrencia === 'unico') {
-                extrasTemp.unshift({ id: baseId, tipo: tipoNovoExtra, descricao: desc, valor: valor, realizado: false, sonho_id: sonhoId, dia: dia });
-            } else {
-                let limit = recorrencia === 'fixo' ? dadosTimeline.length - indexAtual : parcelas;
+                let mesesParaGravar = [];
+
                 for(let i = 0; i < limit; i++) {
                     let mIndex = indexAtual + i;
                     if(mIndex >= dadosTimeline.length) break;
                     
                     let mesAlvo = dadosTimeline[mIndex];
-                    let descProj = recorrencia === 'parcela' ? `${desc} (${i+1}/${limit})` : desc;
+                    let descProj = (recorrencia === 'parcela' && limit > 1) ? `${desc} (${i+1}/${limit})` : desc;
                     let novoExt = { id: baseId + '_' + i, tipo: tipoNovoExtra, descricao: descProj, valor: valor, realizado: false, sonho_id: sonhoId, dia: dia };
                     
                     if(i === 0) {
+                        // Injeta no ecrã atual imediatamente
                         extrasTemp.unshift(novoExt);
+                        mesAlvo.extras = extrasTemp;
                     } else {
-                        let futureExtras = Array.isArray(mesAlvo.extras) ? [...mesAlvo.extras, novoExt] : [novoExt];
-                        mesAlvo.extras = futureExtras;
-                        mesesAfetados.push(mesAlvo);
+                        // Injeta nos meses futuros
+                        mesAlvo.extras = Array.isArray(mesAlvo.extras) ? [...mesAlvo.extras, novoExt] : [novoExt];
                     }
+                    mesesParaGravar.push(mesAlvo);
                 }
-            }
 
-            renderizarExtrasEditUI();
-            atualizarResumoModalEdicao();
-            fecharModal('modal-novo-extra');
+                // Fecha o pequeno modal de inserir e atualiza o visual da lista no ecrã do mês
+                fecharModal('modal-novo-extra');
+                renderizarExtrasEditUI();
+                atualizarResumoModalEdicao();
 
-            if(mesesAfetados.length > 0) {
-                const mesAtual = dadosTimeline[indexAtual];
-                mesAtual.extras = extrasTemp;
-                mesesAfetados.unshift(mesAtual);
-
-                for(let mes of mesesAfetados) {
-                    const payload = { user_id: idUtilizadorAtual, mes_id: mes.id, entradas: mes.entradas, fixos: mes.fixos, parcela: mes.parcela, observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial, extras: mes.extras };
+                // GRAVA TODOS OS MESES AFETADOS DE UMA VEZ PARA NÃO HAVER PERDA DE DADOS
+                for(let mes of mesesParaGravar) {
+                    const payload = { 
+                        user_id: idUtilizadorAtual, 
+                        mes_id: mes.id, 
+                        entradas: mes.entradas, 
+                        fixos: mes.fixos, 
+                        parcela: mes.parcela, 
+                        observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), 
+                        saldo_inicial: mes.saldo_inicial, 
+                        extras: mes.extras 
+                    };
                     await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
                 }
-                
-                fecharModal('modal-editar-mes');
+
+                // Sincroniza a memória global
                 await inicializarTimeline(); 
                 buscarSonhos(); 
+
+            } catch (erro) {
+                alert("Falha na inserção: " + erro.message);
+                console.error(erro);
             }
         }
 
@@ -1505,8 +1540,8 @@
                                 <span class="text-[10px] uppercase font-bold text-app-sub block">${ext.tipo === 'receita' ? 'Entrada' : 'Saída'}</span>
                                 <div class="flex items-center font-black transition-all ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-40' : ''}">
                                     <span class="text-xs mr-1">R$</span>
-                                    <input type="number" value="${ext.valor || ''}" placeholder="0,00" 
-                                           oninput="extrasTemp[${index}].valor = parseFloat(this.value)||0; atualizarResumoModalEdicao();" 
+                                    <input type="text" inputmode="decimal" value="${ext.valor || ''}" placeholder="0,00" 
+                                           onchange="extrasTemp[${index}].valor = parseFloat(this.value.toString().replace(',', '.'))||0; renderizarExtrasEditUI(); atualizarResumoModalEdicao();" 
                                            class="w-16 bg-transparent text-right outline-none text-[15px] min-w-0">
                                 </div>
                             </div>
@@ -1584,7 +1619,6 @@
                 
                 modal.classList.remove('hidden');
                 
-                // Força o navegador a renderizar a alteração antes de animar (Reflow Hack)
                 void modal.offsetWidth;
 
                 setTimeout(() => { 
@@ -1595,7 +1629,7 @@
                         ct.classList.remove('bottom-sheet-down'); 
                         ct.classList.add('bottom-sheet-up');      
                     }
-                }, 50); // Timeout ligeiramente maior para telemóveis absorverem o impacto
+                }, 50); 
             } catch(e) {
                 alert("Erro ao abrir modal: " + e.message);
             }
