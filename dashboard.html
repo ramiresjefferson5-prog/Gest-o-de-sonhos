@@ -45,6 +45,7 @@
         .bottom-sheet-up { transform: translateY(0%) !important; }
         .bottom-sheet-down { transform: translateY(100%) !important; }
 
+        /* MODAIS PÁGINA COMPLETA */
         .full-page-modal { height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
 
         .glass-nav { 
@@ -392,16 +393,21 @@
 
     </main>
 
+    <!-- MODAIS REESCRITOS: PÁGINA COMPLETA (FULL PAGE) E PADRÃO DE X NO CANTO -->
+    
     <!-- Modal Perfil -->
     <div id="modal-editar-perfil" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 100;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
-        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-perfil-content">
-            <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
-                <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+        <!-- PÁGINA COMPLETA: bg-black e full-page-modal adicionados -->
+        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border full-page-modal" id="modal-perfil-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 border-b border-app-border sticky top-0 z-10">
+                <span class="w-8"></span> <!-- Espaçador para centrar título -->
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
-                <button onclick="guardarPerfil()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
+                <div class="w-8 text-right">
+                    <button onclick="fecharModal('modal-editar-perfil')" class="w-8 h-8 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-sm"></i></button>
+                </div>
             </div>
-            <div class="px-5 py-6 pb-[calc(40px+env(safe-area-inset-bottom))] overscroll-contain overflow-y-auto">
+            <div class="px-5 py-6 pb-[calc(100px+env(safe-area-inset-bottom))] overscroll-contain overflow-y-auto flex-1">
                 <div class="mb-4">
                     <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Como queres ser chamado?</label>
                     <input type="text" id="input-perfil-nome" placeholder="O teu nome ou apelido" class="w-full bg-[#151515] border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-text shadow-sm focus:border-app-blue transition-colors min-w-0">
@@ -410,6 +416,10 @@
                     <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Email de Registo</label>
                     <input type="text" id="input-perfil-email" disabled class="w-full bg-[#151515]/50 border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-sub cursor-not-allowed min-w-0">
                 </div>
+                
+                <button onclick="guardarPerfil()" class="w-full bg-app-blue text-white font-bold py-4 rounded-[20px] shadow-float transition-opacity active:opacity-60 text-[16px] mt-6">
+                    Guardar Alterações
+                </button>
             </div>
         </div>
     </div>
@@ -417,13 +427,16 @@
     <!-- Modal Detalhes da Obra -->
     <div id="modal-detalhes" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 100;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
-        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-content">
-            <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
-                <span class="w-16"></span>
+        <!-- PÁGINA COMPLETA: bg-black e full-page-modal adicionados -->
+        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border full-page-modal" id="modal-content">
+            <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 sticky top-0 z-20 border-b border-app-border">
+                <span class="w-8"></span> <!-- Espaçador -->
                 <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text flex-1 min-w-0" id="modal-title-header">Detalhes do Projeto</h3>
-                <div class="w-16 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
+                <div class="w-8 text-right">
+                    <button onclick="fecharModal('modal-detalhes')" class="w-8 h-8 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-sm"></i></button>
+                </div>
             </div>
-            <div id="modal-body" class="px-5 py-6 pb-[calc(40px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain"></div>
+            <div id="modal-body" class="px-5 py-6 pb-[calc(100px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain flex-1 space-y-6"></div>
         </div>
     </div>
 
@@ -434,9 +447,9 @@
         <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl full-page-modal" id="modal-mes-content">
             <div id="drawer-inner-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 hidden transition-opacity duration-300 z-20" onclick="fecharResumoDrawer()"></div>
             <div class="flex justify-between items-center px-5 py-3.5 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 sticky top-0 z-10 border-b border-app-border">
-                <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
-                <h3 class="font-bold text-[16px] text-center text-app-text flex-1" id="display-mes-nome">Ajustar Mês</h3>
-                <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Concluído</button>
+                <button onclick="fecharModal('modal-editar-mes')" class="w-8 h-8 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A] shrink-0"><i class="ph-bold ph-x text-sm"></i></button>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Ajustar Mês</h3>
+                <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
             </div>
             
             <div class="px-5 pt-8 pb-[100px] overflow-y-auto no-scrollbar overscroll-contain w-full bg-black flex-1" id="modal-mes-scroll-area">
@@ -445,14 +458,34 @@
                 <input type="hidden" id="edit-mes-fixos">
                 <input type="hidden" id="edit-mes-parcela">
                 
-                <div class="mb-6">
-                    <label class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-2.5 ml-2 block">Saldo de Abertura</label>
+                <!-- BLOCO ACUMULADO DO MÊS ANTERIOR (Oculto em Abril) -->
+                <div id="bloco-acumulado-anterior" class="mb-6 hidden">
+                    <label class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-2.5 ml-2 block">Acumulado Anterior</label>
+                    <div class="bg-[#151515] rounded-[24px] border border-[#2C2C2E] p-4 flex justify-between items-center shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-[#2C2C2E] text-app-sub flex items-center justify-center shrink-0">
+                                <i class="ph-bold ph-history text-lg"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[14px] font-semibold text-white block truncate">Sobra Transferida</span>
+                                <span class="text-[11px] text-app-sub block truncate" id="edit-mes-prev-nome">Vindo do mês anterior</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center text-right min-w-0 pl-2">
+                            <span id="edit-mes-prev-saldo" class="text-[18px] font-black text-app-sub truncate">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOCO SALDO INICIAL (Mostrado apenas em Abril) -->
+                <div id="bloco-saldo-inicial" class="mb-6">
+                    <label class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-2.5 ml-2 block">Saldo Inicial da Conta</label>
                     <div class="bg-app-card rounded-[24px] border border-app-border p-4 shadow-float flex justify-between items-center">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-full bg-app-blue/20 text-app-blue flex items-center justify-center shrink-0">
                                 <i class="ph-fill ph-wallet text-lg"></i>
                             </div>
-                            <span class="text-[14px] font-semibold truncate">Saldo Inicial</span>
+                            <span class="text-[14px] font-semibold truncate">Configuração Zero</span>
                         </div>
                         <div class="flex items-center text-app-blue font-black text-lg min-w-0">
                             <span class="mr-1">R$</span>
@@ -561,14 +594,17 @@
     <!-- MODAL NOVO LANÇAMENTO EXTRA -->
     <div id="modal-novo-extra" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 200;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-extra-backdrop" onclick="fecharModal('modal-novo-extra')"></div>
-        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-extra-content">
-            <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
-                <button type="button" onclick="fecharModal('modal-novo-extra')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+        <!-- PÁGINA COMPLETA: bg-black e full-page-modal adicionados -->
+        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border full-page-modal" id="modal-extra-content">
+            <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 border-b border-app-border sticky top-0 z-10">
+                <span class="w-8"></span> <!-- Espaçador para centrar -->
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1" id="titulo-modal-extra">Novo Lançamento</h3>
-                <button type="button" onclick="guardarNovoExtra()" class="text-app-blue font-bold text-[16px] active:opacity-60">Inserir</button>
+                <div class="w-8 text-right">
+                    <button type="button" onclick="fecharModal('modal-novo-extra')" class="w-8 h-8 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-sm"></i></button>
+                </div>
             </div>
             
-            <div class="px-5 pt-6 pb-[calc(40px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain flex-1">
+            <div class="px-5 pt-8 pb-[calc(100px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain flex-1">
                 <div class="space-y-4">
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">O que é?</label>
@@ -609,6 +645,10 @@
                     </div>
                     <p class="text-[11px] text-app-sub text-center px-4 pt-2">Ao inserir despesas recorrentes ou parceladas, o ecossistema calculará e gravará os meses futuros automaticamente.</p>
                 </div>
+                
+                <button type="button" onclick="guardarNovoExtra()" class="w-full bg-app-blue text-white font-bold py-4 rounded-[20px] shadow-float transition-opacity active:opacity-60 text-[16px] mt-6">
+                    Confirmar Inserção
+                </button>
             </div>
         </div>
     </div>
@@ -900,14 +940,10 @@
             }
         }
 
-        // ==============================================================================
-        // 🚨 UPGRADE PREMIUM: MODAL DE OBRAS INTERATIVO, ANALÍTICO E CONECTADO (UX)
-        // ==============================================================================
         window.abrirModalDetalhesSonho = function(sonhoId) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho) return;
             
-            // Esconde o título antigo para usar o layout premium no body
             document.getElementById('modal-title-header').innerText = ""; 
 
             let custoSubItens = 0;
@@ -943,7 +979,6 @@
             let injecaoTimelineTotal = 0;
             let HTMLInjecaoTimeline = '';
 
-            // Lógica de Conexão com o Ecossistema: Acha meses e valores ligados à obra
             dadosTimeline.forEach(mes => {
                 let somaMes = 0;
                 if (mes.extras && mes.extras.length > 0) {
@@ -974,7 +1009,6 @@
             
             document.getElementById('modal-body').innerHTML = `
                 <div class="space-y-6">
-                    <!-- CABEÇALHO INTERATIVO -->
                     <div class="flex items-start justify-between">
                         <div class="flex-1 min-w-0 pr-4">
                             <span class="text-[10px] font-bold text-app-sub uppercase tracking-widest bg-[#151515] border border-[#2C2C2E] px-2 py-1 rounded-md inline-block mb-2">${sonho.categoria} • ${sonho.prioridade.split('(')[0]}</span>
@@ -986,7 +1020,6 @@
                         </button>
                     </div>
 
-                    <!-- PROGRESSO -->
                     <div class="bg-app-card border border-app-border rounded-[24px] p-5 shadow-float relative overflow-hidden">
                         <div class="absolute bottom-0 left-0 w-full h-1.5 bg-[#151515]">
                             <div class="h-full bg-app-blue transition-all duration-1000" style="width: ${percent}%"></div>
@@ -1003,7 +1036,6 @@
                         </div>
                     </div>
 
-                    <!-- DISTRIBUIÇÃO FINANCEIRA (RAIO-X) -->
                     <div>
                         <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Raio-X Financeiro</h4>
                         <div class="bg-[#151515] border border-app-border rounded-[20px] p-4 grid grid-cols-2 gap-4">
@@ -1032,7 +1064,6 @@
                         </div>
                     </div>
 
-                    <!-- ECOSSISTEMA TIMELINE -->
                     ${HTMLInjecaoTimeline ? `
                     <div>
                         <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Contribuições da Timeline</h4>
@@ -1042,7 +1073,6 @@
                     </div>
                     ` : ''}
 
-                    <!-- ITENS DA OBRA -->
                     ${HTMLPartes ? `
                     <div>
                         <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-3 ml-2">Checklist de Execução</h4>
@@ -1056,17 +1086,13 @@
             abrirModal('modal-detalhes', 'modal-backdrop', 'modal-content');
         }
 
-        // --- FUNÇÕES EXTRA DO MODAL DE OBRAS ---
         window.atualizarCaixaObra = async function(id, novoValor) {
             const val = parseFloat(novoValor) || 0;
             const index = sonhosGlobais.findIndex(s => s.id === id);
             if(index !== -1) {
                 sonhosGlobais[index].valor_guardado = val;
-                // Renderiza imediatamente visualmente para parecer nativo
                 renderizarUIEcossistema();
                 abrirModalDetalhesSonho(id); 
-                
-                // Grava no background silenciosamente
                 const { error } = await clienteSupabase.from('sonhos').update({ valor_guardado: val }).eq('id', id);
                 if(error) alert("Falha ao gravar caixa na base de dados.");
                 buscarSonhos();
@@ -1081,7 +1107,6 @@
                 buscarSonhos();
             }
         }
-        // ----------------------------------------
 
         window.toggleItemComprado = async function(sonhoId, itemIndex, novoStatus) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
@@ -1299,18 +1324,37 @@
 
         window.abrirEdicaoMes = function(idMes) {
             try {
-                const prev = dadosTimeline.find(m => m.id === idMes);
-                if(!prev) { alert("Erro de Memória: Mês não encontrado."); return; }
+                const index = dadosTimeline.findIndex(m => m.id === idMes);
+                if(index === -1) { alert("Erro de Memória: Mês não encontrado."); return; }
+                const prev = dadosTimeline[index];
                 
                 document.getElementById('display-mes-nome').innerText = prev.mes;
                 document.getElementById('edit-mes-id').value = prev.id;
-                document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial !== null ? prev.saldo_inicial : '';
+                
+                // Lógica de Acumulado Anterior vs Saldo Inicial
+                if (index === 0) {
+                    document.getElementById('bloco-saldo-inicial').classList.remove('hidden');
+                    document.getElementById('bloco-acumulado-anterior').classList.add('hidden');
+                    document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial !== null ? prev.saldo_inicial : '';
+                } else {
+                    document.getElementById('bloco-saldo-inicial').classList.add('hidden');
+                    document.getElementById('bloco-acumulado-anterior').classList.remove('hidden');
+                    
+                    const mesPassado = dadosTimeline[index - 1];
+                    const sobraPassado = mesPassado._calcPrevisto || 0;
+                    
+                    document.getElementById('edit-mes-prev-nome').innerText = `Vindo de ${mesPassado.mes}`;
+                    document.getElementById('edit-mes-prev-saldo').innerText = formatarMoeda(sobraPassado);
+                    document.getElementById('edit-mes-prev-saldo').className = `text-[18px] font-black truncate ${sobraPassado >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+                    
+                    document.getElementById('edit-mes-saldo-inicial').value = sobraPassado;
+                }
                 
                 document.getElementById('edit-mes-entradas').value = prev.entradas || 0;
                 document.getElementById('edit-mes-fixos').value = prev.fixos || 0;
                 document.getElementById('edit-mes-parcela').value = prev.parcela || 0;
-                
                 document.getElementById('edit-mes-obs').value = prev.obs || '';
+                
                 extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
                 
                 renderizarExtrasEditUI();
@@ -1375,8 +1419,9 @@
 
                 const mesAtual = dadosTimeline[indexAtual];
 
-                // Sincroniza a memória temporária do modal antes de prosseguir
-                mesAtual.saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
+                if(indexAtual === 0) {
+                    mesAtual.saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
+                }
                 mesAtual.obs = document.getElementById('edit-mes-obs').value || '';
 
                 const baseId = Date.now().toString();
@@ -1396,20 +1441,18 @@
                     let novoExt = { id: baseId + '_' + i, tipo: tipoNovoExtra, descricao: descProj, valor: valor, realizado: false, sonho_id: sonhoId, dia: dia };
                     
                     if(i === 0) {
-                        extrasTemp.unshift(novoExt); // Mostra na hora ao utilizador
-                        mesAlvo.extras = extrasTemp; // Liga ao ficheiro base
+                        extrasTemp.unshift(novoExt); 
+                        mesAlvo.extras = extrasTemp; 
                     } else {
                         mesAlvo.extras = Array.isArray(mesAlvo.extras) ? [...mesAlvo.extras, novoExt] : [novoExt];
                     }
                     mesesParaGravar.push(mesAlvo);
                 }
 
-                // Feedback Visual Imediato - Parecer Nativo
                 fecharModal('modal-novo-extra');
                 renderizarExtrasEditUI();
                 atualizarResumoModalEdicao();
 
-                // Gravação Silenciosa no Supabase de todos os meses afetados
                 for(let mes of mesesParaGravar) {
                     const payload = { 
                         user_id: idUtilizadorAtual, 
@@ -1424,11 +1467,9 @@
                     await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
                 }
 
-                // Atualiza a Timeline que está por trás do modal sem recarregar a página
                 renderizarTimelineUI(); 
                 buscarSonhos(); 
 
-                // Limpa o form sub-modal para a próxima
                 document.getElementById('input-extra-desc').value = '';
                 document.getElementById('input-extra-valor').value = '';
 
@@ -1629,7 +1670,9 @@
             const index = dadosTimeline.findIndex(m => m.id === id);
             
             if(index !== -1) {
-                dadosTimeline[index].saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
+                if (index === 0) {
+                    dadosTimeline[index].saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
+                }
                 dadosTimeline[index].obs = document.getElementById('edit-mes-obs').value || '';
                 dadosTimeline[index].extras = extrasTemp;
 
