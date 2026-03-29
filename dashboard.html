@@ -433,7 +433,7 @@
     <!-- MODAIS DE INFRAESTRUTURA BASE -->
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
             <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
@@ -455,7 +455,7 @@
 
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
+        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
             <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
                 <span class="w-12"></span>
                 <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text flex-1 min-w-0" id="modal-title-header">Detalhes</h3>
@@ -634,7 +634,7 @@
                         <div class="flex-1 min-w-0 relative flex items-center justify-end">
                             <select id="val-extra-recorrencia" class="w-full truncate bg-transparent text-[15px] text-app-text font-semibold outline-none pr-5 cursor-pointer z-10" onchange="verificarRecorrenciaExtra()">
                                 <option value="unico">Apenas neste mês</option>
-                                <option value="fixo">Fixo Mensal (Projetar)</option>
+                                <option value="fixo">Fixo Mensal</option>
                                 <option value="parcela">Parcelado</option>
                             </select>
                             <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
