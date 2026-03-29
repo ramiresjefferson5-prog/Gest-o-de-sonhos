@@ -1045,19 +1045,43 @@
             }
         }
 
+        // TORNÁMOS OS IDs DA TIMELINE EXCLUSIVOS (PREFIXO v2-) PARA FORÇAR A APP A IGNORAR OS SEUS DADOS ANTIGOS NO SUPABASE E COMEÇAR FRESCA
         const templateMeses = [
-            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: true, badge: 'Risco', entradas: 2580, fixos: 650, parcela: 0, obs: 'Início.', extras: [
-                { id: 'ab1', tipo: 'receita', descricao: 'Venda', valor: 2500, realizado: false },
-                { id: 'ab2', tipo: 'gasto', descricao: 'Obra', valor: 2200, realizado: false }
+            { id: 'v2-2026-04', mes: 'Abril', cor: 'app-blue', risco: false, badge: 'Início', entradas: 2580, fixos: 480, parcela: 0, obs: 'Início da nova projeção. Fixos: Rastreamento (65), Estética (65), Mercado (300), Gasolina (50).', saldo_inicial: 446, extras: [
+                { id: 'ab1', tipo: 'receita', descricao: 'Empréstimo', valor: 2000, realizado: false, sonho_id: '' },
+                { id: 'ab2', tipo: 'gasto', descricao: 'Cartão de Crédito', valor: 389, realizado: false, sonho_id: '' },
+                { id: 'ab3', tipo: 'gasto', descricao: 'Parcela Final Emp. Antigo', valor: 260, realizado: false, sonho_id: '' }
             ]},
-            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 750, parcela: 0, obs: 'Foco.', extras: []},
-            { id: '2026-06', mes: 'Junho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Empréstimo.', extras: []},
-            { id: '2026-07', mes: 'Julho', cor: 'app-orange', parcela: 520, entradas: 2580, fixos: 750, obs: 'Foco.', extras: []},
-            { id: '2026-08', mes: 'Agosto', cor: 'app-blue', parcela: 520, entradas: 2580, fixos: 750, obs: 'Injeção.', extras: []},
-            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Alívio.', extras: []},
-            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', parcela: 520, entradas: 2580, fixos: 530, obs: 'Disciplina.', extras: []},
-            { id: '2026-11', mes: 'Novembro', cor: 'app-purple', parcela: 520, entradas: 2580, fixos: 530, obs: '13º.', extras: []},
-            { id: '2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2580, fixos: 530, parcela: 0, obs: 'Festa.', extras: []}
+            { id: 'v2-2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Início pagamento novo empréstimo.', extras: [
+                { id: 'ma1', tipo: 'gasto', descricao: 'Novo Empréstimo (1/4)', valor: 547, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-06', mes: 'Junho', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Mês regular.', extras: [
+                { id: 'ju1', tipo: 'gasto', descricao: 'Novo Empréstimo (2/4)', valor: 547, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-07', mes: 'Julho', cor: 'app-orange', entradas: 2580, fixos: 480, parcela: 0, obs: 'Férias e novas parcelas.', extras: [
+                { id: 'jl1', tipo: 'receita', descricao: 'Férias', valor: 1120, realizado: false, sonho_id: '' },
+                { id: 'jl2', tipo: 'gasto', descricao: 'Novo Empréstimo (3/4)', valor: 547, realizado: false, sonho_id: '' },
+                { id: 'jl3', tipo: 'gasto', descricao: 'Parcelas Diversas (1/5)', valor: 480, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-08', mes: 'Agosto', cor: 'app-blue', entradas: 2580, fixos: 480, parcela: 0, obs: 'PIS e fim do novo empréstimo.', extras: [
+                { id: 'ag1', tipo: 'receita', descricao: 'PIS', valor: 1640, realizado: false, sonho_id: '' },
+                { id: 'ag2', tipo: 'gasto', descricao: 'Novo Empréstimo (4/4)', valor: 547, realizado: false, sonho_id: '' },
+                { id: 'ag3', tipo: 'gasto', descricao: 'Parcelas Diversas (2/5)', valor: 480, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-09', mes: 'Setembro', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Manter disciplina.', extras: [
+                { id: 'se1', tipo: 'gasto', descricao: 'Parcelas Diversas (3/5)', valor: 480, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-10', mes: 'Outubro', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Reta final das parcelas.', extras: [
+                { id: 'ou1', tipo: 'gasto', descricao: 'Parcelas Diversas (4/5)', valor: 480, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-11', mes: 'Novembro', cor: 'app-purple', entradas: 2580, fixos: 480, parcela: 0, obs: 'Primeira parcela 13º e fim das parcelas diversas.', extras: [
+                { id: 'no1', tipo: 'receita', descricao: '13º Salário (1ª Parcela)', valor: 840, realizado: false, sonho_id: '' },
+                { id: 'no2', tipo: 'gasto', descricao: 'Parcelas Diversas (5/5)', valor: 480, realizado: false, sonho_id: '' }
+            ]},
+            { id: 'v2-2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2580, fixos: 480, parcela: 0, obs: 'Segunda parcela 13º e Férias.', extras: [
+                { id: 'de1', tipo: 'receita', descricao: '13º Salário (2ª Parcela)', valor: 840, realizado: false, sonho_id: '' },
+                { id: 'de2', tipo: 'receita', descricao: 'Férias', valor: 1120, realizado: false, sonho_id: '' }
+            ]}
         ];
 
         async function inicializarTimeline() {
@@ -1071,7 +1095,7 @@
                     try { const p = JSON.parse(obsTexto); obsTexto = p.texto || ''; baseOk = p.base_ok || baseOk; } catch(e){}
                     return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: mesBD.saldo_inicial, extras: mesBD.extras || [], base_ok: baseOk };
                 }
-                return { ...temp, saldo_inicial: null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
+                return { ...temp, saldo_inicial: temp.saldo_inicial || null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
             });
             const selectRapido = document.getElementById('val-mes-rapido');
             selectRapido.innerHTML = '';
@@ -1454,6 +1478,11 @@
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (!session) return irParaLogin();
             idUtilizadorAtual = session.user.id;
+            
+            // --- COMANDO DE LIMPEZA REAL PARA COMEÇAR DO ZERO ---
+            // Este comando vai eliminar tudo na sua timeline anterior (que não tinha o prefixo "v2-")
+            await clienteSupabase.from('fluxo_caixa').delete().eq('user_id', idUtilizadorAtual).not('mes_id', 'like', 'v2-%');
+
             // CRÍTICO: Garantimos que o fluxo de caixa seja processado antes do ecossistema para que a cascata de valores entre em vigor logo a abrir a app
             await inicializarTimeline(); 
             await buscarSonhos(); 
