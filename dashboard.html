@@ -42,9 +42,11 @@
         .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
         .aba-oculta { display: none; }
 
+        /* BLINDAGEM DA ANIMAÇÃO DO MODAL COM PRIORIDADE MÁXIMA */
         .bottom-sheet-up { transform: translateY(0%) !important; }
         .bottom-sheet-down { transform: translateY(100%) !important; }
 
+        /* Garante que o modal use a altura correta do dispositivo, sem barras cortadas */
         .full-page-modal { height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
 
         .glass-nav { 
@@ -75,6 +77,7 @@
 </head>
 <body class="min-h-screen pb-[100px] md:pb-0 w-full">
 
+    <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
         <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
             <i class="ph-fill ph-planet text-app-blue text-[28px]"></i>
@@ -90,6 +93,7 @@
         </div>
     </nav>
 
+    <!-- MOBILE NAV -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-nav border-t border-app-border z-40 pb-[env(safe-area-inset-bottom)] w-full">
         <ul class="flex justify-around items-center px-1 py-2" id="mobile-nav">
             <li class="nav-item flex-1" onclick="mudarAba('previsoes', this)">
@@ -127,6 +131,7 @@
 
     <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
+        <!-- ABA 1: PREVISÕES -->
         <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
@@ -138,6 +143,7 @@
             <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
         </section>
 
+        <!-- ABA 2: PORTFÓLIO -->
         <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="flex justify-between items-center mb-5 px-1 w-full">
                 <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Projetos Ativos</h2>
@@ -167,6 +173,7 @@
             </div>
         </section>
 
+        <!-- ABA 3: INSERIR -->
         <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-5 px-1 text-center">
                 <h2 class="text-[26px] font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Centro de Lançamentos</h2>
@@ -308,7 +315,7 @@
                         <div class="flex items-center px-4 py-4 border-b border-app-border bg-app-card">
                             <label class="w-[90px] shrink-0 font-medium text-[14px] text-app-text">Valor</label>
                             <span class="text-app-sub mr-1">R$</span>
-                            <input type="number" id="input-valor-rapido" required min="0.01" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-bold text-[22px] outline-none placeholder-app-sub/50">
+                            <input type="text" inputmode="decimal" id="input-valor-rapido" required placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-bold text-[22px] outline-none placeholder-app-sub/50">
                         </div>
                         <div class="flex items-center px-4 py-3.5 border-b border-app-border bg-app-card">
                             <label class="w-[90px] shrink-0 font-medium text-[14px] text-app-text">O que foi?</label>
@@ -393,7 +400,7 @@
     </main>
 
     <!-- Modal Perfil -->
-    <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+    <div id="modal-editar-perfil" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 100;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
         <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-perfil-content">
             <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
@@ -415,7 +422,7 @@
     </div>
 
     <!-- Modal Detalhes da Obra -->
-    <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+    <div id="modal-detalhes" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 100;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
         <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-content">
             <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
@@ -428,10 +435,10 @@
     </div>
 
     <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE) -->
-    <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+    <div id="modal-editar-mes" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 100;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
         
-        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl h-[100dvh]" id="modal-mes-content">
+        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl full-page-modal" id="modal-mes-content">
             <div id="drawer-inner-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 hidden transition-opacity duration-300 z-20" onclick="fecharResumoDrawer()"></div>
             <div class="flex justify-between items-center px-5 py-3.5 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 sticky top-0 z-10 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
@@ -465,8 +472,8 @@
                     <div class="flex justify-between items-end mb-2.5 px-2 w-full">
                         <label class="text-[10px] font-bold text-app-sub uppercase tracking-widest">Lançamentos Extrato</label>
                         <div class="flex gap-1.5 shrink-0">
-                            <button onclick="abrirNovoLancamentoExtra('receita')" class="text-app-green text-[11px] font-bold bg-app-green/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Receita</button>
-                            <button onclick="abrirNovoLancamentoExtra('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Gasto</button>
+                            <button type="button" onclick="abrirNovoLancamentoExtra('receita')" class="text-app-green text-[11px] font-bold bg-app-green/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Receita</button>
+                            <button type="button" onclick="abrirNovoLancamentoExtra('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Gasto</button>
                         </div>
                     </div>
                     <div id="lista-extras-mes" class="space-y-2.5 w-full"></div>
@@ -479,7 +486,7 @@
             </div>
 
             <!-- RODAPÉ GAVETA DO MÊS -->
-            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden" style="height: 95px; padding-bottom: env(safe-area-inset-bottom); margin-top: auto;">
+            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden" style="height: 95px; padding-bottom: env(safe-area-inset-bottom); margin-top: auto; z-index: 50;">
                 <div class="w-full flex justify-center pt-3 pb-3 cursor-pointer shrink-0" id="drawer-handle" 
                      onclick="toggleResumoDrawer()" 
                      ontouchstart="window.startYDrawer = event.touches[0].clientY" 
@@ -559,13 +566,13 @@
     </div>
 
     <!-- MODAL NOVO LANÇAMENTO EXTRA -->
-    <div id="modal-novo-extra" class="fixed inset-0 z-[120] hidden flex items-end justify-center">
+    <div id="modal-novo-extra" class="fixed inset-0 hidden flex items-end justify-center" style="z-index: 200;">
         <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-extra-backdrop" onclick="fecharModal('modal-novo-extra')"></div>
         <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-extra-content">
             <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
-                <button onclick="fecharModal('modal-novo-extra')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
-                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Novo Lançamento</h3>
-                <button onclick="guardarNovoExtra()" class="text-app-blue font-bold text-[16px] active:opacity-60">Inserir</button>
+                <button type="button" onclick="fecharModal('modal-novo-extra')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1" id="titulo-modal-extra">Novo Lançamento</h3>
+                <button type="button" onclick="guardarNovoExtra()" class="text-app-blue font-bold text-[16px] active:opacity-60">Inserir</button>
             </div>
             
             <div class="px-5 pt-6 pb-[calc(40px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain flex-1">
@@ -1020,7 +1027,9 @@
                 e.preventDefault();
                 if(!idUtilizadorAtual) return;
                 
-                const valRaw = document.getElementById('input-valor-rapido').value.toString().replace(',', '.');
+                let valRaw = document.getElementById('input-valor-rapido').value.toString().replace(/[^0-9.,]/g, '');
+                if(valRaw.includes(',') && valRaw.includes('.')) { valRaw = valRaw.replace(/\./g, ''); }
+                valRaw = valRaw.replace(',', '.');
                 const valor = parseFloat(valRaw) || 0;
                 
                 if(valor <= 0) { alert("Valor inválido."); return; }
@@ -1205,8 +1214,6 @@
             atualizarCardResumo(); 
         }
 
-        let extrasTemp = [];
-        
         window.abrirEdicaoMes = function(idMes) {
             try {
                 const prev = dadosTimeline.find(m => m.id === idMes);
@@ -1621,7 +1628,11 @@
         }
 
         window.fecharModal = function(idModal) {
-            document.body.style.overflow = ''; 
+            // Só liberta o ecrã de fundo se for o modal principal a fechar
+            if (idModal !== 'modal-novo-extra') {
+                document.body.style.overflow = ''; 
+            }
+            
             const modal = document.getElementById(idModal);
             if (!modal) return;
             const ct = modal.querySelector('[id$="-content"]');
