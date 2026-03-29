@@ -518,25 +518,82 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ DE RESUMO DINÂMICO REDESENHADO -->
-            <div class="bg-app-card border-t border-app-border p-5 shadow-modal shrink-0 z-20 pb-safe w-full">
-                <div class="max-w-md mx-auto space-y-2">
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-app-sub font-medium">Entradas</span>
-                        <span class="text-app-green font-bold" id="resumo-edicao-entradas">R$ 0,00</span>
+            <!-- RODAPÉ DE RESUMO DINÂMICO REDESENHADO (GAVETA) -->
+            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden" style="height: 95px;">
+                <!-- Handle (Arrastável) -->
+                <div class="w-full flex justify-center pt-3 pb-3 cursor-pointer shrink-0" id="drawer-handle" 
+                     onclick="toggleResumoDrawer()" 
+                     ontouchstart="window.startYDrawer = event.touches[0].clientY" 
+                     ontouchend="if(event.changedTouches && event.changedTouches.length > 0) { let endY = event.changedTouches[0].clientY; if(window.startYDrawer - endY > 30) abrirResumoDrawer(); else if(endY - window.startYDrawer > 30) fecharResumoDrawer(); }">
+                    <div class="w-12 h-1.5 bg-[#38383A] rounded-full"></div>
+                </div>
+
+                <!-- Visão Compacta -->
+                <div id="resumo-compacto" class="px-6 flex justify-between items-center transition-opacity duration-300 opacity-100 shrink-0" onclick="abrirResumoDrawer()">
+                    <div class="text-left">
+                        <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Real Entrou</p>
+                        <p class="text-[14px] font-bold text-app-green" id="resumo-comp-entradas">R$ 0,00</p>
                     </div>
-                    <div class="flex justify-between items-center text-[13px]">
-                        <span class="text-app-sub font-medium">Saídas</span>
-                        <span class="text-app-red font-bold" id="resumo-edicao-saidas">R$ 0,00</span>
+                    <div class="text-center">
+                        <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Saldo Atual</p>
+                        <p class="text-[16px] font-black text-app-blue transition-colors" id="resumo-comp-saldo">R$ 0,00</p>
                     </div>
-                    <div class="flex justify-between items-center text-[13px] pb-1">
-                        <span class="text-app-sub font-medium">Balanço</span>
-                        <span class="text-app-text font-bold" id="resumo-edicao-balanco">R$ 0,00</span>
+                    <div class="text-right">
+                        <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Real Saiu</p>
+                        <p class="text-[14px] font-bold text-app-red" id="resumo-comp-saidas">R$ 0,00</p>
                     </div>
-                    
-                    <div class="pt-3 border-t border-app-border flex flex-col items-end">
-                        <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">sobra proximo mês</p>
-                        <p class="text-[22px] font-black text-app-blue leading-none" id="resumo-edicao-sobra">R$ 0,00</p>
+                </div>
+
+                <!-- Visão Expandida (Página Completa) -->
+                <div id="resumo-expandido" class="px-6 pt-2 pb-8 opacity-0 transition-opacity duration-300 hidden flex-1 overflow-y-auto no-scrollbar">
+                    <div class="mb-6 text-center">
+                        <h4 class="text-[18px] font-bold text-white">Análise do Mês</h4>
+                        <p class="text-[12px] text-app-sub font-medium">Previsões vs Realidade</p>
+                    </div>
+
+                    <!-- Entradas Card -->
+                    <div class="bg-[#151515] rounded-[20px] p-4 mb-4 border border-[#2C2C2E]">
+                        <div class="flex justify-between items-center mb-3 border-b border-[#2C2C2E] pb-2">
+                            <span class="text-[14px] font-bold text-app-green flex items-center gap-1"><i class="ph-bold ph-arrow-down-left"></i> Entradas Totais</span>
+                            <span class="text-[16px] font-black text-app-text" id="resumo-exp-total-in">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-[12px] mb-1">
+                            <span class="text-app-sub font-medium">Já na conta (Real)</span>
+                            <span class="text-app-green font-bold" id="resumo-exp-real-in">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-[12px]">
+                            <span class="text-app-sub font-medium">A receber (Pendente)</span>
+                            <span class="text-app-sub font-bold" id="resumo-exp-pend-in">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Saídas Card -->
+                    <div class="bg-[#151515] rounded-[20px] p-4 mb-4 border border-[#2C2C2E]">
+                        <div class="flex justify-between items-center mb-3 border-b border-[#2C2C2E] pb-2">
+                            <span class="text-[14px] font-bold text-app-red flex items-center gap-1"><i class="ph-bold ph-arrow-up-right"></i> Saídas Totais</span>
+                            <span class="text-[16px] font-black text-app-text" id="resumo-exp-total-out">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-[12px] mb-1">
+                            <span class="text-app-sub font-medium">Já pago (Real)</span>
+                            <span class="text-app-red font-bold" id="resumo-exp-real-out">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-[12px]">
+                            <span class="text-app-sub font-medium">A pagar (Pendente)</span>
+                            <span class="text-app-sub font-bold" id="resumo-exp-pend-out">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Fechamento -->
+                    <div class="mt-6 space-y-3 px-2">
+                        <div class="flex justify-between items-center text-[14px]">
+                            <span class="text-app-sub font-medium">Balanço do Mês</span>
+                            <span class="font-bold transition-colors" id="resumo-exp-balanco">R$ 0,00</span>
+                        </div>
+                        <div class="pt-4 border-t border-[#2C2C2E] flex flex-col items-center text-center">
+                            <p class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1">Previsão de Sobra Final</p>
+                            <p class="text-[28px] font-black leading-none transition-colors" id="resumo-exp-sobra">R$ 0,00</p>
+                            <p class="text-[11px] text-app-sub mt-2">Este valor será o saldo inicial do próximo mês.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1068,6 +1125,7 @@
             document.getElementById('edit-mes-obs').value = prev.obs;
             extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
             renderizarExtrasEditUI();
+            fecharResumoDrawer(); // Garante que a gaveta começa compacta
             abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
             atualizarResumoModalEdicao(); // CALCULAR RESUMO AO ABRIR
         }
@@ -1087,39 +1145,103 @@
 
         // LÓGICA DE RESUMO DINÂMICO NO MODAL (CÁLCULO EM TEMPO REAL)
         function atualizarResumoModalEdicao() {
-            // Usando inputs (que agora podem estar ocultos)
+            const idMes = document.getElementById('edit-mes-id').value;
+            const prev = dadosTimeline.find(m => m.id === idMes);
+            const base_ok = prev ? prev.base_ok : { entradas: false, fixos: false, parcela: false };
+
             const entradasBase = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
             const fixosBase = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
             const parcelaBase = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
             const saldoInicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || 0;
 
-            let extraReceitas = 0;
-            let extraGastos = 0;
+            let extraReceitasTotal = 0, extraReceitasReal = 0;
+            let extraGastosTotal = 0, extraGastosReal = 0;
 
             extrasTemp.forEach(ext => {
-                if (ext.tipo === 'receita') extraReceitas += parseFloat(ext.valor) || 0;
-                else extraGastos += parseFloat(ext.valor) || 0;
+                const val = parseFloat(ext.valor) || 0;
+                if (ext.tipo === 'receita') {
+                    extraReceitasTotal += val;
+                    if(ext.realizado) extraReceitasReal += val;
+                } else {
+                    extraGastosTotal += val;
+                    if(ext.realizado) extraGastosReal += val;
+                }
             });
 
-            const totalEntradas = entradasBase + extraReceitas;
-            const totalSaidas = fixosBase + parcelaBase + extraGastos;
-            const balanco = totalEntradas - totalSaidas;
-            const sobra = saldoInicial + balanco;
+            // Reais (O que já aconteceu de facto)
+            const reaisEntradas = (base_ok.entradas ? entradasBase : 0) + extraReceitasReal;
+            const reaisSaidas = (base_ok.fixos ? fixosBase : 0) + (base_ok.parcela ? parcelaBase : 0) + extraGastosReal;
+            const saldoAtualReal = saldoInicial + reaisEntradas - reaisSaidas;
 
-            document.getElementById('resumo-edicao-entradas').innerText = formatarMoeda(totalEntradas);
-            document.getElementById('resumo-edicao-saidas').innerText = formatarMoeda(totalSaidas);
-            document.getElementById('resumo-edicao-balanco').innerText = formatarMoeda(balanco);
-            document.getElementById('resumo-edicao-sobra').innerText = formatarMoeda(sobra);
+            // Totais (O cenário completo projetado)
+            const totalEntradas = entradasBase + extraReceitasTotal;
+            const totalSaidas = fixosBase + parcelaBase + extraGastosTotal;
+            const balancoTotal = totalEntradas - totalSaidas;
+            const sobraFinal = saldoInicial + balancoTotal;
+
+            // Pendentes (Falta acontecer)
+            const pendenteEntradas = totalEntradas - reaisEntradas;
+            const pendenteSaidas = totalSaidas - reaisSaidas;
+
+            // --- Atualizar DOM Compacto ---
+            document.getElementById('resumo-comp-entradas').innerText = formatarMoeda(reaisEntradas);
+            document.getElementById('resumo-comp-saidas').innerText = formatarMoeda(reaisSaidas);
             
-            // Ajuste de cor do balanço
-            const balancoEl = document.getElementById('resumo-edicao-balanco');
-            if (balanco < 0) {
-                balancoEl.classList.add('text-app-red');
-                balancoEl.classList.remove('text-app-text');
-            } else {
-                balancoEl.classList.remove('text-app-red');
-                balancoEl.classList.add('text-app-text');
-            }
+            const elCompSaldo = document.getElementById('resumo-comp-saldo');
+            elCompSaldo.innerText = formatarMoeda(saldoAtualReal);
+            elCompSaldo.className = `text-[16px] font-black transition-colors ${saldoAtualReal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+
+            // --- Atualizar DOM Expandido ---
+            document.getElementById('resumo-exp-total-in').innerText = formatarMoeda(totalEntradas);
+            document.getElementById('resumo-exp-real-in').innerText = formatarMoeda(reaisEntradas);
+            document.getElementById('resumo-exp-pend-in').innerText = formatarMoeda(pendenteEntradas);
+            
+            document.getElementById('resumo-exp-total-out').innerText = formatarMoeda(totalSaidas);
+            document.getElementById('resumo-exp-real-out').innerText = formatarMoeda(reaisSaidas);
+            document.getElementById('resumo-exp-pend-out').innerText = formatarMoeda(pendenteSaidas);
+
+            const elExpBalanco = document.getElementById('resumo-exp-balanco');
+            elExpBalanco.innerText = formatarMoeda(balancoTotal);
+            elExpBalanco.className = `font-bold transition-colors ${balancoTotal >= 0 ? 'text-app-text' : 'text-app-red'}`;
+
+            const elExpSobra = document.getElementById('resumo-exp-sobra');
+            elExpSobra.innerText = formatarMoeda(sobraFinal);
+            elExpSobra.className = `text-[28px] font-black leading-none transition-colors ${sobraFinal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+        }
+
+        // --- Lógica Visual da Gaveta (Drawer) ---
+        function toggleResumoDrawer() {
+            const drawer = document.getElementById('resumo-drawer');
+            if (drawer.style.height === '85vh') fecharResumoDrawer();
+            else abrirResumoDrawer();
+        }
+
+        function abrirResumoDrawer() {
+            const drawer = document.getElementById('resumo-drawer');
+            const compact = document.getElementById('resumo-compacto');
+            const expanded = document.getElementById('resumo-expandido');
+            
+            drawer.style.height = '85vh';
+            compact.classList.add('opacity-0');
+            setTimeout(() => {
+                compact.classList.add('hidden');
+                expanded.classList.remove('hidden');
+                setTimeout(() => expanded.classList.remove('opacity-0'), 10);
+            }, 300);
+        }
+
+        function fecharResumoDrawer() {
+            const drawer = document.getElementById('resumo-drawer');
+            const compact = document.getElementById('resumo-compacto');
+            const expanded = document.getElementById('resumo-expandido');
+            
+            drawer.style.height = '95px';
+            expanded.classList.add('opacity-0');
+            setTimeout(() => {
+                expanded.classList.add('hidden');
+                compact.classList.remove('hidden');
+                setTimeout(() => compact.classList.remove('opacity-0'), 10);
+            }, 300);
         }
 
         function renderizarExtrasEditUI() {
