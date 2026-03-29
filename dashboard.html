@@ -42,12 +42,12 @@
         .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
         .aba-oculta { display: none; }
 
-        /* BLINDAGEM DA ANIMAÇÃO: Adicionado !important para sobrepor qualquer conflito do Tailwind */
+        /* BLINDAGEM DA ANIMAÇÃO */
         .bottom-sheet-up { transform: translateY(0%) !important; }
         .bottom-sheet-down { transform: translateY(100%) !important; }
 
-        /* Estilo Full Page para o Modal de Edição com 100dvh para evitar corte pela barra de navegação do browser mobile */
-        .full-page-modal { height: 100dvh !important; border-radius: 0 !important; }
+        /* ESTILO FULL PAGE: Seguro para Mobile Safari/Chrome */
+        .full-page-modal { height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
 
         .glass-nav { 
             background: rgba(28, 28, 30, 0.85); 
@@ -473,7 +473,9 @@
     <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE) -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl mx-auto full-page-modal relative" id="modal-mes-content">
+        
+        <!-- REMOVIDO: O atributo 'relative' que entrava em conflito com o 'absolute bottom-0' -->
+        <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl mx-auto full-page-modal" id="modal-mes-content">
             
             <div id="drawer-inner-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 hidden transition-opacity duration-300 z-20" onclick="fecharResumoDrawer()"></div>
 
@@ -524,7 +526,7 @@
             </div>
 
             <!-- RODAPÉ GAVETA DO MÊS -->
-            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden absolute bottom-0 left-0" style="height: 95px; padding-bottom: env(safe-area-inset-bottom);">
+            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden absolute bottom-0 left-0 right-0" style="height: 95px; padding-bottom: env(safe-area-inset-bottom);">
                 <div class="w-full flex justify-center pt-3 pb-3 cursor-pointer shrink-0" id="drawer-handle" 
                      onclick="toggleResumoDrawer()" 
                      ontouchstart="window.startYDrawer = event.touches[0].clientY" 
@@ -658,7 +660,7 @@
         </div>
     </div>
 
-    <!-- ÚNICA DECLARAÇÃO DO SCRIPT -->
+    <!-- ÚNICA DECLARAÇÃO DO SCRIPT (Lógica Base) -->
     <script>
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
@@ -1590,8 +1592,8 @@
                 const ct = document.getElementById(idContent);
                 if (bd) bd.classList.add('opacity-100'); 
                 if (ct) {
-                    ct.classList.remove('bottom-sheet-down'); // BLINDAGEM CSS
-                    ct.classList.add('bottom-sheet-up');      // BLINDAGEM CSS
+                    ct.classList.remove('bottom-sheet-down'); 
+                    ct.classList.add('bottom-sheet-up');      
                 }
             }, 10);
         }
@@ -1602,8 +1604,8 @@
             if (!modal) return;
             const ct = modal.querySelector('[id$="-content"]');
             if (ct) {
-                ct.classList.remove('bottom-sheet-up');       // BLINDAGEM CSS
-                ct.classList.add('bottom-sheet-down');        // BLINDAGEM CSS
+                ct.classList.remove('bottom-sheet-up');       
+                ct.classList.add('bottom-sheet-down');        
             }
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
