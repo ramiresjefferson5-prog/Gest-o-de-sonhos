@@ -647,6 +647,7 @@
             fecharModal('modal-editar-perfil');
         }
 
+        // O RESET DE CONTA AGORA É ABSOLUTO E PROTEGIDO CONTRA ERROS DE SERVIDOR
         window.limparHistoricoConfirmacao = function() {
             if(confirm("⚠️ ATENÇÃO MÁXIMA: Queres apagar TODO o teu histórico, obras, projetos e o fluxo de caixa inteiro para começar do zero? \n\nEsta ação não pode ser desfeita.")) {
                 limparHistoricoReal();
@@ -655,10 +656,23 @@
         
         async function limparHistoricoReal() {
             if(!idUtilizadorAtual) return;
-            await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual);
-            await clienteSupabase.from('fluxo_caixa').delete().eq('user_id', idUtilizadorAtual);
-            alert("A tua conta foi completamente limpa. O ecossistema vai reiniciar em branco.");
-            window.location.reload(); 
+            try {
+                const deleteSonhos = await clienteSupabase.from('sonhos').delete().eq('user_id', idUtilizadorAtual);
+                if (deleteSonhos.error) throw new Error("Erro a apagar obras: " + deleteSonhos.error.message);
+                
+                const deleteTimeline = await clienteSupabase.from('fluxo_caixa').delete().eq('user_id', idUtilizadorAtual);
+                if (deleteTimeline.error) throw new Error("Erro a apagar timeline: " + deleteTimeline.error.message);
+                
+                alert("A tua conta foi completamente limpa. O ecossistema vai reiniciar em branco.");
+                
+                // Limpa a memória do ecrã para evitar dados fantasma antes de recarregar
+                sonhosGlobais = [];
+                dadosTimeline = [];
+                
+                window.location.reload(); 
+            } catch(e) {
+                alert(e.message);
+            }
         }
 
         window.mudarTipoRegisto = function(tipo) {
@@ -1058,42 +1072,19 @@
             }
         }
 
+        // =========================================================================
+        // 🚨 TEMPLATE ZERADO DE FÁBRICA: Garante que um reset começa 100% LIMPO
+        // =========================================================================
         const templateMeses = [
-            { id: 'v2-2026-04', mes: 'Abril', cor: 'app-blue', risco: false, badge: 'Início', entradas: 2580, fixos: 480, parcela: 0, obs: 'Início da nova projeção. Fixos: Rastreamento (65), Estética (65), Mercado (300), Gasolina (50).', saldo_inicial: 446, extras: [
-                { id: 'ab1', tipo: 'receita', descricao: 'Empréstimo', valor: 2000, realizado: false, sonho_id: '' },
-                { id: 'ab2', tipo: 'gasto', descricao: 'Cartão de Crédito', valor: 389, realizado: false, sonho_id: '' },
-                { id: 'ab3', tipo: 'gasto', descricao: 'Parcela Final Emp. Antigo', valor: 260, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-05', mes: 'Maio', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Início pagamento novo empréstimo.', extras: [
-                { id: 'ma1', tipo: 'gasto', descricao: 'Novo Empréstimo (1/4)', valor: 547, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-06', mes: 'Junho', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Mês regular.', extras: [
-                { id: 'ju1', tipo: 'gasto', descricao: 'Novo Empréstimo (2/4)', valor: 547, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-07', mes: 'Julho', cor: 'app-orange', entradas: 2580, fixos: 480, parcela: 0, obs: 'Férias e novas parcelas.', extras: [
-                { id: 'jl1', tipo: 'receita', descricao: 'Férias', valor: 1120, realizado: false, sonho_id: '' },
-                { id: 'jl2', tipo: 'gasto', descricao: 'Novo Empréstimo (3/4)', valor: 547, realizado: false, sonho_id: '' },
-                { id: 'jl3', tipo: 'gasto', descricao: 'Parcelas Diversas (1/5)', valor: 480, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-08', mes: 'Agosto', cor: 'app-blue', entradas: 2580, fixos: 480, parcela: 0, obs: 'PIS e fim do novo empréstimo.', extras: [
-                { id: 'ag1', tipo: 'receita', descricao: 'PIS', valor: 1640, realizado: false, sonho_id: '' },
-                { id: 'ag2', tipo: 'gasto', descricao: 'Novo Empréstimo (4/4)', valor: 547, realizado: false, sonho_id: '' },
-                { id: 'ag3', tipo: 'gasto', descricao: 'Parcelas Diversas (2/5)', valor: 480, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-09', mes: 'Setembro', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Manter disciplina.', extras: [
-                { id: 'se1', tipo: 'gasto', descricao: 'Parcelas Diversas (3/5)', valor: 480, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-10', mes: 'Outubro', cor: 'app-sub', entradas: 2580, fixos: 480, parcela: 0, obs: 'Reta final das parcelas.', extras: [
-                { id: 'ou1', tipo: 'gasto', descricao: 'Parcelas Diversas (4/5)', valor: 480, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-11', mes: 'Novembro', cor: 'app-purple', entradas: 2580, fixos: 480, parcela: 0, obs: 'Primeira parcela 13º e fim das parcelas diversas.', extras: [
-                { id: 'no1', tipo: 'receita', descricao: '13º Salário (1ª Parcela)', valor: 840, realizado: false, sonho_id: '' },
-                { id: 'no2', tipo: 'gasto', descricao: 'Parcelas Diversas (5/5)', valor: 480, realizado: false, sonho_id: '' }
-            ]},
-            { id: 'v2-2026-12', mes: 'Dezembro', cor: 'app-green', entradas: 2580, fixos: 480, parcela: 0, obs: 'Segunda parcela 13º e Férias.', extras: [
-                { id: 'de1', tipo: 'receita', descricao: '13º Salário (2ª Parcela)', valor: 840, realizado: false, sonho_id: '' },
-                { id: 'de2', tipo: 'receita', descricao: 'Férias', valor: 1120, realizado: false, sonho_id: '' }
-            ]}
+            { id: '2026-04', mes: 'Abril', cor: 'app-blue', risco: false, badge: 'Atual', entradas: 0, fixos: 0, parcela: 0, obs: '', saldo_inicial: null, extras: [] },
+            { id: '2026-05', mes: 'Maio', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-06', mes: 'Junho', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-07', mes: 'Julho', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-08', mes: 'Agosto', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-09', mes: 'Setembro', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-10', mes: 'Outubro', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-11', mes: 'Novembro', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] },
+            { id: '2026-12', mes: 'Dezembro', cor: 'app-sub', entradas: 0, fixos: 0, parcela: 0, obs: '', extras: [] }
         ];
 
         async function inicializarTimeline() {
@@ -1222,9 +1213,11 @@
                 document.getElementById('display-mes-nome').innerText = prev.mes;
                 document.getElementById('edit-mes-id').value = prev.id;
                 document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial !== null ? prev.saldo_inicial : '';
-                document.getElementById('edit-mes-entradas').value = prev.entradas;
-                document.getElementById('edit-mes-fixos').value = prev.fixos;
-                document.getElementById('edit-mes-parcela').value = prev.parcela;
+                
+                document.getElementById('edit-mes-entradas').value = prev.entradas || 0;
+                document.getElementById('edit-mes-fixos').value = prev.fixos || 0;
+                document.getElementById('edit-mes-parcela').value = prev.parcela || 0;
+                
                 document.getElementById('edit-mes-obs').value = prev.obs || '';
                 extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
                 
@@ -1265,14 +1258,10 @@
             abrirModal('modal-novo-extra', 'modal-extra-backdrop', 'modal-extra-content');
         }
 
-        // =========================================================
-        // MOTOR DE GRAVAÇÃO BLINDADO - ASSÍNCRONO SEM REFRESH
-        // =========================================================
         window.guardarNovoExtra = async function() {
             try {
                 const desc = document.getElementById('input-extra-desc').value;
                 
-                // Tratamento imbatível para teclados que usam vírgulas (iOS/Android)
                 let valorS = document.getElementById('input-extra-valor').value.toString().replace(/[^0-9.,]/g, '');
                 if(valorS.includes(',') && valorS.includes('.')) { valorS = valorS.replace(/\./g, ''); }
                 valorS = valorS.replace(',', '.');
@@ -1284,17 +1273,17 @@
                 const sonhoId = document.getElementById('val-extra-obra').value;
 
                 if(!desc || valor <= 0) { 
-                    alert("Por favor, preencha a descrição e um valor superior a 0."); 
+                    alert("Preencha a descrição e um valor superior a 0."); 
                     return; 
                 }
 
                 const idMesAtual = document.getElementById('edit-mes-id').value;
                 const indexAtual = dadosTimeline.findIndex(m => m.id === idMesAtual);
-                if(indexAtual === -1) { alert("Erro de Memória."); return; }
+                if(indexAtual === -1) { alert("Erro de Memória. Tente novamente."); return; }
 
                 const mesAtual = dadosTimeline[indexAtual];
 
-                // Sincroniza o Saldo Inicial e Observações atuais para não serem perdidos ao gravar
+                // Sincroniza a memória temporária do modal antes de prosseguir
                 mesAtual.saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
                 mesAtual.obs = document.getElementById('edit-mes-obs').value || '';
 
@@ -1315,20 +1304,19 @@
                     let novoExt = { id: baseId + '_' + i, tipo: tipoNovoExtra, descricao: descProj, valor: valor, realizado: false, sonho_id: sonhoId, dia: dia };
                     
                     if(i === 0) {
-                        extrasTemp.unshift(novoExt); // Mostra na hora ao utilizador
-                        mesAlvo.extras = extrasTemp; // Liga ao ficheiro base
+                        extrasTemp.unshift(novoExt);
+                        mesAlvo.extras = extrasTemp;
                     } else {
                         mesAlvo.extras = Array.isArray(mesAlvo.extras) ? [...mesAlvo.extras, novoExt] : [novoExt];
                     }
                     mesesParaGravar.push(mesAlvo);
                 }
 
-                // Feedback Visual Imediato - Parecer Nativo
                 fecharModal('modal-novo-extra');
                 renderizarExtrasEditUI();
                 atualizarResumoModalEdicao();
 
-                // Gravação Silenciosa no Supabase de todos os meses afetados
+                // UPSERT SILENCIOSO NO FUNDO
                 for(let mes of mesesParaGravar) {
                     const payload = { 
                         user_id: idUtilizadorAtual, 
@@ -1340,19 +1328,18 @@
                         saldo_inicial: mes.saldo_inicial, 
                         extras: mes.extras 
                     };
-                    await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+                    const erroDB = await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+                    if(erroDB.error) throw new Error(erroDB.error.message);
                 }
 
-                // Atualiza a Timeline que está por trás do modal sem recarregar a página
                 renderizarTimelineUI(); 
                 buscarSonhos(); 
 
-                // Limpa o form sub-modal para a próxima
                 document.getElementById('input-extra-desc').value = '';
                 document.getElementById('input-extra-valor').value = '';
 
             } catch (erro) {
-                alert("Falha ao registar o lançamento: " + erro.message);
+                alert("Falha de Servidor: Não foi possível gravar o lançamento. " + erro.message);
             }
         }
 
@@ -1548,7 +1535,6 @@
             const index = dadosTimeline.findIndex(m => m.id === id);
             
             if(index !== -1) {
-                // Atualiza a memória local com as alterações feitas nos inputs e no array temporário
                 dadosTimeline[index].saldo_inicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || null;
                 dadosTimeline[index].obs = document.getElementById('edit-mes-obs').value || '';
                 dadosTimeline[index].extras = extrasTemp;
@@ -1564,10 +1550,12 @@
                     extras: extrasTemp 
                 };
                 
-                fecharModal('modal-editar-mes'); // Fecha de imediato para UX rápida
-                await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
+                fecharModal('modal-editar-mes'); 
                 
-                renderizarTimelineUI(); // Re-renderiza sem recarregar tudo do servidor
+                const erroDB = await clienteSupabase.from('fluxo_caixa').upsert(dados, { onConflict: 'user_id, mes_id' });
+                if(erroDB.error) alert("Falha na gravação: " + erroDB.error.message);
+                
+                await inicializarTimeline(); 
                 buscarSonhos(); 
             } else {
                 fecharModal('modal-editar-mes');
@@ -1628,7 +1616,6 @@
         }
 
         window.fecharModal = function(idModal) {
-            // Só liberta o ecrã de fundo se for o modal principal a fechar
             if (idModal !== 'modal-novo-extra') {
                 document.body.style.overflow = ''; 
             }
