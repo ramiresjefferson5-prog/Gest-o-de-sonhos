@@ -662,6 +662,7 @@
         let sonhosGlobais = []; 
         let dadosTimeline = []; 
         let mesResumoIndex = 0; 
+        let categoriaVisualizadaAtual = null; // NOVO: Controla se estamos a ver Pastas ou Obras da Pasta
         
         const formatarMoeda = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
         const formatarMoedaSemCentavos = (v) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(Math.ceil(v));
@@ -831,11 +832,15 @@
 
             renderizarUIEcossistema();
             renderizarUIConquistas();
-            
             const ativos = sonhosGlobais.filter(s => s.status !== 'concluido');
             const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
             setText('estatistica-projetos', ativos.length);
             setText('estatistica-conquistas', concluidos.length);
+        }
+
+        window.selecionarCategoriaObras = function(catNome) {
+            categoriaVisualizadaAtual = catNome;
+            renderizarUIEcossistema();
         }
 
         function renderizarUIEcossistema() {
@@ -848,56 +853,143 @@
             
             if(ativos.length === 0) {
                 container.innerHTML = '<div class="p-10 text-center col-span-full bg-app-card rounded-[20px] border border-app-border"><i class="ph-fill ph-check-circle text-[40px] text-[#2C2C2E] mb-3 inline-block"></i><p class="text-app-sub font-medium text-[15px]">Tudo limpo.</p></div>';
-            } else {
-                ativos.forEach(sonho => {
-                    let custoSubItens = 0;
-                    let valorItemsComprados = 0;
-                    let qtdComprada = 0;
-                    let qtdTotal = 0;
-                    if (sonho.complexidade === 'Composto' && sonho.itens_compostos) {
-                        qtdTotal = sonho.itens_compostos.length;
-                        sonho.itens_compostos.forEach(p => {
-                            let val = parseFloat(p.custo) || 0;
-                            custoSubItens += val;
-                            if (p.comprado) { valorItemsComprados += val; qtdComprada++; }
+                setText('saldos-total-geral', formatarMoeda(0));
+                setText('saldos-guardado', formatarMoeda(0));
+                setText('saldos-falta', formatarMoeda(0));
+                return;
+            } 
+            
+            // 1. Processar dados financeiros base de todas as obras ativas primeiro
+            const sonhosProcessados = ativos.map(sonho => {
+                let custoSubItens = 0;
+                let valorItemsComprados = 0;
+                let qtdComprada = 0;
+                let qtdTotal = 0;
+                if (sonho.complexidade === 'Composto' && sonho.itens_compostos) {
+                    qtdTotal = sonho.itens_compostos.length;
+                    sonho.itens_compostos.forEach(p => {
+                        let val = parseFloat(p.custo) || 0;
+                        custoSubItens += val;
+                        if (p.comprado) { valorItemsComprados += val; qtdComprada++; }
+                    });
+                }
+                let maoDeObra = parseFloat(sonho.preco_servico) || 0;
+                let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
+                let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
+                
+                let injecaoTimeline = 0;
+                dadosTimeline.forEach(mes => {
+                    if (mes.extras && mes.extras.length > 0) {
+                        mes.extras.forEach(ext => {
+                            if (ext.realizado && ext.tipo === 'gasto' && ext.sonho_id === sonho.id) {
+                                injecaoTimeline += parseFloat(ext.valor) || 0;
+                            }
                         });
                     }
-                    let maoDeObra = parseFloat(sonho.preco_servico) || 0;
-                    let custoTotalProjeto = sonho.complexidade === 'Composto' ? (custoSubItens + maoDeObra) : (parseFloat(sonho.custo) || 0);
-                    let dinheiroGuardado = parseFloat(sonho.valor_guardado) || 0;
-                    
-                    let injecaoTimeline = 0;
-                    dadosTimeline.forEach(mes => {
-                        if (mes.extras && mes.extras.length > 0) {
-                            mes.extras.forEach(ext => {
-                                if (ext.realizado && ext.tipo === 'gasto' && ext.sonho_id === sonho.id) {
-                                    injecaoTimeline += parseFloat(ext.valor) || 0;
-                                }
-                            });
-                        }
-                    });
+                });
 
-                    let progressoFinanceiroReal = valorItemsComprados + dinheiroGuardado + injecaoTimeline;
-                    
-                    if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
-                    let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
-                    totalGeralCusto += custoTotalProjeto;
-                    totalGeralInvestido += progressoFinanceiroReal;
-                    
+                let progressoFinanceiroReal = valorItemsComprados + dinheiroGuardado + injecaoTimeline;
+                if(progressoFinanceiroReal > custoTotalProjeto && custoTotalProjeto > 0) progressoFinanceiroReal = custoTotalProjeto;
+                let percentagem = custoTotalProjeto > 0 ? Math.round((progressoFinanceiroReal / custoTotalProjeto) * 100) : 0;
+                
+                totalGeralCusto += custoTotalProjeto;
+                totalGeralInvestido += progressoFinanceiroReal;
+
+                return { 
+                    ...sonho, 
+                    _custoCalculado: custoTotalProjeto, 
+                    _progressoCalculado: progressoFinanceiroReal, 
+                    _percentagem: percentagem,
+                    _qtdComprada: qtdComprada,
+                    _qtdTotal: qtdTotal
+                };
+            });
+
+            // 2. Atualizar Header Superior da Aba de Obras
+            setText('saldos-total-geral', formatarMoeda(totalGeralCusto));
+            setText('saldos-guardado', formatarMoeda(totalGeralInvestido));
+            let falta = totalGeralCusto - totalGeralInvestido;
+            if (falta < 0) falta = 0;
+            setText('saldos-falta', formatarMoeda(falta));
+
+            // 3. Renderização Condicional: Pastas de Categorias vs Obras da Categoria
+            if (!categoriaVisualizadaAtual) {
+                // VISÃO DE PASTAS (AGRUPADO)
+                const categoriasAgrupadas = {};
+                sonhosProcessados.forEach(s => {
+                    if(!categoriasAgrupadas[s.categoria]) {
+                        categoriasAgrupadas[s.categoria] = { nome: s.categoria, custo: 0, guardado: 0, count: 0 };
+                    }
+                    categoriasAgrupadas[s.categoria].custo += s._custoCalculado;
+                    categoriasAgrupadas[s.categoria].guardado += s._progressoCalculado;
+                    categoriasAgrupadas[s.categoria].count++;
+                });
+
+                Object.values(categoriasAgrupadas).forEach(cat => {
+                    let iconCat = '📌';
+                    if(cat.nome.includes('Casa')) iconCat = '🏠';
+                    if(cat.nome.includes('Reserva')) iconCat = '💰';
+                    if(cat.nome.includes('Lazer')) iconCat = '🍺';
+                    if(cat.nome.includes('Dívida')) iconCat = '💳';
+
+                    let progressoCat = cat.guardado > cat.custo ? cat.custo : cat.guardado;
+                    let percentCat = cat.custo > 0 ? Math.round((progressoCat / cat.custo) * 100) : 0;
+
+                    const card = document.createElement('div');
+                    card.className = "bg-[#151515] rounded-[24px] p-5 shadow-float border border-[#2C2C2E] cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
+                    card.onclick = () => selecionarCategoriaObras(cat.nome);
+                    card.innerHTML = `
+                        <div class="absolute bottom-0 left-0 w-full h-1.5 bg-[#1C1C1E]"><div class="h-full bg-app-orange transition-all duration-500" style="width: ${percentCat}%"></div></div>
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-10 h-10 rounded-full bg-[#1C1C1E] flex items-center justify-center shrink-0 border border-app-border text-[20px] shadow-sm">${iconCat}</div>
+                            <span class="text-[11px] font-bold text-app-sub bg-[#1C1C1E] px-2.5 py-1 rounded-md border border-app-border flex items-center gap-1"><i class="ph-bold ph-folders text-[10px]"></i> ${cat.count} plano(s)</span>
+                        </div>
+                        <div>
+                            <p class="text-[17px] font-black text-white leading-tight mb-1 truncate">${cat.nome}</p>
+                            <div class="flex justify-between items-end mt-2">
+                                <div class="min-w-0 pr-2">
+                                    <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest truncate">Custo da Categoria</p>
+                                    <p class="text-[15px] font-bold text-app-text truncate">${formatarMoeda(cat.custo)}</p>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <p class="text-[10px] font-bold ${percentCat === 100 ? 'text-app-green bg-app-green/10' : 'text-app-orange bg-app-orange/10'} px-2 py-0.5 rounded-md">${percentCat}%</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                // VISÃO DE OBRAS (DENTRO DA PASTA)
+                const btnVoltar = document.createElement('div');
+                btnVoltar.className = "col-span-full mb-3 flex items-center justify-between";
+                btnVoltar.innerHTML = `
+                    <button onclick="selecionarCategoriaObras(null)" class="text-app-sub hover:text-white text-[13px] font-bold flex items-center gap-1.5 transition-colors active:scale-95 bg-[#151515] border border-[#2C2C2E] px-3 py-1.5 rounded-xl shadow-sm">
+                        <i class="ph-bold ph-arrow-left"></i> Voltar às Pastas
+                    </button>
+                    <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest truncate max-w-[120px] text-right">${categoriaVisualizadaAtual}</span>
+                `;
+                container.appendChild(btnVoltar);
+
+                const sonhosDaCategoria = sonhosProcessados.filter(s => s.categoria === categoriaVisualizadaAtual);
+                
+                sonhosDaCategoria.forEach(sonho => {
                     let iconCat = '📌';
                     if(sonho.categoria.includes('Casa')) iconCat = '🏠';
                     if(sonho.categoria.includes('Reserva')) iconCat = '💰';
                     if(sonho.categoria.includes('Lazer')) iconCat = '🍺';
                     if(sonho.categoria.includes('Dívida')) iconCat = '💳';
+                    
                     let infoExtra = sonho.prioridade.split('(')[0];
                     if (sonho.complexidade === 'Composto') {
-                        infoExtra = `<span class="${qtdComprada === qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${qtdComprada}/${qtdTotal} items</span>`;
+                        infoExtra = `<span class="${sonho._qtdComprada === sonho._qtdTotal ? 'text-app-green' : 'text-app-blue'} font-bold">${sonho._qtdComprada}/${sonho._qtdTotal} items</span>`;
                     }
+                    
                     const card = document.createElement('div');
                     card.className = "bg-app-card rounded-[24px] p-5 shadow-float border border-app-border cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden flex flex-col justify-between min-h-[140px]";
                     card.onclick = () => abrirModalDetalhesSonho(sonho.id);
                     card.innerHTML = `
-                        <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${percentagem}%"></div></div>
+                        <div class="absolute bottom-0 left-0 w-full h-1 bg-[#151515]"><div class="h-full bg-app-blue transition-all duration-500" style="width: ${sonho._percentagem}%"></div></div>
                         <div class="flex justify-between items-start mb-2">
                             <div class="w-10 h-10 rounded-full bg-[#151515] flex items-center justify-center shrink-0 border border-[#2C2C2E] text-[20px]">${iconCat}</div>
                             <span class="text-[11px] font-bold text-app-sub bg-[#151515] px-2 py-1 rounded-md border border-[#2C2C2E]">${infoExtra}</span>
@@ -907,10 +999,10 @@
                             <div class="flex justify-between items-end">
                                 <div>
                                     <p class="text-[11px] text-app-sub font-medium uppercase tracking-widest">Falta</p>
-                                    <p class="text-[15px] font-bold text-app-text">${formatarMoeda(Math.max(0, custoTotalProjeto - progressoFinanceiroReal))}</p>
+                                    <p class="text-[15px] font-bold text-app-text">${formatarMoeda(Math.max(0, sonho._custoCalculado - sonho._progressoCalculado))}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-[10px] text-app-green font-bold bg-app-green/10 px-1.5 py-0.5 rounded">${percentagem}%</p>
+                                    <p class="text-[10px] text-app-green font-bold bg-app-green/10 px-1.5 py-0.5 rounded">${sonho._percentagem}%</p>
                                 </div>
                             </div>
                         </div>
@@ -918,11 +1010,6 @@
                     container.appendChild(card);
                 });
             }
-            setText('saldos-total-geral', formatarMoeda(totalGeralCusto));
-            setText('saldos-guardado', formatarMoeda(totalGeralInvestido));
-            let falta = totalGeralCusto - totalGeralInvestido;
-            if (falta < 0) falta = 0;
-            setText('saldos-falta', formatarMoeda(falta));
         }
 
         function renderizarUIConquistas() {
@@ -1793,7 +1880,10 @@
                 }
             }
 
-            if(idAba === 'saldos') buscarSonhos();
+            if(idAba === 'saldos') {
+                categoriaVisualizadaAtual = null; // Reseta a pasta visualizada ao entrar
+                buscarSonhos();
+            }
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
