@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -78,9 +78,9 @@
 
     <!-- DESKTOP NAV -->
     <nav class="hidden md:flex glass-nav shadow-sm px-6 py-3 justify-between items-center sticky top-0 z-40 border-b border-app-border w-full">
-        <div class="flex items-center gap-2 font-semibold text-lg tracking-tight">
-            <i class="ph-fill ph-planet text-app-blue text-2xl"></i>
-            Gestor<span class="text-app-blue">Pessoal</span>
+        <div class="flex items-center gap-2 font-bold text-xl tracking-tight">
+            <i class="ph-fill ph-planet text-app-blue text-[28px]"></i>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Gestor</span><span class="bg-clip-text text-transparent bg-gradient-to-r from-app-blue to-app-purple">Pessoal</span>
         </div>
         
         <div class="flex gap-4">
@@ -136,8 +136,8 @@
         <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clique no mês para ajustar entradas e saídas.</p>
+                    <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Timeline 2026</h2>
+                    <p class="text-[13px] font-medium text-app-sub mt-1">Clique no mês para ajustar entradas e saídas.</p>
                 </div>
             </div>
 
@@ -154,7 +154,7 @@
         <!-- ========================================== -->
         <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="flex justify-between items-center mb-5 px-1 w-full">
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Projetos Ativos</h2>
+                <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Projetos Ativos</h2>
                 <button onclick="buscarSonhos()" class="text-app-blue font-medium text-sm flex items-center gap-1 active:opacity-60"><i class="ph-bold ph-arrows-clockwise text-lg"></i> Atualizar</button>
             </div>
 
@@ -190,7 +190,7 @@
         <!-- ========================================== -->
         <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-5 px-1 text-center">
-                <h2 class="text-[22px] font-bold tracking-tight text-app-text">Centro de Lançamentos</h2>
+                <h2 class="text-[26px] font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Centro de Lançamentos</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-1">O ecossistema adapta-se às tuas entradas.</p>
             </div>
 
@@ -371,7 +371,7 @@
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-app-green/20 text-app-green mb-4 shadow-[0_0_20px_rgba(48,209,88,0.3)]">
                     <i class="ph-fill ph-trophy text-3xl"></i>
                 </div>
-                <h2 class="text-2xl font-bold tracking-tight text-app-text">Sala de Troféus</h2>
+                <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Sala de Troféus</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-1">Tudo o que já construíste e pagaste.</p>
             </div>
             
@@ -386,7 +386,7 @@
                     <i class="ph-fill ph-user text-4xl"></i>
                     <button onclick="abrirModal('modal-editar-perfil', 'modal-perfil-backdrop', 'modal-perfil-content')" class="absolute bottom-0 right-0 w-7 h-7 bg-app-blue text-white rounded-full flex items-center justify-center border-2 border-app-bg active:scale-95 transition-transform"><i class="ph-bold ph-pencil-simple text-[12px]"></i></button>
                 </div>
-                <h2 class="text-2xl font-bold tracking-tight text-app-text" id="display-user-nome">Utilizador</h2>
+                <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500" id="display-user-nome">Utilizador</h2>
                 <p class="text-[13px] text-app-sub mt-0.5 font-medium" id="display-user-email">A carregar...</p>
             </div>
 
@@ -429,7 +429,7 @@
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
-            <div class="flex justify-between items-center px-5 py-4 bg-app-card rounded-t-[32px] shrink-0 border-b border-app-border">
+            <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
                 <button onclick="guardarPerfil()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
@@ -451,7 +451,7 @@
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90vh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
-            <div class="flex justify-between items-center px-4 py-4 bg-app-card rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
+            <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
                 <span class="w-12"></span>
                 <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text" id="modal-title-header">Detalhes</h3>
                 <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
@@ -464,9 +464,13 @@
     <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE UPGRADE) -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col pb-safe w-full max-w-2xl mx-auto full-page-modal" id="modal-mes-content">
-            <!-- Header Premium Style - Slim Header -->
-            <div class="flex justify-between items-center px-5 py-3.5 bg-app-card shrink-0 sticky top-0 z-10 border-b border-app-border">
+        <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col pb-safe w-full max-w-2xl mx-auto full-page-modal relative" id="modal-mes-content">
+            
+            <!-- OVERLAY DA GAVETA PARA ESCURECER O FUNDO -->
+            <div id="drawer-inner-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 hidden transition-opacity duration-300 z-20" onclick="fecharResumoDrawer()"></div>
+
+            <!-- Header Premium Style - Slim Header com Glassmorphism -->
+            <div class="flex justify-between items-center px-5 py-3.5 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 sticky top-0 z-10 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1" id="display-mes-nome">Ajustar Mês</h3>
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Concluído</button>
@@ -474,7 +478,6 @@
             
             <div class="px-5 pt-10 pb-5 overflow-y-auto no-scrollbar w-full bg-black flex-1" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
-                <!-- Inputs Ocultos para manter lógica base -->
                 <input type="hidden" id="edit-mes-entradas">
                 <input type="hidden" id="edit-mes-fixos">
                 <input type="hidden" id="edit-mes-parcela">
@@ -501,8 +504,8 @@
                     <div class="flex justify-between items-end mb-2.5 px-2 w-full">
                         <label class="text-[10px] font-bold text-app-sub uppercase tracking-widest">Extrato de Lançamentos</label>
                         <div class="flex gap-1.5">
-                            <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-app-green/10 px-2.5 py-1.5 rounded-xl active:opacity-60">+ Receita</button>
-                            <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60">+ Gasto</button>
+                            <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-app-green/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Receita</button>
+                            <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Gasto</button>
                         </div>
                     </div>
                     
@@ -532,7 +535,7 @@
                 <div id="resumo-compacto" class="px-6 flex justify-between items-center transition-opacity duration-300 opacity-100 shrink-0" onclick="abrirResumoDrawer()">
                     <div class="text-left">
                         <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Real Entrou</p>
-                        <p class="text-[14px] font-bold text-app-green" id="resumo-comp-entradas">R$ 0,00</p>
+                        <p class="text-[14px] font-bold text-app-green transition-colors" id="resumo-comp-entradas">R$ 0,00</p>
                     </div>
                     <div class="text-center">
                         <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Saldo Atual</p>
@@ -540,7 +543,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-[10px] text-app-sub font-bold uppercase tracking-widest">Real Saiu</p>
-                        <p class="text-[14px] font-bold text-app-red" id="resumo-comp-saidas">R$ 0,00</p>
+                        <p class="text-[14px] font-bold text-app-red transition-colors" id="resumo-comp-saidas">R$ 0,00</p>
                     </div>
                 </div>
 
@@ -559,11 +562,11 @@
                         </div>
                         <div class="flex justify-between text-[12px] mb-1">
                             <span class="text-app-sub font-medium">Já na conta (Real)</span>
-                            <span class="text-app-green font-bold" id="resumo-exp-real-in">R$ 0,00</span>
+                            <span class="text-app-green font-bold transition-colors" id="resumo-exp-real-in">R$ 0,00</span>
                         </div>
                         <div class="flex justify-between text-[12px]">
                             <span class="text-app-sub font-medium">A receber (Pendente)</span>
-                            <span class="text-app-sub font-bold" id="resumo-exp-pend-in">R$ 0,00</span>
+                            <span class="text-app-sub font-bold transition-colors" id="resumo-exp-pend-in">R$ 0,00</span>
                         </div>
                     </div>
 
@@ -575,11 +578,11 @@
                         </div>
                         <div class="flex justify-between text-[12px] mb-1">
                             <span class="text-app-sub font-medium">Já pago (Real)</span>
-                            <span class="text-app-red font-bold" id="resumo-exp-real-out">R$ 0,00</span>
+                            <span class="text-app-red font-bold transition-colors" id="resumo-exp-real-out">R$ 0,00</span>
                         </div>
                         <div class="flex justify-between text-[12px]">
                             <span class="text-app-sub font-medium">A pagar (Pendente)</span>
-                            <span class="text-app-sub font-bold" id="resumo-exp-pend-out">R$ 0,00</span>
+                            <span class="text-app-sub font-bold transition-colors" id="resumo-exp-pend-out">R$ 0,00</span>
                         </div>
                     </div>
 
@@ -1220,8 +1223,15 @@
             const drawer = document.getElementById('resumo-drawer');
             const compact = document.getElementById('resumo-compacto');
             const expanded = document.getElementById('resumo-expandido');
+            const innerBackdrop = document.getElementById('drawer-inner-backdrop');
             
             drawer.style.height = '85vh';
+            
+            if(innerBackdrop) {
+                innerBackdrop.classList.remove('hidden');
+                setTimeout(() => innerBackdrop.classList.remove('opacity-0'), 10);
+            }
+
             compact.classList.add('opacity-0');
             setTimeout(() => {
                 compact.classList.add('hidden');
@@ -1234,8 +1244,15 @@
             const drawer = document.getElementById('resumo-drawer');
             const compact = document.getElementById('resumo-compacto');
             const expanded = document.getElementById('resumo-expandido');
+            const innerBackdrop = document.getElementById('drawer-inner-backdrop');
             
             drawer.style.height = '95px';
+            
+            if(innerBackdrop) {
+                innerBackdrop.classList.add('opacity-0');
+                setTimeout(() => innerBackdrop.classList.add('hidden'), 300);
+            }
+
             expanded.classList.add('opacity-0');
             setTimeout(() => {
                 expanded.classList.add('hidden');
@@ -1258,20 +1275,20 @@
                 div.className = "flex items-center gap-3 bg-app-card border border-app-border rounded-[20px] p-4 shadow-float animate-fadeIn transition-all";
                 
                 div.innerHTML = `
-                    <button onclick="extrasTemp[${index}].realizado = !extrasTemp[${index}].realizado; renderizarExtrasEditUI();" class="shrink-0">
+                    <button onclick="extrasTemp[${index}].realizado = !extrasTemp[${index}].realizado; renderizarExtrasEditUI(); atualizarResumoModalEdicao();" class="shrink-0 transition-transform active:scale-90">
                         <i class="ph-fill ${ext.realizado ? 'ph-check-circle text-app-green' : 'ph-circle text-app-sub'} text-2xl"></i>
                     </button>
                     
                     <div class="flex-1 min-w-0">
                         <input type="text" value="${ext.descricao}" placeholder="Nome do lançamento..." 
                                oninput="extrasTemp[${index}].descricao = this.value" 
-                               class="w-full text-[15px] bg-transparent outline-none font-semibold ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">
+                               class="w-full text-[15px] bg-transparent outline-none font-semibold transition-all ${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text'}">
                     </div>
                     
                     <div class="flex items-center gap-2">
                         <div class="text-right">
                             <span class="text-[10px] uppercase font-bold text-app-sub block">${ext.tipo === 'receita' ? 'Entrada' : 'Saída'}</span>
-                            <div class="flex items-center font-black ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-40' : ''}">
+                            <div class="flex items-center font-black transition-all ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-40' : ''}">
                                 <span class="text-xs mr-1">R$</span>
                                 <input type="number" value="${ext.valor || ''}" placeholder="0,00" 
                                        oninput="extrasTemp[${index}].valor = parseFloat(this.value)||0; atualizarResumoModalEdicao();" 
