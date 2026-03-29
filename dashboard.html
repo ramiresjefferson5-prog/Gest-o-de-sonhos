@@ -221,9 +221,9 @@
                             <label class="w-28 shrink-0 font-medium text-[15px] text-app-text">Prioridade</label>
                             <div class="flex-1 relative flex items-center justify-end">
                                 <select id="val-prioridade" class="w-full bg-transparent text-[15px] text-app-orange outline-none pr-5 cursor-pointer z-10 font-bold">
-                                    <option value="Alta (Proteção)">🔴 Alta (Urgente/Proteção)</option>
-                                    <option value="Média (Conforto)">🟡 Média (Conforto/Acabamento)</option>
-                                    <option value="Baixa (Futuro)">🟢 Baixa (Futuro/Estética)</option>
+                                    <option value="Alta (Proteção)">🔴 Alta </option>
+                                    <option value="Média (Conforto)">🟡 Média </option>
+                                    <option value="Baixa (Futuro)">🟢 Baixa </option>
                                 </select>
                                 <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                             </div>
@@ -481,25 +481,25 @@
                 <div class="bg-app-card rounded-2xl border border-app-border overflow-hidden grouped-list text-[15px] shadow-float mb-6 w-full">
                     
                     <div class="flex items-center px-4 py-4 border-b border-app-border bg-[#0A84FF]/10">
-                        <label class="w-36 shrink-0 font-bold text-app-blue">Forçar Saldo Inicial</label>
+                        <label class="w-36 shrink-0 font-bold text-app-blue">Saldo Inicial</label>
                         <input type="number" id="edit-mes-saldo-inicial" placeholder="Automático (Vem do anterior)" class="flex-1 min-w-0 bg-transparent text-right font-black text-app-blue text-lg outline-none placeholder-app-blue/40">
                     </div>
 
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
-                        <label class="w-32 shrink-0 font-medium">Entradas Base (R$)</label>
+                        <label class="w-32 shrink-0 font-medium">Entradas(R$)</label>
                         <input type="number" id="edit-mes-entradas" class="flex-1 min-w-0 bg-transparent text-right font-bold text-app-green text-lg outline-none">
                     </div>
                     <div class="flex items-center px-4 py-4 border-b border-app-border">
-                        <label class="w-32 shrink-0 font-medium">Fixos Base (R$)</label>
+                        <label class="w-32 shrink-0 font-medium">Saídas(R$)</label>
                         <input type="number" id="edit-mes-fixos" class="flex-1 min-w-0 bg-transparent text-right text-app-red font-medium outline-none">
                     </div>
                     <div class="flex items-center px-4 py-4">
-                        <label class="w-32 shrink-0 font-medium">Empréstimo (R$)</label>
+                        <label class="w-32 shrink-0 font-medium">Empréstimo(R$)</label>
                         <input type="number" id="edit-mes-parcela" class="flex-1 min-w-0 bg-transparent text-right text-app-orange font-medium outline-none">
                     </div>
                 </div>
                 <div class="flex justify-between items-end mb-2 px-1 w-full">
-                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lançamentos Extras</h4>
+                    <h4 class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Lançamentos</h4>
                     <div class="flex gap-2 shrink-0">
                         <button onclick="adicionarExtraMes('receita')" class="text-app-green text-[11px] font-bold bg-app-green/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Receita</button>
                         <button onclick="adicionarExtraMes('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/20 px-2.5 py-1.5 rounded-lg active:opacity-60 transition-opacity">+ Gasto</button>
@@ -958,9 +958,9 @@
                         <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full"><i class="ph-bold ph-caret-right"></i></button>
                     </div>
                     <div class="flex justify-between items-end relative z-10 pb-2">
-                        <div class="text-left flex-1"><p class="text-[10px] uppercase opacity-70">Inicial Real</p><p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p></div>
-                        <div class="text-center flex-[1.5]"><p class="text-[12px] font-bold">Saldo Carteira</p><p class="font-black text-[22px]" id="resumo-val-atual">R$ 0</p></div>
-                        <div class="text-right flex-1"><p class="text-[10px] uppercase opacity-70">Previsto Fim</p><p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p></div>
+                        <div class="text-left flex-1"><p class="text-[10px] uppercase opacity-70">Inicial</p><p class="font-bold text-[13px]" id="resumo-val-inicial">R$ 0</p></div>
+                        <div class="text-center flex-[1.5]"><p class="text-[12px] font-bold">Saldo atual</p><p class="font-black text-[22px]" id="resumo-val-atual">R$ 0</p></div>
+                        <div class="text-right flex-1"><p class="text-[10px] uppercase opacity-70">Previsto</p><p class="font-bold text-[13px]" id="resumo-val-previsto">R$ 0</p></div>
                     </div>
                 </div>
             `;
