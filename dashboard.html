@@ -42,11 +42,11 @@
         .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
         .aba-oculta { display: none; }
 
-        /* BLINDAGEM DA ANIMAÇÃO */
+        /* BLINDAGEM DA ANIMAÇÃO DO MODAL COM PRIORIDADE MÁXIMA */
         .bottom-sheet-up { transform: translateY(0%) !important; }
         .bottom-sheet-down { transform: translateY(100%) !important; }
 
-        /* ESTILO FULL PAGE: Seguro para Mobile Safari/Chrome */
+        /* Garante que o modal use a altura correta do dispositivo, sem barras cortadas */
         .full-page-modal { height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
 
         .glass-nav { 
@@ -131,9 +131,7 @@
 
     <main class="max-w-xl mx-auto w-full overflow-hidden" id="conteudo-principal">
         
-        <!-- ========================================== -->
         <!-- ABA 1: PREVISÕES -->
-        <!-- ========================================== -->
         <section id="aba-previsoes" class="aba-ativa px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
@@ -146,9 +144,7 @@
             <div class="relative border-l-2 border-app-border ml-4 space-y-8 pb-8" id="timeline-container"></div>
         </section>
 
-        <!-- ========================================== -->
         <!-- ABA 2: PORTFÓLIO -->
-        <!-- ========================================== -->
         <section id="aba-saldos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="flex justify-between items-center mb-5 px-1 w-full">
                 <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Projetos Ativos</h2>
@@ -157,7 +153,6 @@
 
             <div class="bg-gradient-to-br from-[#1C1C1E] to-[#2C2C2E] rounded-[24px] p-6 mb-8 shadow-[0_15px_30px_rgba(0,0,0,0.5)] text-white w-full relative overflow-hidden border border-[#38383A]">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                
                 <div class="flex justify-between items-start mb-1 relative z-10">
                     <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Custo Total Projetos</p>
                     <span class="bg-white/10 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase border border-white/10 backdrop-blur-md">Status Geral</span>
@@ -182,9 +177,7 @@
             </div>
         </section>
 
-        <!-- ========================================== -->
         <!-- ABA 3: INSERIR -->
-        <!-- ========================================== -->
         <section id="aba-sonhos" class="aba-oculta px-4 pt-6 pb-8 md:p-8 w-full">
             <div class="mb-5 px-1 text-center">
                 <h2 class="text-[26px] font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Centro de Lançamentos</h2>
@@ -363,8 +356,6 @@
                     </div>
                 </div>
 
-                <div id="msg-form-rapido" class="hidden text-sm text-center py-3 px-3 rounded-xl font-medium w-full"></div>
-
                 <button type="submit" id="btn-guardar-rapido" class="w-full bg-[#1C1C1E] border border-app-border text-white font-bold py-4 rounded-[20px] shadow-float transition-colors active:bg-[#2C2C2E] text-[16px] mb-6">
                     Lançar no Ecossistema
                 </button>
@@ -380,9 +371,7 @@
                 <h2 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">Sala de Troféus</h2>
                 <p class="text-[13px] font-medium text-app-sub mt-1">Tudo o que já construíste e pagaste.</p>
             </div>
-            
-            <div id="lista-conquistas-container" class="space-y-4 w-full">
-            </div>
+            <div id="lista-conquistas-container" class="space-y-4 w-full"></div>
         </section>
 
         <!-- ABA 5: PERFIL -->
@@ -431,18 +420,18 @@
 
     </main>
 
-    <!-- ÚNICA DECLARAÇÃO DOS MODAIS -->
+    <!-- MODAIS REESCRITOS COM ARQUITETURA FLEXBOX SUPERIOR (À prova de falhas Mobile) -->
     
     <!-- Modal Perfil -->
-    <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
+    <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
+        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-perfil-content">
             <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-perfil')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">O Teu Perfil</h3>
                 <button onclick="guardarPerfil()" class="text-app-blue font-bold text-[16px] active:opacity-60">Gravar</button>
             </div>
-            <div class="px-5 py-6 overscroll-contain overflow-y-auto">
+            <div class="px-5 py-6 pb-[calc(40px+env(safe-area-inset-bottom))] overscroll-contain overflow-y-auto">
                 <div class="mb-4">
                     <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Como queres ser chamado?</label>
                     <input type="text" id="input-perfil-nome" placeholder="O teu nome ou apelido" class="w-full bg-[#151515] border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-text shadow-sm focus:border-app-blue transition-colors min-w-0">
@@ -450,38 +439,35 @@
                 <div class="mb-6">
                     <label class="text-[11px] font-bold text-app-sub uppercase tracking-widest mb-1.5 ml-2 block">Email de Registo</label>
                     <input type="text" id="input-perfil-email" disabled class="w-full bg-[#151515]/50 border border-app-border rounded-[16px] px-4 py-3.5 text-[15px] outline-none text-app-sub cursor-not-allowed min-w-0">
-                    <p class="text-[11px] text-app-sub mt-2 ml-2">O email não pode ser alterado por motivos de segurança.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Detalhes -->
-    <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
+    <!-- Modal Detalhes da Obra -->
+    <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
+        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-content">
             <div class="flex justify-between items-center px-4 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 sticky top-0 z-20 border-b border-app-border">
                 <span class="w-12"></span>
                 <h3 class="font-bold text-[16px] text-center truncate px-2 text-app-text flex-1 min-w-0" id="modal-title-header">Detalhes</h3>
                 <div class="w-12 text-right"><button onclick="fecharModal('modal-detalhes')" class="w-7 h-7 bg-[#2C2C2E] rounded-full inline-flex items-center justify-center text-app-sub active:bg-[#38383A]"><i class="ph-bold ph-x text-xs"></i></button></div>
             </div>
-            <div id="modal-body" class="px-5 py-6 overflow-y-auto no-scrollbar overscroll-contain space-y-6">
-            </div>
+            <div id="modal-body" class="px-5 py-6 pb-[calc(40px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain space-y-6"></div>
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE) -->
-    <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
+    <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE - Flexbox Upgrade) -->
+    <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
         
-        <!-- REMOVIDO: O atributo 'relative' que entrava em conflito com o 'absolute bottom-0' -->
-        <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl mx-auto full-page-modal" id="modal-mes-content">
+        <div class="relative bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl h-[100dvh]" id="modal-mes-content">
             
             <div id="drawer-inner-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm opacity-0 hidden transition-opacity duration-300 z-20" onclick="fecharResumoDrawer()"></div>
 
             <div class="flex justify-between items-center px-5 py-3.5 bg-[#1C1C1E]/90 backdrop-blur-xl shrink-0 sticky top-0 z-10 border-b border-app-border">
                 <button onclick="fecharModal('modal-editar-mes')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
-                <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Ajustar Mês</h3>
+                <h3 class="font-bold text-[16px] text-center text-app-text flex-1" id="display-mes-nome">Ajustar Mês</h3>
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Concluído</button>
             </div>
             
@@ -515,7 +501,6 @@
                             <button onclick="abrirNovoLancamentoExtra('gasto')" class="text-app-red text-[11px] font-bold bg-app-red/10 px-2.5 py-1.5 rounded-xl active:opacity-60 transition-transform active:scale-95">+ Gasto</button>
                         </div>
                     </div>
-                    
                     <div id="lista-extras-mes" class="space-y-2.5 w-full"></div>
                 </div>
 
@@ -525,8 +510,8 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ GAVETA DO MÊS -->
-            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden absolute bottom-0 left-0 right-0" style="height: 95px; padding-bottom: env(safe-area-inset-bottom);">
+            <!-- RODAPÉ GAVETA DO MÊS (Posicionado via Flexbox interno, muito mais seguro) -->
+            <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden" style="height: 95px; padding-bottom: env(safe-area-inset-bottom); margin-top: auto;">
                 <div class="w-full flex justify-center pt-3 pb-3 cursor-pointer shrink-0" id="drawer-handle" 
                      onclick="toggleResumoDrawer()" 
                      ontouchstart="window.startYDrawer = event.touches[0].clientY" 
@@ -606,9 +591,9 @@
     </div>
 
     <!-- MODAL NOVO LANÇAMENTO EXTRA COM PROJEÇÃO -->
-    <div id="modal-novo-extra" class="fixed inset-0 z-[120] hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-extra-backdrop" onclick="fecharModal('modal-novo-extra')"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl mx-auto border-t border-app-border max-h-[90dvh]" id="modal-extra-content">
+    <div id="modal-novo-extra" class="fixed inset-0 z-[120] hidden flex items-end justify-center">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity opacity-0" id="modal-extra-backdrop" onclick="fecharModal('modal-novo-extra')"></div>
+        <div class="relative bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl border-t border-app-border max-h-[90dvh]" id="modal-extra-content">
             <div class="flex justify-between items-center px-5 py-4 bg-[#1C1C1E]/90 backdrop-blur-xl rounded-t-[32px] shrink-0 border-b border-app-border">
                 <button onclick="fecharModal('modal-novo-extra')" class="text-app-blue font-medium text-[16px] active:opacity-60">Cancelar</button>
                 <h3 class="font-bold text-[16px] text-center text-app-text flex-1">Novo Lançamento</h3>
@@ -660,7 +645,7 @@
         </div>
     </div>
 
-    <!-- ÚNICA DECLARAÇÃO DO SCRIPT (Lógica Base) -->
+    <!-- SCRIPT BLINDADO -->
     <script>
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
@@ -680,14 +665,14 @@
             }
         }
 
-        function guardarPerfil() {
+        window.guardarPerfil = function() {
             const nome = document.getElementById('input-perfil-nome').value;
             localStorage.setItem('gestor_nome_perfil', nome);
             document.getElementById('display-user-nome').innerText = nome || "Utilizador";
             fecharModal('modal-editar-perfil');
         }
 
-        function limparHistoricoConfirmacao() {
+        window.limparHistoricoConfirmacao = function() {
             if(confirm("⚠️ ATENÇÃO MÁXIMA: Queres apagar TODO o teu histórico, obras, projetos e o fluxo de caixa inteiro para começar do zero? \n\nEsta ação não pode ser desfeita.")) {
                 limparHistoricoReal();
             }
@@ -701,7 +686,7 @@
             window.location.reload(); 
         }
 
-        function mudarTipoRegisto(tipo) {
+        window.mudarTipoRegisto = function(tipo) {
             const btnObra = document.getElementById('btn-tab-obra');
             const btnRapido = document.getElementById('btn-tab-rapido');
             const formObra = document.getElementById('form-sonho');
@@ -718,7 +703,7 @@
             }
         }
 
-        function atualizarCorRapido() {
+        window.atualizarCorRapido = function() {
             const select = document.getElementById('val-tipo-rapido');
             const input = document.getElementById('input-valor-rapido');
             if(select.value === 'gasto') {
@@ -747,11 +732,11 @@
             return total;
         }
 
-        inputPreco.addEventListener('input', calcularTotalFormulario);
-        inputQtd.addEventListener('input', calcularTotalFormulario);
-        precoServico.addEventListener('input', calcularTotalFormulario);
+        if(inputPreco) inputPreco.addEventListener('input', calcularTotalFormulario);
+        if(inputQtd) inputQtd.addEventListener('input', calcularTotalFormulario);
+        if(precoServico) precoServico.addEventListener('input', calcularTotalFormulario);
 
-        function verificarServico() {
+        window.verificarServico = function() {
             if(viabilidadeSelect.value === 'Nao') {
                 document.getElementById('div-servico').classList.remove('hidden');
             } else {
@@ -761,7 +746,7 @@
             calcularTotalFormulario();
         }
 
-        function verificarComplexidade() {
+        window.verificarComplexidade = function() {
             if (complexidadeSelect.value === 'Composto') {
                 document.getElementById('div-composto').classList.remove('hidden');
                 document.getElementById('div-simples').classList.add('hidden');
@@ -775,7 +760,7 @@
             calcularTotalFormulario();
         }
 
-        function adicionarParte() {
+        window.adicionarParte = function() {
             const div = document.createElement('div');
             div.className = 'flex items-center px-4 py-3 bg-[#2C2C2E] rounded-[14px] border border-app-border shadow-sm w-full gap-3 transition-all';
             div.innerHTML = `
@@ -930,7 +915,7 @@
             }
         }
 
-        function abrirModalDetalhesSonho(sonhoId) {
+        window.abrirModalDetalhesSonho = function(sonhoId) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho) return;
             document.getElementById('modal-title-header').innerText = sonho.nome;
@@ -1009,7 +994,7 @@
             abrirModal('modal-detalhes', 'modal-backdrop', 'modal-content');
         }
 
-        async function toggleItemComprado(sonhoId, itemIndex, novoStatus) {
+        window.toggleItemComprado = async function(sonhoId, itemIndex, novoStatus) {
             const sonho = sonhosGlobais.find(s => s.id === sonhoId);
             if(!sonho || !sonho.itens_compostos) return;
             const custoDoItem = parseFloat(sonho.itens_compostos[itemIndex].custo) || 0;
@@ -1022,65 +1007,67 @@
             await clienteSupabase.from('sonhos').update({ itens_compostos: sonho.itens_compostos, valor_guardado: caixaAtual }).eq('id', sonhoId);
         }
 
-        async function finalizarConquista(sonhoId) {
+        window.finalizarConquista = async function(sonhoId) {
             fecharModal('modal-detalhes');
             await clienteSupabase.from('sonhos').update({ status: 'concluidos' }).eq('id', sonhoId);
             buscarSonhos();
         }
 
-        const formSonho = document.getElementById('form-sonho');
-        formSonho.onsubmit = async (e) => {
-            e.preventDefault();
-            if(!idUtilizadorAtual) return;
-            let itensComp = null;
-            if(complexidadeSelect.value === 'Composto'){
-                itensComp = [];
-                document.querySelectorAll('#lista-partes > div').forEach(l => {
-                    itensComp.push({ nome: l.querySelector('.nome-parte').value, custo: parseFloat(l.querySelector('.custo-parte').value) || 0, comprado: false });
-                });
-            }
-            const dados = {
-                user_id: idUtilizadorAtual,
-                nome: document.getElementById('input-nome').value,
-                custo: calcularTotalFormulario(),
-                valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
-                categoria: document.getElementById('val-categoria').value,
-                viabilidade: document.getElementById('val-viabilidade').value,
-                prioridade: document.getElementById('val-prioridade').value,
-                complexidade: document.getElementById('val-complexidade').value,
-                preco_servico: parseFloat(precoServico.value) || 0,
-                tempo_servico: document.getElementById('input-tempo-servico').value,
-                itens_compostos: itensComp
+        if (document.getElementById('form-sonho')) {
+            document.getElementById('form-sonho').onsubmit = async (e) => {
+                e.preventDefault();
+                if(!idUtilizadorAtual) return;
+                let itensComp = null;
+                if(complexidadeSelect.value === 'Composto'){
+                    itensComp = [];
+                    document.querySelectorAll('#lista-partes > div').forEach(l => {
+                        itensComp.push({ nome: l.querySelector('.nome-parte').value, custo: parseFloat(l.querySelector('.custo-parte').value) || 0, comprado: false });
+                    });
+                }
+                const dados = {
+                    user_id: idUtilizadorAtual,
+                    nome: document.getElementById('input-nome').value,
+                    custo: calcularTotalFormulario(),
+                    valor_guardado: parseFloat(document.getElementById('input-guardado').value) || 0,
+                    categoria: document.getElementById('val-categoria').value,
+                    viabilidade: document.getElementById('val-viabilidade').value,
+                    prioridade: document.getElementById('val-prioridade').value,
+                    complexidade: document.getElementById('val-complexidade').value,
+                    preco_servico: parseFloat(precoServico.value) || 0,
+                    tempo_servico: document.getElementById('input-tempo-servico').value,
+                    itens_compostos: itensComp
+                };
+                await clienteSupabase.from('sonhos').insert([dados]);
+                document.getElementById('form-sonho').reset(); buscarSonhos(); mudarAba('saldos');
             };
-            await clienteSupabase.from('sonhos').insert([dados]);
-            formSonho.reset(); buscarSonhos(); mudarAba('saldos');
-        };
+        }
 
-        const formRapido = document.getElementById('form-rapido');
-        formRapido.onsubmit = async (e) => {
-            e.preventDefault();
-            if(!idUtilizadorAtual) return;
-            const mesAlvo = document.getElementById('val-mes-rapido').value;
-            const tipo = document.getElementById('val-tipo-rapido').value;
-            const valor = parseFloat(document.getElementById('input-valor-rapido').value);
-            const desc = document.getElementById('input-desc-rapido').value;
-            const sonhoId = document.getElementById('val-obra-rapido').value; 
-            
-            const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
-            if (index !== -1) {
-                const mesData = dadosTimeline[index];
-                const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: true, sonho_id: sonhoId };
-                let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
-                const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
-                const payload = { user_id: idUtilizadorAtual, mes_id: mesAlvo, entradas: mesData.entradas, fixos: mesData.fixos, parcela: mesData.parcela, observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }), saldo_inicial: mesData.saldo_inicial, extras: novosExtras };
+        if (document.getElementById('form-rapido')) {
+            document.getElementById('form-rapido').onsubmit = async (e) => {
+                e.preventDefault();
+                if(!idUtilizadorAtual) return;
+                const mesAlvo = document.getElementById('val-mes-rapido').value;
+                const tipo = document.getElementById('val-tipo-rapido').value;
+                const valor = parseFloat(document.getElementById('input-valor-rapido').value);
+                const desc = document.getElementById('input-desc-rapido').value;
+                const sonhoId = document.getElementById('val-obra-rapido').value; 
                 
-                await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
-                dadosTimeline[index].extras = novosExtras; 
-                
-                renderizarTimelineUI(); 
-                buscarSonhos(); 
-                formRapido.reset(); 
-                mudarAba('previsoes');
+                const index = dadosTimeline.findIndex(m => m.id === mesAlvo);
+                if (index !== -1) {
+                    const mesData = dadosTimeline[index];
+                    const novoExtra = { id: Date.now().toString(), tipo: tipo, descricao: desc, valor: valor, realizado: true, sonho_id: sonhoId };
+                    let novosExtras = Array.isArray(mesData.extras) ? [...mesData.extras, novoExtra] : [novoExtra];
+                    const baseOk = mesData.base_ok || { entradas: false, fixos: false, parcela: false };
+                    const payload = { user_id: idUtilizadorAtual, mes_id: mesAlvo, entradas: mesData.entradas, fixos: mesData.fixos, parcela: mesData.parcela, observacoes: JSON.stringify({ texto: mesData.obs, base_ok: baseOk }), saldo_inicial: mesData.saldo_inicial, extras: novosExtras };
+                    
+                    await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
+                    dadosTimeline[index].extras = novosExtras; 
+                    
+                    renderizarTimelineUI(); 
+                    buscarSonhos(); 
+                    document.getElementById('form-rapido').reset(); 
+                    mudarAba('previsoes');
+                }
             }
         }
 
@@ -1143,23 +1130,7 @@
             renderizarTimelineUI();
         }
 
-        async function toggleRealizado(mesId, tipo, extraId = null) {
-            const index = dadosTimeline.findIndex(m => m.id === mesId);
-            if(index === -1) return;
-            const mes = dadosTimeline[index];
-            if(tipo === 'entradas') mes.base_ok.entradas = !mes.base_ok.entradas;
-            else if(tipo === 'fixos') mes.base_ok.fixos = !mes.base_ok.fixos;
-            else if(tipo === 'parcela') mes.base_ok.parcela = !mes.base_ok.parcela;
-            else if(tipo === 'extra' && extraId) {
-                const ext = mes.extras.find(e => e.id === extraId);
-                if(ext) ext.realizado = !ext.realizado;
-            }
-            renderizarTimelineUI();
-            const payload = { user_id: idUtilizadorAtual, mes_id: mes.id, entradas: mes.entradas, fixos: mes.fixos, parcela: mes.parcela, observacoes: JSON.stringify({ texto: mes.obs, base_ok: mes.base_ok }), saldo_inicial: mes.saldo_inicial, extras: mes.extras };
-            await clienteSupabase.from('fluxo_caixa').upsert(payload, { onConflict: 'user_id, mes_id' });
-        }
-
-        function mudarMesResumo(dir) {
+        window.mudarMesResumo = function(dir) {
             mesResumoIndex += dir;
             if(mesResumoIndex < 0) mesResumoIndex = 0;
             if(mesResumoIndex >= dadosTimeline.length) mesResumoIndex = dadosTimeline.length - 1;
@@ -1177,21 +1148,24 @@
 
         function renderizarTimelineUI() {
             const resumoContainer = document.getElementById('resumo-timeline-container');
-            resumoContainer.innerHTML = `
-                <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
-                    <div class="flex justify-between items-center mb-6 relative z-10">
-                        <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full active:scale-95 transition-transform"><i class="ph-bold ph-caret-left"></i></button>
-                        <h3 class="font-bold text-[18px]" id="resumo-mes-titulo">Mês</h3>
-                        <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full active:scale-95 transition-transform"><i class="ph-bold ph-caret-right"></i></button>
+            if(resumoContainer) {
+                resumoContainer.innerHTML = `
+                    <div class="bg-[#0A84FF] rounded-[24px] p-5 shadow-[0_15px_30px_rgba(10,132,255,0.25)] text-white w-full relative overflow-hidden mb-8 border border-white/10">
+                        <div class="flex justify-between items-center mb-6 relative z-10">
+                            <button onclick="mudarMesResumo(-1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full active:scale-95 transition-transform"><i class="ph-bold ph-caret-left"></i></button>
+                            <h3 class="font-bold text-[18px]" id="resumo-mes-titulo">Mês</h3>
+                            <button onclick="mudarMesResumo(1)" class="w-8 h-8 flex items-center justify-center bg-white/20 rounded-full active:scale-95 transition-transform"><i class="ph-bold ph-caret-right"></i></button>
+                        </div>
+                        <div class="flex justify-between items-end relative z-10 pb-2">
+                            <div class="text-left flex-1 min-w-0"><p class="text-[10px] uppercase opacity-70 truncate">Inicial</p><p class="font-bold text-[13px] truncate" id="resumo-val-inicial">R$ 0</p></div>
+                            <div class="text-center flex-[1.5] min-w-0 px-1"><p class="text-[12px] font-bold truncate">Saldo atual</p><p class="font-black text-[22px] truncate" id="resumo-val-atual">R$ 0</p></div>
+                            <div class="text-right flex-1 min-w-0"><p class="text-[10px] uppercase opacity-70 truncate">Previsto</p><p class="font-bold text-[13px] truncate" id="resumo-val-previsto">R$ 0</p></div>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-end relative z-10 pb-2">
-                        <div class="text-left flex-1 min-w-0"><p class="text-[10px] uppercase opacity-70 truncate">Inicial</p><p class="font-bold text-[13px] truncate" id="resumo-val-inicial">R$ 0</p></div>
-                        <div class="text-center flex-[1.5] min-w-0 px-1"><p class="text-[12px] font-bold truncate">Saldo atual</p><p class="font-black text-[22px] truncate" id="resumo-val-atual">R$ 0</p></div>
-                        <div class="text-right flex-1 min-w-0"><p class="text-[10px] uppercase opacity-70 truncate">Previsto</p><p class="font-bold text-[13px] truncate" id="resumo-val-previsto">R$ 0</p></div>
-                    </div>
-                </div>
-            `;
+                `;
+            }
             const container = document.getElementById('timeline-container');
+            if(!container) return;
             container.innerHTML = '';
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
@@ -1230,7 +1204,8 @@
                     <span class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-${prev.cor} ring-4 ring-black"></span>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-[17px] font-bold text-app-text flex items-center min-w-0 pr-2 truncate">${prev.mes} ${badgeHTML}</h4>
-                        <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded shrink-0">Ajustar</button>
+                        <!-- O Botão 'Ajustar' foi neutralizado para o clique principal não falhar -->
+                        <button class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded shrink-0 pointer-events-none">Ajustar</button>
                     </div>
                     <div onclick="abrirEdicaoMes('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full cursor-pointer active:opacity-80 transition-opacity">
                         <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5 pointer-events-none">
@@ -1254,10 +1229,13 @@
         }
 
         let extrasTemp = [];
-        function abrirEdicaoMes(idMes) {
+        
+        // FUNÇÃO BLINDADA COM ALERTA PARA NÃO FALHAR EM SILÊNCIO
+        window.abrirEdicaoMes = function(idMes) {
             try {
                 const prev = dadosTimeline.find(m => m.id === idMes);
-                if(!prev) return;
+                if(!prev) { alert("Erro de Memória: Mês não encontrado."); return; }
+                
                 document.getElementById('display-mes-nome').innerText = prev.mes;
                 document.getElementById('edit-mes-id').value = prev.id;
                 document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial !== null ? prev.saldo_inicial : '';
@@ -1266,18 +1244,20 @@
                 document.getElementById('edit-mes-parcela').value = prev.parcela;
                 document.getElementById('edit-mes-obs').value = prev.obs || '';
                 extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
+                
                 renderizarExtrasEditUI();
                 fecharResumoDrawer(); 
                 abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
                 atualizarResumoModalEdicao(); 
             } catch (erro) {
-                console.error("Erro seguro ao abrir o mês:", erro);
+                alert("Erro ao abrir mês: " + erro.message);
+                console.error(erro);
             }
         }
 
         let tipoNovoExtra = 'receita';
         
-        function verificarRecorrenciaExtra() {
+        window.verificarRecorrenciaExtra = function() {
             const rec = document.getElementById('val-extra-recorrencia').value;
             if(rec === 'parcela') {
                 document.getElementById('div-extra-parcelas').classList.remove('hidden');
@@ -1286,7 +1266,7 @@
             }
         }
 
-        function abrirNovoLancamentoExtra(tipo) {
+        window.abrirNovoLancamentoExtra = function(tipo) {
             tipoNovoExtra = tipo;
             document.getElementById('titulo-modal-extra').innerText = tipo === 'receita' ? 'Nova Receita' : 'Novo Gasto';
             document.getElementById('input-extra-desc').value = '';
@@ -1303,7 +1283,7 @@
             abrirModal('modal-novo-extra', 'modal-extra-backdrop', 'modal-extra-content');
         }
 
-        async function guardarNovoExtra() {
+        window.guardarNovoExtra = async function() {
             const desc = document.getElementById('input-extra-desc').value;
             const valor = parseFloat(document.getElementById('input-extra-valor').value) || 0;
             const dia = document.getElementById('input-extra-dia').value;
@@ -1362,80 +1342,90 @@
             }
         }
 
-        function removerExtraMes(idExtra) { 
+        window.removerExtraMes = function(idExtra) { 
             extrasTemp = extrasTemp.filter(e => e.id !== idExtra); 
             renderizarExtrasEditUI(); 
             atualizarResumoModalEdicao();
         }
 
-        function atualizarResumoModalEdicao() {
-            const idMes = document.getElementById('edit-mes-id').value;
-            const prev = dadosTimeline.find(m => m.id === idMes);
-            const base_ok = prev ? prev.base_ok : { entradas: false, fixos: false, parcela: false };
+        window.atualizarResumoModalEdicao = function() {
+            try {
+                const idMes = document.getElementById('edit-mes-id').value;
+                const prev = dadosTimeline.find(m => m.id === idMes);
+                const base_ok = prev ? prev.base_ok : { entradas: false, fixos: false, parcela: false };
 
-            const entradasBase = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
-            const fixosBase = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
-            const parcelaBase = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
-            const saldoInicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || 0;
+                const entradasBase = parseFloat(document.getElementById('edit-mes-entradas').value) || 0;
+                const fixosBase = parseFloat(document.getElementById('edit-mes-fixos').value) || 0;
+                const parcelaBase = parseFloat(document.getElementById('edit-mes-parcela').value) || 0;
+                const saldoInicial = parseFloat(document.getElementById('edit-mes-saldo-inicial').value) || 0;
 
-            let extraReceitasTotal = 0, extraReceitasReal = 0;
-            let extraGastosTotal = 0, extraGastosReal = 0;
+                let extraReceitasTotal = 0, extraReceitasReal = 0;
+                let extraGastosTotal = 0, extraGastosReal = 0;
 
-            extrasTemp.forEach(ext => {
-                const val = parseFloat(ext.valor) || 0;
-                if (ext.tipo === 'receita') {
-                    extraReceitasTotal += val;
-                    if(ext.realizado) extraReceitasReal += val;
-                } else {
-                    extraGastosTotal += val;
-                    if(ext.realizado) extraGastosReal += val;
+                extrasTemp.forEach(ext => {
+                    const val = parseFloat(ext.valor) || 0;
+                    if (ext.tipo === 'receita') {
+                        extraReceitasTotal += val;
+                        if(ext.realizado) extraReceitasReal += val;
+                    } else {
+                        extraGastosTotal += val;
+                        if(ext.realizado) extraGastosReal += val;
+                    }
+                });
+
+                const reaisEntradas = (base_ok.entradas ? entradasBase : 0) + extraReceitasReal;
+                const reaisSaidas = (base_ok.fixos ? fixosBase : 0) + (base_ok.parcela ? parcelaBase : 0) + extraGastosReal;
+                const saldoAtualReal = saldoInicial + reaisEntradas - reaisSaidas;
+
+                const totalEntradas = entradasBase + extraReceitasTotal;
+                const totalSaidas = fixosBase + parcelaBase + extraGastosTotal;
+                const balancoTotal = totalEntradas - totalSaidas;
+                const sobraFinal = saldoInicial + balancoTotal;
+
+                const pendenteEntradas = totalEntradas - reaisEntradas;
+                const pendenteSaidas = totalSaidas - reaisSaidas;
+
+                document.getElementById('resumo-comp-entradas').innerText = formatarMoeda(reaisEntradas);
+                document.getElementById('resumo-comp-saidas').innerText = formatarMoeda(reaisSaidas);
+                
+                const elCompSaldo = document.getElementById('resumo-comp-saldo');
+                if(elCompSaldo) {
+                    elCompSaldo.innerText = formatarMoeda(saldoAtualReal);
+                    elCompSaldo.className = `text-[16px] font-black transition-colors truncate ${saldoAtualReal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
                 }
-            });
 
-            const reaisEntradas = (base_ok.entradas ? entradasBase : 0) + extraReceitasReal;
-            const reaisSaidas = (base_ok.fixos ? fixosBase : 0) + (base_ok.parcela ? parcelaBase : 0) + extraGastosReal;
-            const saldoAtualReal = saldoInicial + reaisEntradas - reaisSaidas;
+                document.getElementById('resumo-exp-total-in').innerText = formatarMoeda(totalEntradas);
+                document.getElementById('resumo-exp-real-in').innerText = formatarMoeda(reaisEntradas);
+                document.getElementById('resumo-exp-pend-in').innerText = formatarMoeda(pendenteEntradas);
+                
+                document.getElementById('resumo-exp-total-out').innerText = formatarMoeda(totalSaidas);
+                document.getElementById('resumo-exp-real-out').innerText = formatarMoeda(reaisSaidas);
+                document.getElementById('resumo-exp-pend-out').innerText = formatarMoeda(pendenteSaidas);
 
-            const totalEntradas = entradasBase + extraReceitasTotal;
-            const totalSaidas = fixosBase + parcelaBase + extraGastosTotal;
-            const balancoTotal = totalEntradas - totalSaidas;
-            const sobraFinal = saldoInicial + balancoTotal;
+                document.getElementById('resumo-exp-anterior').innerText = formatarMoeda(saldoInicial);
+                const elExpAtual = document.getElementById('resumo-exp-atual-real');
+                if(elExpAtual) {
+                    elExpAtual.innerText = formatarMoeda(saldoAtualReal);
+                    elExpAtual.className = `font-bold transition-colors truncate ${saldoAtualReal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+                }
 
-            const pendenteEntradas = totalEntradas - reaisEntradas;
-            const pendenteSaidas = totalSaidas - reaisSaidas;
-
-            document.getElementById('resumo-comp-entradas').innerText = formatarMoeda(reaisEntradas);
-            document.getElementById('resumo-comp-saidas').innerText = formatarMoeda(reaisSaidas);
-            
-            const elCompSaldo = document.getElementById('resumo-comp-saldo');
-            elCompSaldo.innerText = formatarMoeda(saldoAtualReal);
-            elCompSaldo.className = `text-[16px] font-black transition-colors truncate ${saldoAtualReal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
-
-            document.getElementById('resumo-exp-total-in').innerText = formatarMoeda(totalEntradas);
-            document.getElementById('resumo-exp-real-in').innerText = formatarMoeda(reaisEntradas);
-            document.getElementById('resumo-exp-pend-in').innerText = formatarMoeda(pendenteEntradas);
-            
-            document.getElementById('resumo-exp-total-out').innerText = formatarMoeda(totalSaidas);
-            document.getElementById('resumo-exp-real-out').innerText = formatarMoeda(reaisSaidas);
-            document.getElementById('resumo-exp-pend-out').innerText = formatarMoeda(pendenteSaidas);
-
-            document.getElementById('resumo-exp-anterior').innerText = formatarMoeda(saldoInicial);
-            const elExpAtual = document.getElementById('resumo-exp-atual-real');
-            elExpAtual.innerText = formatarMoeda(saldoAtualReal);
-            elExpAtual.className = `font-bold transition-colors truncate ${saldoAtualReal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
-
-            const elExpSobra = document.getElementById('resumo-exp-sobra');
-            elExpSobra.innerText = formatarMoeda(sobraFinal);
-            elExpSobra.className = `text-[28px] font-black leading-none transition-colors truncate ${sobraFinal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+                const elExpSobra = document.getElementById('resumo-exp-sobra');
+                if(elExpSobra) {
+                    elExpSobra.innerText = formatarMoeda(sobraFinal);
+                    elExpSobra.className = `text-[28px] font-black leading-none transition-colors truncate ${sobraFinal >= 0 ? 'text-app-blue' : 'text-app-red'}`;
+                }
+            } catch(e) {
+                console.error(e);
+            }
         }
 
-        function toggleResumoDrawer() {
+        window.toggleResumoDrawer = function() {
             const drawer = document.getElementById('resumo-drawer');
             if (drawer && drawer.style.height === '80dvh') fecharResumoDrawer();
             else abrirResumoDrawer();
         }
 
-        function abrirResumoDrawer() {
+        window.abrirResumoDrawer = function() {
             const drawer = document.getElementById('resumo-drawer');
             const compact = document.getElementById('resumo-compacto');
             const expanded = document.getElementById('resumo-expandido');
@@ -1458,7 +1448,7 @@
             }
         }
 
-        function fecharResumoDrawer() {
+        window.fecharResumoDrawer = function() {
             const drawer = document.getElementById('resumo-drawer');
             const compact = document.getElementById('resumo-compacto');
             const expanded = document.getElementById('resumo-expandido');
@@ -1481,8 +1471,9 @@
             }
         }
 
-        function renderizarExtrasEditUI() {
+        window.renderizarExtrasEditUI = function() {
             const list = document.getElementById('lista-extras-mes');
+            if(!list) return;
             list.innerHTML = '';
             
             if (extrasTemp.length === 0) {
@@ -1540,7 +1531,7 @@
             });
         }
 
-        async function guardarEdicaoMes() {
+        window.guardarEdicaoMes = async function() {
             const id = document.getElementById('edit-mes-id').value;
             const index = dadosTimeline.findIndex(m => m.id === id);
             if(index !== -1) {
@@ -1553,7 +1544,7 @@
         }
 
         const abas = ['previsoes', 'saldos', 'sonhos', 'historico', 'perfil'];
-        function mudarAba(idAba, botaoClicado) {
+        window.mudarAba = function(idAba, botaoClicado) {
             abas.forEach(aba => { document.getElementById(`aba-${aba}`)?.classList.replace('aba-ativa', 'aba-oculta'); });
             document.getElementById(`aba-${idAba}`).classList.replace('aba-oculta', 'aba-ativa');
             
@@ -1584,21 +1575,33 @@
             if(idAba === 'previsoes') inicializarTimeline();
         }
 
-        function abrirModal(idModal, idBackdrop, idContent) {
-            document.body.style.overflow = 'hidden'; 
-            document.getElementById(idModal).classList.remove('hidden');
-            setTimeout(() => { 
-                const bd = document.getElementById(idBackdrop);
-                const ct = document.getElementById(idContent);
-                if (bd) bd.classList.add('opacity-100'); 
-                if (ct) {
-                    ct.classList.remove('bottom-sheet-down'); 
-                    ct.classList.add('bottom-sheet-up');      
-                }
-            }, 10);
+        // FUNÇÃO DE ABRIR MODAL BLINDADA CONTRA FALHAS VISUAIS
+        window.abrirModal = function(idModal, idBackdrop, idContent) {
+            try {
+                document.body.style.overflow = 'hidden'; 
+                const modal = document.getElementById(idModal);
+                if(!modal) { alert("Falha: Modal " + idModal + " não encontrado."); return; }
+                
+                modal.classList.remove('hidden');
+                
+                // Força o navegador a renderizar a alteração antes de animar (Reflow Hack)
+                void modal.offsetWidth;
+
+                setTimeout(() => { 
+                    const bd = document.getElementById(idBackdrop);
+                    const ct = document.getElementById(idContent);
+                    if (bd) bd.classList.add('opacity-100'); 
+                    if (ct) {
+                        ct.classList.remove('bottom-sheet-down'); 
+                        ct.classList.add('bottom-sheet-up');      
+                    }
+                }, 50); // Timeout ligeiramente maior para telemóveis absorverem o impacto
+            } catch(e) {
+                alert("Erro ao abrir modal: " + e.message);
+            }
         }
 
-        function fecharModal(idModal) {
+        window.fecharModal = function(idModal) {
             document.body.style.overflow = ''; 
             const modal = document.getElementById(idModal);
             if (!modal) return;
