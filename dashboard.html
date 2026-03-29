@@ -137,7 +137,7 @@
             <div class="mb-6 px-1 w-full flex justify-between items-end">
                 <div>
                     <h2 class="text-2xl font-bold tracking-tight text-app-text">Timeline 2026</h2>
-                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clica no 'check' ao pagar ou receber.</p>
+                    <p class="text-[13px] font-medium text-app-sub mt-0.5">Clique no mês para ajustar entradas e saídas.</p>
                 </div>
             </div>
 
@@ -472,7 +472,7 @@
                 <button onclick="guardarEdicaoMes()" class="text-app-blue font-bold text-[16px] active:opacity-60">Concluído</button>
             </div>
             
-            <div class="px-5 py-5 overflow-y-auto no-scrollbar w-full bg-black flex-1" id="modal-mes-scroll-area">
+            <div class="px-5 pt-10 pb-5 overflow-y-auto no-scrollbar w-full bg-black flex-1" id="modal-mes-scroll-area">
                 <input type="hidden" id="edit-mes-id">
                 <!-- Inputs Ocultos para manter lógica base -->
                 <input type="hidden" id="edit-mes-entradas">
@@ -518,28 +518,25 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ DE RESUMO DINÂMICO (App Financeiro Premium) - Slim Footer -->
-            <div class="bg-app-card border-t border-app-border p-4 shadow-modal shrink-0 z-20 pb-safe w-full">
-                <div class="max-w-md mx-auto">
-                    <div class="grid grid-cols-2 gap-3 mb-2.5">
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] text-app-sub uppercase font-bold">Entradas</span>
-                            <span class="text-app-green font-bold text-[11px]" id="resumo-edicao-entradas">R$ 0,00</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-[10px] text-app-sub uppercase font-bold">Saídas</span>
-                            <span class="text-app-red font-bold text-[11px]" id="resumo-edicao-saidas">R$ 0,00</span>
-                        </div>
+            <!-- RODAPÉ DE RESUMO DINÂMICO REDESENHADO -->
+            <div class="bg-app-card border-t border-app-border p-5 shadow-modal shrink-0 z-20 pb-safe w-full">
+                <div class="max-w-md mx-auto space-y-2">
+                    <div class="flex justify-between items-center text-[13px]">
+                        <span class="text-app-sub font-medium">Entradas</span>
+                        <span class="text-app-green font-bold" id="resumo-edicao-entradas">R$ 0,00</span>
                     </div>
-                    <div class="flex justify-between items-center py-2.5 border-t border-app-border">
-                        <div>
-                            <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest">Balanço</p>
-                            <p class="text-[15px] font-black text-app-text" id="resumo-edicao-balanco">R$ 0,00</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[9px] font-bold text-app-sub uppercase tracking-widest">Sobra p/ Próximo</p>
-                            <p class="text-[15px] font-black text-app-blue" id="resumo-edicao-sobra">R$ 0,00</p>
-                        </div>
+                    <div class="flex justify-between items-center text-[13px]">
+                        <span class="text-app-sub font-medium">Saídas</span>
+                        <span class="text-app-red font-bold" id="resumo-edicao-saidas">R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[13px] pb-1">
+                        <span class="text-app-sub font-medium">Balanço</span>
+                        <span class="text-app-text font-bold" id="resumo-edicao-balanco">R$ 0,00</span>
+                    </div>
+                    
+                    <div class="pt-3 border-t border-app-border flex flex-col items-end">
+                        <p class="text-[10px] font-bold text-app-sub uppercase tracking-widest mb-1">sobra proximo mês</p>
+                        <p class="text-[22px] font-black text-app-blue leading-none" id="resumo-edicao-sobra">R$ 0,00</p>
                     </div>
                 </div>
             </div>
@@ -763,7 +760,7 @@
         function renderizarUIConquistas() {
             const container = document.getElementById('lista-conquistas-container');
             container.innerHTML = '';
-            const concluidos = sonhosGlobais.filter(s => s.status === 'concluido');
+            const concluidos = sonhosGlobais.filter(s => s.status === 'concluidos');
             if(concluidos.length === 0) {
                 container.innerHTML = '<div class="p-10 text-center bg-app-card rounded-[20px] border border-app-border mt-4"><p class="text-app-sub font-medium text-[15px]">Sem conquistas.</p></div>';
             } else {
@@ -860,7 +857,7 @@
 
         async function finalizarConquista(sonhoId) {
             fecharModal('modal-detalhes');
-            await clienteSupabase.from('sonhos').update({ status: 'concluido' }).eq('id', sonhoId);
+            await clienteSupabase.from('sonhos').update({ status: 'concluidos' }).eq('id', sonhoId);
             buscarSonhos();
         }
 
@@ -1000,7 +997,6 @@
             let saldoAtualAnterior = 0; 
             let saldoPrevistoAnterior = 0;
             dadosTimeline.forEach((prev, index) => {
-                let htmlExtras = '';
                 let totalEntradasMes = prev.entradas;
                 let totalSaidasMes = prev.fixos + prev.parcela;
                 let somaRealizada = 0;
@@ -1012,15 +1008,6 @@
                         const val = parseFloat(ext.valor) || 0;
                         if (ext.tipo === 'receita') totalEntradasMes += val; else totalSaidasMes += val;
                         if (ext.realizado) ext.tipo === 'receita' ? somaRealizada += val : somaRealizada -= val;
-                        htmlExtras += `
-                            <div class="flex justify-between items-center mt-2 group text-[13px]">
-                                <div class="flex items-center gap-2 flex-1 pr-2">
-                                    <button onclick="event.stopPropagation(); toggleRealizado('${prev.id}', 'extra', '${ext.id}')" class="transition-colors ${ext.realizado ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${ext.realizado ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                    <span class="${ext.realizado ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">${ext.descricao}</span>
-                                </div>
-                                <span class="font-bold ${ext.tipo === 'receita' ? 'text-app-green' : 'text-app-red'} ${ext.realizado ? 'opacity-60' : ''}">${ext.tipo === 'receita'?'+':'-'} ${formatarMoeda(val)}</span>
-                            </div>
-                        `;
                     });
                 }
                 let saldoStartAtual = saldoAtualAnterior;
@@ -1037,6 +1024,7 @@
                 prev._calcAtual = saldoAtual; 
                 prev._calcPrevisto = saldoPrevistoFinal;
                 const badgeHTML = prev.badge ? `<span class="text-[9px] ml-2 bg-[#2C2C2E] text-white px-2 py-0.5 rounded-md uppercase font-bold ${prev.risco ? 'text-app-red bg-app-red/20' : ''}">${prev.badge}</span>` : '';
+                
                 const card = document.createElement('div');
                 card.className = "relative pl-6 w-full";
                 card.innerHTML = `
@@ -1045,7 +1033,7 @@
                         <h4 class="text-[17px] font-bold text-app-text flex items-center">${prev.mes} ${badgeHTML}</h4>
                         <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded">Ajustar</button>
                     </div>
-                    <!-- CARD INTEIRO CLICÁVEL -->
+                    <!-- CARD INTEIRO CLICÁVEL - SIMPLIFICADO -->
                     <div onclick="abrirEdicaoMes('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full cursor-pointer active:opacity-80 transition-opacity">
                         <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5">
                             <h5 class="text-[10px] uppercase tracking-widest font-bold text-app-blue mb-2">Fluxo do Mês (Projeção)</h5>
@@ -1054,32 +1042,12 @@
                             <div class="flex justify-between text-[13px]"><span class="text-app-red">Saídas (-):</span><span class="font-bold text-app-red">-${formatarMoeda(totalSaidasMes)}</span></div>
                             <div class="flex justify-between text-[14px] pt-1.5 border-t border-white/10 font-bold"><span class="text-app-text">Saldo Final (=):</span><span class="text-app-blue">${formatarMoeda(saldoPrevistoFinal)}</span></div>
                         </div>
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="event.stopPropagation(); toggleRealizado('${prev.id}', 'entradas')" class="${prev.base_ok.entradas ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.entradas ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.entradas ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Entradas Base</span>
+                        <div class="bg-[#151515] rounded-xl p-4 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] font-bold text-app-sub uppercase tracking-widest block mb-0.5">Real Carteira</span>
+                                <span class="text-[11px] text-app-sub font-medium">Lançado até agora</span>
                             </div>
-                            <span class="font-bold text-app-green ${prev.base_ok.entradas ? 'opacity-60' : ''}">+${formatarMoeda(prev.entradas)}</span>
-                        </div>
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="event.stopPropagation(); toggleRealizado('${prev.id}', 'fixos')" class="${prev.base_ok.fixos ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.fixos ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.fixos ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Fixos Base</span>
-                            </div>
-                            <span class="font-bold text-app-red ${prev.base_ok.fixos ? 'opacity-60' : ''}">-${formatarMoeda(prev.fixos)}</span>
-                        </div>
-                        ${prev.parcela > 0 ? `
-                        <div class="flex justify-between items-center mb-2 text-[13px]">
-                            <div class="flex items-center gap-2">
-                                <button onclick="event.stopPropagation(); toggleRealizado('${prev.id}', 'parcela')" class="${prev.base_ok.parcela ? 'text-app-green' : 'text-[#38383A]'}"><i class="ph-fill ${prev.base_ok.parcela ? 'ph-check-circle' : 'ph-circle'}"></i></button>
-                                <span class="${prev.base_ok.parcela ? 'text-app-sub line-through opacity-60' : 'text-app-text font-medium'}">Empréstimo</span>
-                            </div>
-                            <span class="font-bold text-app-orange ${prev.base_ok.parcela ? 'opacity-60' : ''}">-${formatarMoeda(prev.parcela)}</span>
-                        </div>` : ''}
-                        ${htmlExtras}
-                        <div class="bg-[#151515] rounded-xl p-3 mt-4 flex justify-between items-center">
-                            <span class="text-[11px] font-bold text-app-sub uppercase tracking-widest">Real Carteira</span>
-                            <span class="font-black text-[15px] ${saldoAtual >= 0 ? 'text-white' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
+                            <span class="font-black text-[18px] ${saldoAtual >= 0 ? 'text-white' : 'text-app-red'}">${formatarMoeda(saldoAtual)}</span>
                         </div>
                     </div>`;
                 container.appendChild(card);
@@ -1145,8 +1113,13 @@
             
             // Ajuste de cor do balanço
             const balancoEl = document.getElementById('resumo-edicao-balanco');
-            if (balanco < 0) balancoEl.classList.replace('text-app-text', 'text-app-red');
-            else balancoEl.classList.replace('text-app-red', 'text-app-text');
+            if (balanco < 0) {
+                balancoEl.classList.add('text-app-red');
+                balancoEl.classList.remove('text-app-text');
+            } else {
+                balancoEl.classList.remove('text-app-red');
+                balancoEl.classList.add('text-app-text');
+            }
         }
 
         function renderizarExtrasEditUI() {
