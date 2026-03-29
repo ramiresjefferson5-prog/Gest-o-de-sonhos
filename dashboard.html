@@ -430,7 +430,9 @@
 
     </main>
 
-    <!-- MODAIS DE INFRAESTRUTURA BASE -->
+    <!-- ÚNICA DECLARAÇÃO DOS MODAIS -->
+    
+    <!-- Modal Perfil -->
     <div id="modal-editar-perfil" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-perfil-backdrop" onclick="fecharModal('modal-editar-perfil')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-perfil-content">
@@ -453,6 +455,7 @@
         </div>
     </div>
 
+    <!-- Modal Detalhes -->
     <div id="modal-detalhes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-backdrop" onclick="fecharModal('modal-detalhes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-app-card rounded-t-[32px] shadow-modal transform transition-transform duration-300 bottom-sheet-down max-h-[90dvh] flex flex-col pb-safe w-full max-w-2xl mx-auto border-t border-app-border" id="modal-content">
@@ -466,7 +469,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE UPGRADE) -->
+    <!-- MODAL DE EDIÇÃO DO MÊS (FULL PAGE) -->
     <div id="modal-editar-mes" class="fixed inset-0 z-[100] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity opacity-0" id="modal-mes-backdrop" onclick="fecharModal('modal-editar-mes')"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-black shadow-modal transform transition-transform duration-300 bottom-sheet-down flex flex-col w-full max-w-2xl mx-auto full-page-modal relative" id="modal-mes-content">
@@ -519,7 +522,7 @@
                 </div>
             </div>
 
-            <!-- RODAPÉ GAVETA -->
+            <!-- RODAPÉ GAVETA DO MÊS -->
             <div id="resumo-drawer" class="bg-[#1C1C1E] border-t border-app-border shadow-[0_-10px_40px_rgba(0,0,0,0.8)] shrink-0 z-30 w-full transition-all duration-300 flex flex-col rounded-t-[32px] overflow-hidden absolute bottom-0 left-0" style="height: 95px; padding-bottom: env(safe-area-inset-bottom);">
                 <div class="w-full flex justify-center pt-3 pb-3 cursor-pointer shrink-0" id="drawer-handle" 
                      onclick="toggleResumoDrawer()" 
@@ -543,7 +546,6 @@
                     </div>
                 </div>
 
-                <!-- VISÃO EXPANDIDA DA GAVETA - SCROLL INTERNO PERFEITO -->
                 <div id="resumo-expandido" class="px-6 pt-2 pb-[calc(120px+env(safe-area-inset-bottom))] opacity-0 transition-opacity duration-300 hidden flex-1 overflow-y-auto no-scrollbar overscroll-contain">
                     <div class="mb-6 text-center">
                         <h4 class="text-[18px] font-bold text-white">Análise do Mês</h4>
@@ -612,23 +614,19 @@
             
             <div class="px-5 pt-6 pb-[calc(40px+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar overscroll-contain flex-1">
                 <div class="space-y-4">
-                    <!-- Descrição -->
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">O que é?</label>
                         <input type="text" id="input-extra-desc" placeholder="Ex: Conta de Luz" class="flex-1 min-w-0 bg-transparent text-right text-[15px] font-semibold text-app-text outline-none">
                     </div>
-                    <!-- Valor -->
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Valor</label>
                         <span class="text-app-sub mr-1">R$</span>
                         <input type="number" id="input-extra-valor" min="0" step="0.01" placeholder="0,00" class="flex-1 min-w-0 bg-transparent text-right text-[18px] font-black text-app-text outline-none">
                     </div>
-                    <!-- Dia do Mês -->
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Dia</label>
                         <input type="number" id="input-extra-dia" min="1" max="31" placeholder="Dia (Ex: 5)" class="flex-1 min-w-0 bg-transparent text-right text-[15px] font-medium text-app-text outline-none">
                     </div>
-                    <!-- Recorrência / Projeção -->
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center relative">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Repetição</label>
                         <div class="flex-1 min-w-0 relative flex items-center justify-end">
@@ -640,12 +638,10 @@
                             <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                         </div>
                     </div>
-                    <!-- Parcelas (Hidden by default) -->
                     <div id="div-extra-parcelas" class="hidden bg-app-card border border-app-blue/30 rounded-[16px] px-4 py-3 flex items-center">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-blue font-semibold">Parcelas</label>
                         <input type="number" id="input-extra-parcelas" min="2" max="36" value="2" class="flex-1 min-w-0 bg-transparent text-right text-[15px] font-bold text-app-blue outline-none">
                     </div>
-                    <!-- Vínculo com Obra -->
                     <div class="bg-[#151515] border border-app-border rounded-[16px] px-4 py-3 flex items-center relative">
                         <label class="w-[90px] shrink-0 text-[14px] text-app-sub">Projeto?</label>
                         <div class="flex-1 min-w-0 relative flex items-center justify-end">
@@ -655,14 +651,13 @@
                             <i class="ph-bold ph-caret-up-down absolute right-0 text-app-sub text-[10px] z-0"></i>
                         </div>
                     </div>
-                    
                     <p class="text-[11px] text-app-sub text-center px-4 pt-2">Ao inserir despesas recorrentes ou parceladas, o ecossistema calculará e gravará os meses futuros automaticamente.</p>
                 </div>
             </div>
         </div>
     </div>
 
-
+    <!-- ÚNICA DECLARAÇÃO DO SCRIPT -->
     <script>
         const URL_DO_TEU_SUPABASE = 'https://lqfwpfaqcnfsybxchmtg.supabase.co';
         const CHAVE_DO_TEU_SUPABASE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxZndwZmFxY25mc3lieGNobXRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODk5MjIsImV4cCI6MjA5MDI2NTkyMn0.XMO-YQIzULWK2yMFoqdBVP-wYPA7P84sp4QnsuS0hks';
@@ -1135,11 +1130,13 @@
                     try { const p = JSON.parse(obsTexto); obsTexto = p.texto || ''; baseOk = p.base_ok || baseOk; } catch(e){}
                     return { ...temp, entradas: mesBD.entradas, fixos: mesBD.fixos, parcela: mesBD.parcela, obs: obsTexto, saldo_inicial: mesBD.saldo_inicial, extras: mesBD.extras || [], base_ok: baseOk };
                 }
-                return { ...temp, saldo_inicial: temp.saldo_inicial || null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
+                return { ...temp, saldo_inicial: temp.saldo_inicial !== undefined ? temp.saldo_inicial : null, base_ok: { entradas: false, fixos: false, parcela: false }, extras: temp.extras || [] };
             });
             const selectRapido = document.getElementById('val-mes-rapido');
-            selectRapido.innerHTML = '';
-            dadosTimeline.forEach(m => selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
+            if (selectRapido) {
+                selectRapido.innerHTML = '';
+                dadosTimeline.forEach(m => selectRapido.innerHTML += `<option value="${m.id}">${m.mes}</option>`);
+            }
             renderizarTimelineUI();
         }
 
@@ -1233,14 +1230,14 @@
                         <button onclick="abrirEdicaoMes('${prev.id}')" class="text-xs text-app-blue font-bold px-2 py-1 bg-app-blue/10 rounded shrink-0">Ajustar</button>
                     </div>
                     <div onclick="abrirEdicaoMes('${prev.id}')" class="bg-app-card border border-app-border rounded-[20px] p-5 shadow-float w-full cursor-pointer active:opacity-80 transition-opacity">
-                        <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5">
+                        <div class="bg-black/30 rounded-xl p-3 mb-4 space-y-1.5 border border-white/5 pointer-events-none">
                             <h5 class="text-[10px] uppercase tracking-widest font-bold text-app-blue mb-2 truncate">Fluxo do Mês (Projeção)</h5>
                             <div class="flex justify-between text-[13px] gap-2"><span class="text-app-sub truncate">Saldo Anterior:</span><span class="font-bold shrink-0">${formatarMoeda(saldoStartPrevisto)}</span></div>
                             <div class="flex justify-between text-[13px] gap-2"><span class="text-app-green truncate">Entradas (+):</span><span class="font-bold text-app-green shrink-0">+${formatarMoeda(totalEntradasMes)}</span></div>
                             <div class="flex justify-between text-[13px] gap-2"><span class="text-app-red truncate">Saídas (-):</span><span class="font-bold text-app-red shrink-0">-${formatarMoeda(totalSaidasMes)}</span></div>
                             <div class="flex justify-between text-[14px] pt-1.5 border-t border-white/10 font-bold gap-2"><span class="text-app-text truncate">Saldo Final (=):</span><span class="text-app-blue shrink-0">${formatarMoeda(saldoPrevistoFinal)}</span></div>
                         </div>
-                        <div class="bg-[#151515] rounded-xl p-4 flex justify-between items-center gap-2">
+                        <div class="bg-[#151515] rounded-xl p-4 flex justify-between items-center gap-2 pointer-events-none">
                             <div class="min-w-0">
                                 <span class="text-[10px] font-bold text-app-sub uppercase tracking-widest block mb-0.5 truncate">Real Carteira</span>
                                 <span class="text-[11px] text-app-sub font-medium truncate block">Lançado até agora</span>
@@ -1255,20 +1252,24 @@
 
         let extrasTemp = [];
         function abrirEdicaoMes(idMes) {
-            const prev = dadosTimeline.find(m => m.id === idMes);
-            if(!prev) return;
-            document.getElementById('display-mes-nome').innerText = prev.mes;
-            document.getElementById('edit-mes-id').value = prev.id;
-            document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial || '';
-            document.getElementById('edit-mes-entradas').value = prev.entradas;
-            document.getElementById('edit-mes-fixos').value = prev.fixos;
-            document.getElementById('edit-mes-parcela').value = prev.parcela;
-            document.getElementById('edit-mes-obs').value = prev.obs;
-            extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
-            renderizarExtrasEditUI();
-            fecharResumoDrawer(); 
-            abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
-            atualizarResumoModalEdicao(); 
+            try {
+                const prev = dadosTimeline.find(m => m.id === idMes);
+                if(!prev) return;
+                document.getElementById('display-mes-nome').innerText = prev.mes;
+                document.getElementById('edit-mes-id').value = prev.id;
+                document.getElementById('edit-mes-saldo-inicial').value = prev.saldo_inicial !== null ? prev.saldo_inicial : '';
+                document.getElementById('edit-mes-entradas').value = prev.entradas;
+                document.getElementById('edit-mes-fixos').value = prev.fixos;
+                document.getElementById('edit-mes-parcela').value = prev.parcela;
+                document.getElementById('edit-mes-obs').value = prev.obs || '';
+                extrasTemp = JSON.parse(JSON.stringify(prev.extras || []));
+                renderizarExtrasEditUI();
+                fecharResumoDrawer(); 
+                abrirModal('modal-editar-mes', 'modal-mes-backdrop', 'modal-mes-content');
+                atualizarResumoModalEdicao(); 
+            } catch (erro) {
+                console.error("Erro seguro ao abrir o mês:", erro);
+            }
         }
 
         let tipoNovoExtra = 'receita';
@@ -1427,7 +1428,7 @@
 
         function toggleResumoDrawer() {
             const drawer = document.getElementById('resumo-drawer');
-            if (drawer.style.height === '80dvh') fecharResumoDrawer();
+            if (drawer && drawer.style.height === '80dvh') fecharResumoDrawer();
             else abrirResumoDrawer();
         }
 
@@ -1437,19 +1438,21 @@
             const expanded = document.getElementById('resumo-expandido');
             const innerBackdrop = document.getElementById('drawer-inner-backdrop');
             
-            drawer.style.height = '80dvh'; 
+            if (drawer) drawer.style.height = '80dvh'; 
             
             if(innerBackdrop) {
                 innerBackdrop.classList.remove('hidden');
                 setTimeout(() => innerBackdrop.classList.remove('opacity-0'), 10);
             }
 
-            compact.classList.add('opacity-0');
-            setTimeout(() => {
-                compact.classList.add('hidden');
-                expanded.classList.remove('hidden');
-                setTimeout(() => expanded.classList.remove('opacity-0'), 10);
-            }, 300);
+            if (compact && expanded) {
+                compact.classList.add('opacity-0');
+                setTimeout(() => {
+                    compact.classList.add('hidden');
+                    expanded.classList.remove('hidden');
+                    setTimeout(() => expanded.classList.remove('opacity-0'), 10);
+                }, 300);
+            }
         }
 
         function fecharResumoDrawer() {
@@ -1458,19 +1461,21 @@
             const expanded = document.getElementById('resumo-expandido');
             const innerBackdrop = document.getElementById('drawer-inner-backdrop');
             
-            drawer.style.height = '95px';
+            if (drawer) drawer.style.height = '95px';
             
             if(innerBackdrop) {
                 innerBackdrop.classList.add('opacity-0');
                 setTimeout(() => innerBackdrop.classList.add('hidden'), 300);
             }
 
-            expanded.classList.add('opacity-0');
-            setTimeout(() => {
-                expanded.classList.add('hidden');
-                compact.classList.remove('hidden');
-                setTimeout(() => compact.classList.remove('opacity-0'), 10);
-            }, 300);
+            if (expanded && compact) {
+                expanded.classList.add('opacity-0');
+                setTimeout(() => {
+                    expanded.classList.add('hidden');
+                    compact.classList.remove('hidden');
+                    setTimeout(() => compact.classList.remove('opacity-0'), 10);
+                }, 300);
+            }
         }
 
         function renderizarExtrasEditUI() {
@@ -1579,13 +1584,21 @@
         function abrirModal(idModal, idBackdrop, idContent) {
             document.body.style.overflow = 'hidden'; 
             document.getElementById(idModal).classList.remove('hidden');
-            setTimeout(() => { document.getElementById(idBackdrop).classList.add('opacity-100'); document.getElementById(idContent).classList.add('bottom-sheet-up'); }, 10);
+            setTimeout(() => { 
+                const bd = document.getElementById(idBackdrop);
+                const ct = document.getElementById(idContent);
+                if (bd) bd.classList.add('opacity-100'); 
+                if (ct) ct.classList.add('bottom-sheet-up'); 
+            }, 10);
         }
 
         function fecharModal(idModal) {
             document.body.style.overflow = ''; 
-            document.getElementById(idModal).querySelector('[id$="-content"]').classList.remove('bottom-sheet-up');
-            setTimeout(() => { document.getElementById(idModal).classList.add('hidden'); }, 300);
+            const modal = document.getElementById(idModal);
+            if (!modal) return;
+            const ct = modal.querySelector('[id$="-content"]');
+            if (ct) ct.classList.remove('bottom-sheet-up');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
         window.onload = async () => {
