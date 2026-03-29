@@ -42,8 +42,9 @@
         .aba-ativa { display: block; animation: fadeIn 0.3s ease-out forwards; }
         .aba-oculta { display: none; }
 
-        .bottom-sheet-up { transform: translateY(0%); }
-        .bottom-sheet-down { transform: translateY(100%); }
+        /* BLINDAGEM DA ANIMAÇÃO: Adicionado !important para sobrepor qualquer conflito do Tailwind */
+        .bottom-sheet-up { transform: translateY(0%) !important; }
+        .bottom-sheet-down { transform: translateY(100%) !important; }
 
         /* Estilo Full Page para o Modal de Edição com 100dvh para evitar corte pela barra de navegação do browser mobile */
         .full-page-modal { height: 100dvh !important; border-radius: 0 !important; }
@@ -1588,7 +1589,10 @@
                 const bd = document.getElementById(idBackdrop);
                 const ct = document.getElementById(idContent);
                 if (bd) bd.classList.add('opacity-100'); 
-                if (ct) ct.classList.add('bottom-sheet-up'); 
+                if (ct) {
+                    ct.classList.remove('bottom-sheet-down'); // BLINDAGEM CSS
+                    ct.classList.add('bottom-sheet-up');      // BLINDAGEM CSS
+                }
             }, 10);
         }
 
@@ -1597,7 +1601,10 @@
             const modal = document.getElementById(idModal);
             if (!modal) return;
             const ct = modal.querySelector('[id$="-content"]');
-            if (ct) ct.classList.remove('bottom-sheet-up');
+            if (ct) {
+                ct.classList.remove('bottom-sheet-up');       // BLINDAGEM CSS
+                ct.classList.add('bottom-sheet-down');        // BLINDAGEM CSS
+            }
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
